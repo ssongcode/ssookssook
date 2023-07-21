@@ -1,10 +1,10 @@
 import { StyleSheet, View } from "react-native";
-import ProfileScreen from "./src/screens/profile";
+import SignUpScreen from "./src/screens/signup";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <ProfileScreen />
+      <SignUpScreen />
     </View>
   );
 }
