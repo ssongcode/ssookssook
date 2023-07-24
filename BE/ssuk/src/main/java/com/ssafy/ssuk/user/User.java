@@ -1,2 +1,4 @@
-package com.ssafy.ssuk.user;public class User {
+package com.ssafy.ssuk.user;
+
+public class User {
 }
