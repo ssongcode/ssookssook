@@ -1,34 +1,36 @@
-import asyncio
-import websockets
 import socket
-# import serial
+import argparse
+import threading
 
 
+def send_msg(s):
+    while True:
+        send_message = input()
+        s.sendall(send_message.encode())
+def recv_msg(s):
+    while True:
+        recv_message = s.recv(1024)
+        print('From Server : ',recv_message.decode('utf-8'))
 
-# if __name__ == "__main__":
-# 	client = create_connection("ws://192.168.31.166:8888")
-# 	# s = serial.Serial("/dev/ttyACM0", 9600, timeout=1)
-# 	# s.flush()
-# 	while True:
-# 		# if s.in_waiting > 0:
-# 			# line = s.readline().decode('utf-8').rstrip()
-# 		line = input()
+def run(host, port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
+        print('Connect Complete!!')
+        s.sendall(host.encode())
+        s.sendall(str(port).encode())
+        sending_message = threading.Thread(target=send_msg,args=(s,))
+        receive_message = threading.Thread(target=recv_msg,args=(s,))
+        sending_message.start()
+        receive_message.start()
+        while True:
+            if False:
+                sending_message.join()
+                receive_message.join()
 
-# 		# else:
-# 			# print("Connect Error!")
-#	# ws.close()
-async def connect():
-	# Connect
-	async with websockets.connect("ws://192.168.31.166:8888") as ws:
-		input_data = ""
-		while input_data != 'exit':
-			# send to serverte
-			input_data = input("send : ")
-			await ws.send("Send from " + socket.gethostbyname(socket.gethostname()) + " " + input_data)
-			# recv from server
-			recv_data = await ws.recv()
-			print("recv : ", recv_data)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Echo client -p port -i host")
+    parser.add_argument('-p', help="port_number", required=True)
+    parser.add_argument('-i', help="host_name", required=True)
 
-
-if __name__ == "__main__":
-	asyncio.get_event_loop().run_until_complete(connect())
+    args = parser.parse_args()
+    run(host=args.i, port=int(args.p))
