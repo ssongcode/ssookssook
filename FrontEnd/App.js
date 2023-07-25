@@ -1,10 +1,10 @@
 import { StyleSheet, View } from "react-native";
-import ModalSetting from "./src/components/modalsetting";
+import ModalPlantSeed from "./src/components/modalplantseed";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <ModalSetting />
+      <ModalPlantSeed />
     </View>
   );
 }
