@@ -7,10 +7,10 @@ import cv2
 import os
 from datetime import datetime
 
-PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
+# PORT = 'COM6' # 라즈베리 파이 PORT의 경우 확인 필요
 BaudRate = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
-ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정
-
+# ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정
+ARD = serial.Serial("/dev/ttyACM0",BaudRate)
 # async def connect_and_subscribe():
 #     uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
 #     username = "your_username"  # Replace with your username
