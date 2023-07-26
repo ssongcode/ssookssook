@@ -5,12 +5,13 @@ import serial
 import requests
 import cv2
 import os
+import socket
 from datetime import datetime
 
-# PORT = 'COM6' # 라즈베리 파이 PORT의 경우 확인 필요
+PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
 BaudRate = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
-# ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정
-ARD = serial.Serial("/dev/ttyACM0",BaudRate)
+ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정 - PC
+# ARD = serial.Serial("/dev/ttyACM0",BaudRate) # 아두이노 통신 설정 - 라즈베리파이4
 # async def connect_and_subscribe():
 #     uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
 #     username = "your_username"  # Replace with your username
@@ -72,7 +73,7 @@ def send_image_to_server():
 	# 파일명 : 시리얼 넘버 + 현재시간.jpg
 
 	serial_number = ""
-	with open("serial_number.txt","r") as file:
+	with open("../serial_number.txt","r") as file:
 		serial_number = file.readline()
 		if serial_number == "":
 			print("시리얼 넘버가 없습니다.")
@@ -84,14 +85,22 @@ def send_image_to_server():
 		print("프레임을 읽어올 수 없습니다.")
 		return
 	# 이미지 저장
-	cv2.imwrite("img/"+filename,frame)
-	# 리소스 해제
+	cv2.imwrite("../python37/img/"+filename,frame)
+	# 카메라 종료
 	cam.release()
 	print("Capture request Complete!")
+	# TM 체크
+	plant_level = ""
+	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+		s.connect(('127.0.0.1', 8888))
+		s.sendall("1".encode())
+		resp = s.recv(1024)
+		print(resp.decode())
+		plant_level = resp.decode()
 	# 서버로 전송
 	# url = "http://localhost:8080/upload" # 이미지 전송 할 uri
 	# dto = {
-	# 	'image' : open(filenname, 'rb'),
+	# 	'image' : open(../python37/img/filenname, 'rb'),
 	#	'pot_id' : 1,
 	#   'capture_time' : capture_time
 	# }
