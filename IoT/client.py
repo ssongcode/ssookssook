@@ -3,16 +3,28 @@ import websockets
 import json
 import serial
 import requests
+import re
+import os
 import cv2
-from keras.models import load_model  # TensorFlow is required for Keras to work
-from PIL import Image, ImageOps  # Install pillow instead of PIL
-import numpy as np
+# from keras.models import load_model  # TensorFlow is required for Keras to work
+# from PIL import Image, ImageOps  # Install pillow instead of PIL
+# import numpy as np
 from datetime import datetime
+from pycoral.utils.dataset import read_label_file
+from pycoral.utils.edgetpu import make_interpreter
+from pycoral.adapters import common
+from pycoral.adapters import classify
 
 PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
 BaudRate = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
 ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정 - PC
 # ARD = serial.Serial("/dev/ttyACM0",BaudRate) # 아두이노 통신 설정 - 라즈베리파이4
+# the TFLite converted to be used with edgetpu
+modelPath = 'model_unquant.tflite'
+
+# The path to labels.txt that was downloaded with your model
+labelPath = 'labels.txt'
+
 # async def connect_and_subscribe():
 #     uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
 #     username = "your_username"  # Replace with your username
@@ -66,53 +78,70 @@ def read():
 	else:
 		print("Read Failed!!")
 
-# Teachable Machine 작동 로직
-def TM():
-	# Disable scientific notation for clarity
-	np.set_printoptions(suppress=True)
-	# Load the model
-	model = load_model("keras_Model.h5", compile=False)
-	# Load the labels
-	class_names = open("labels.txt", "r").readlines()
+# Teachable Machine Lite 작동 로직 = 라즈베리파이
+def classifyImage(interpreter, image):
+    size = common.input_size(interpreter)
+    common.set_input(interpreter, cv2.resize(image, size, fx=0, fy=0,
+                                             interpolation=cv2.INTER_CUBIC))
+    interpreter.invoke()
+    return classify.get_classes(interpreter)
 
-	# Create the array of the right shape to feed into the keras model
-	# The 'length' or number of images you can put into the array is
-	# determined by the first position in the shape tuple, in this case 1
-	data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-	serial_number = ""
-	with open("serial_number.txt","r") as file:
-		serial_number = file.readline()
-		if serial_number == "":
-			print("시리얼 넘버가 없습니다.")
-			conn.send(-1);
-			return
+def TM(frame):
+    # Load your model onto the TF Lite Interpreter
+    interpreter = make_interpreter(modelPath)
+    interpreter.allocate_tensors()
+    labels = read_label_file(labelPath)
+    # 판정 결과
+    results = classifyImage(interpreter, frame)
+    print(f'Label: {labels[results[0].id]}, Score: {results[0].score}')
+    
+# Teachable Machine 작동 로직 = PC
+# def TM():
+# 	# Disable scientific notation for clarity
+# 	np.set_printoptions(suppress=True)
+# 	# Load the model
+# 	model = load_model("keras_Model.h5", compile=False)
+# 	# Load the labels
+# 	class_names = open("labels.txt", "r").readlines()
 
-	filename = "PLANT_"+serial_number+".jpg"
-	# Replace this with the path to your image
-	image = Image.open("img/"+filename).convert("RGB")
+# 	# Create the array of the right shape to feed into the keras model
+# 	# The 'length' or number of images you can put into the array is
+# 	# determined by the first position in the shape tuple, in this case 1
+# 	data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+# 	serial_number = ""
+# 	with open("serial_number.txt","r") as file:
+# 		serial_number = file.readline()
+# 		if serial_number == "":
+# 			print("시리얼 넘버가 없습니다.")
+# 			conn.send(-1);
+# 			return
 
-	# resizing the image to be at least 224x224 and then cropping from the center
-	size = (224, 224)
-	image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
+# 	filename = "PLANT_"+serial_number+".jpg"
+# 	# Replace this with the path to your image
+# 	image = Image.open("img/"+filename).convert("RGB")
 
-	# turn the image into a numpy array
-	image_array = np.asarray(image)
+# 	# resizing the image to be at least 224x224 and then cropping from the center
+# 	size = (224, 224)
+# 	image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
 
-	# Normalize the image
-	normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
+# 	# turn the image into a numpy array
+# 	image_array = np.asarray(image)
 
-	# Load the image into the array
-	data[0] = normalized_image_array
+# 	# Normalize the image
+# 	normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
 
-	# Predicts the model
-	prediction = model.predict(data)
-	index = np.argmax(prediction)
-	class_name = class_names[index]
-	confidence_score = prediction[0][index]
-	# Print prediction and confidence score
-	print(class_name)
-	print("Class:", class_name[2:], end="")
-	print("Confidence Score:", confidence_score)
+# 	# Load the image into the array
+# 	data[0] = normalized_image_array
+
+# 	# Predicts the model
+# 	prediction = model.predict(data)
+# 	index = np.argmax(prediction)
+# 	class_name = class_names[index]
+# 	confidence_score = prediction[0][index]
+# 	# Print prediction and confidence score
+# 	print(class_name)
+# 	print("Class:", class_name[2:], end="")
+# 	print("Confidence Score:", confidence_score)
 
 def send_image_to_server():
 	# 카메라 세팅
@@ -141,7 +170,8 @@ def send_image_to_server():
 	cam.release()
 	print("Capture request Complete!")
 	# TM 체크
-	TM()
+	# TM() # PC 버전
+	TM(frame)
 	# 서버로 전송
 	# url = "http://localhost:8080/upload" # 이미지 전송 할 uri
 	# dto = {
