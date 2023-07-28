@@ -27,7 +27,7 @@ public class PlantCategoryServiceImpl implements PlantCategoryService{
         PlantCategory plantCategory = plantCategoryRepository.findOneById(categoryId);
         if(plantCategory == null)
             return false;
-        plantCategory.setCategoryName(updateName);
+        plantCategory.setName(updateName);
         return true;
     }
 
@@ -42,7 +42,7 @@ public class PlantCategoryServiceImpl implements PlantCategoryService{
     }
 
     @Override
-    public boolean checkDuplicateName(String name) {
-        return false;
+    public boolean isDuplicateName(String name) {
+        return !plantCategoryRepository.findAllByName(name).isEmpty();
     }
 }

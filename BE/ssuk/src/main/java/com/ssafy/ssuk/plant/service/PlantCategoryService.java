@@ -14,5 +14,5 @@ public interface PlantCategoryService {
 
     public PlantCategory findOneById(Integer categoryId);
 
-    public boolean checkDuplicateName(String name);
+    public boolean isDuplicateName(String name);
 }

@@ -30,7 +30,7 @@ public class PlantCategoryRepositoryImpl implements PlantCategoryRepository {
 
     @Override
     public List<PlantCategory> findAllByName(String name) {
-        return em.createQuery("select pc from PlantCategory pc where pc.categoryName = :name")
+        return em.createQuery("select pc from PlantCategory pc where pc.name = :name")
                 .setParameter("name", name)
                 .getResultList();
     }
