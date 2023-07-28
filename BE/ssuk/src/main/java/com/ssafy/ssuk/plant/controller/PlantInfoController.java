@@ -1,10 +1,7 @@
 package com.ssafy.ssuk.plant.controller;
 
 import com.ssafy.ssuk.plant.PlantCategory;
-import com.ssafy.ssuk.plant.dto.PlantCategoryRegisterRequestDto;
-import com.ssafy.ssuk.plant.dto.PlantCategoryRegisterResponseDto;
-import com.ssafy.ssuk.plant.dto.PlantCategorySearchResponseDto;
-import com.ssafy.ssuk.plant.dto.ResponseDto;
+import com.ssafy.ssuk.plant.dto.*;
 import com.ssafy.ssuk.plant.service.PlantCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +48,26 @@ public class PlantInfoController {
             return new ResponseEntity<>(new PlantCategoryRegisterResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
         }
         plantCategoryService.savePlantCategory(new PlantCategory(name));
-        return new ResponseEntity<>(new PlantCategoryRegisterResponseDto(SUCCESS), HttpStatus.OK);   // 수정해야함 코드
+        return new ResponseEntity<>(new PlantCategoryRegisterResponseDto(SUCCESS), HttpStatus.OK);
+    }
+
+    @PutMapping("/category/admin")
+    public ResponseEntity<ResponseDto> updateCategory(
+            @RequestBody @Validated
+            PlantCategoryUpdateRequestDto plantCategoryUpdateRequestDto,
+            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors())
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
+        Integer id = plantCategoryUpdateRequestDto.getCategoryId();
+        String updateName = plantCategoryUpdateRequestDto.getUpdateName();
+
+        if(plantCategoryService.isDuplicateName(id, updateName))
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);
+
+        plantCategoryService.updatePlantCategory(id, updateName);
+
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
 }

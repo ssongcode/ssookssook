@@ -45,4 +45,9 @@ public class PlantCategoryServiceImpl implements PlantCategoryService{
     public boolean isDuplicateName(String name) {
         return !plantCategoryRepository.findAllByName(name).isEmpty();
     }
+
+    @Override
+    public boolean isDuplicateName(Integer id, String name) {
+        return !plantCategoryRepository.findAllByNameExceptId(id, name).isEmpty();
+    }
 }

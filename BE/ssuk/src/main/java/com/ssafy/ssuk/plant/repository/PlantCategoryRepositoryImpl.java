@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -32,6 +33,17 @@ public class PlantCategoryRepositoryImpl implements PlantCategoryRepository {
     public List<PlantCategory> findAllByName(String name) {
         return em.createQuery("select pc from PlantCategory pc where pc.name = :name")
                 .setParameter("name", name)
+                .getResultList();
+    }
+
+    /**
+     * 시간 나면 querydsl로 바꿔야 할듯
+     */
+    @Override
+    public Collection<Object> findAllByNameExceptId(Integer id, String name) {
+        return em.createQuery("select pc from PlantCategory pc where pc.name = :name and pc.id != :id")
+                .setParameter("name", name)
+                .setParameter("id", id)
                 .getResultList();
     }
 }

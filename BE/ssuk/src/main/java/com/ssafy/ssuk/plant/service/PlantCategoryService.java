@@ -15,4 +15,9 @@ public interface PlantCategoryService {
     public PlantCategory findOneById(Integer categoryId);
 
     public boolean isDuplicateName(String name);
+
+    /**
+     * 해당 id를 가진 category 이외에 중복된 네임이 있는지 확인
+     */
+    public boolean isDuplicateName(Integer id, String name);
 }
