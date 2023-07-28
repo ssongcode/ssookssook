@@ -3,6 +3,8 @@ package com.ssafy.ssuk.plant.controller;
 import com.ssafy.ssuk.plant.PlantCategory;
 import com.ssafy.ssuk.plant.dto.PlantCategoryRegisterRequestDto;
 import com.ssafy.ssuk.plant.dto.PlantCategoryRegisterResponseDto;
+import com.ssafy.ssuk.plant.dto.PlantCategorySearchResponseDto;
+import com.ssafy.ssuk.plant.dto.ResponseDto;
 import com.ssafy.ssuk.plant.service.PlantCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("plantinfo")
@@ -27,6 +27,17 @@ public class PlantInfoController {
 
     private final String SUCCESS = "OK";
     private final String FAIL = "false";
+
+    @GetMapping("/category/admin")
+    public ResponseEntity<ResponseDto> searchCategories() {
+        List<PlantCategorySearchResponseDto> collect = plantCategoryService.findPlantCategories()
+                .stream()
+                .map(pc -> new PlantCategorySearchResponseDto(pc.getName()))
+                .collect(Collectors.toList());
+        ResponseDto responseDto = new ResponseDto(SUCCESS);
+        responseDto.getData().put("categories", collect);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     @PostMapping("/category/admin")
     public ResponseEntity<PlantCategoryRegisterResponseDto> registerCategory(@RequestBody @Validated PlantCategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {

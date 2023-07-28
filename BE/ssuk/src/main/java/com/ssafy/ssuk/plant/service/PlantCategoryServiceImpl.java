@@ -32,7 +32,7 @@ public class PlantCategoryServiceImpl implements PlantCategoryService{
     }
 
     @Override
-    public List<PlantCategory> findPlantCategorys() {
+    public List<PlantCategory> findPlantCategories() {
         return plantCategoryRepository.findAll();
     }
 

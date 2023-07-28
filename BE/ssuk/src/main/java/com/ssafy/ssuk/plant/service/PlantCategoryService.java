@@ -10,7 +10,7 @@ public interface PlantCategoryService {
 
     public boolean updatePlantCategory(Integer categoryId, String updateName);
 
-    public List<PlantCategory> findPlantCategorys();
+    public List<PlantCategory> findPlantCategories();
 
     public PlantCategory findOneById(Integer categoryId);
 
