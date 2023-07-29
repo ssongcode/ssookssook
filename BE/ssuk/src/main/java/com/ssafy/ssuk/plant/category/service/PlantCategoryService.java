@@ -1,6 +1,6 @@
-package com.ssafy.ssuk.plant.service;
+package com.ssafy.ssuk.plant.category.service;
 
-import com.ssafy.ssuk.plant.PlantCategory;
+import com.ssafy.ssuk.plant.category.PlantCategory;
 
 import java.util.List;
 

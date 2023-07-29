@@ -1,6 +1,6 @@
-package com.ssafy.ssuk.plant.repository;
+package com.ssafy.ssuk.plant.category.repository;
 
-import com.ssafy.ssuk.plant.PlantCategory;
+import com.ssafy.ssuk.plant.category.PlantCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

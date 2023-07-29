@@ -1,8 +1,13 @@
 package com.ssafy.ssuk.plant.controller;
 
-import com.ssafy.ssuk.plant.PlantCategory;
+import com.ssafy.ssuk.plant.category.PlantCategory;
+import com.ssafy.ssuk.plant.category.dto.PlantCategoryRegisterRequestDto;
+import com.ssafy.ssuk.plant.category.dto.PlantCategoryRegisterResponseDto;
+import com.ssafy.ssuk.plant.category.dto.PlantCategorySearchResponseDto;
+import com.ssafy.ssuk.plant.category.dto.PlantCategoryUpdateRequestDto;
 import com.ssafy.ssuk.plant.dto.*;
-import com.ssafy.ssuk.plant.service.PlantCategoryService;
+import com.ssafy.ssuk.plant.category.service.PlantCategoryService;
+import com.ssafy.ssuk.plant.service.PlantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +26,7 @@ import java.util.stream.Collectors;
 public class PlantInfoController {
 
     private final PlantCategoryService plantCategoryService;
+    private final PlantService plantService;
 
     private final String SUCCESS = "OK";
     private final String FAIL = "false";
@@ -29,7 +35,7 @@ public class PlantInfoController {
     public ResponseEntity<ResponseDto> searchCategories() {
         List<PlantCategorySearchResponseDto> collect = plantCategoryService.findPlantCategories()
                 .stream()
-                .map(pc -> new PlantCategorySearchResponseDto(pc.getName()))
+                .map(pc -> new PlantCategorySearchResponseDto(pc.getId(), pc.getName()))
                 .collect(Collectors.toList());
         ResponseDto responseDto = new ResponseDto(SUCCESS);
         responseDto.getData().put("categories", collect);
@@ -53,8 +59,7 @@ public class PlantInfoController {
 
     @PutMapping("/category/admin")
     public ResponseEntity<ResponseDto> updateCategory(
-            @RequestBody @Validated
-            PlantCategoryUpdateRequestDto plantCategoryUpdateRequestDto,
+            @RequestBody @Validated PlantCategoryUpdateRequestDto plantCategoryUpdateRequestDto,
             BindingResult bindingResult) {
 
         if(bindingResult.hasErrors())
@@ -68,6 +73,21 @@ public class PlantInfoController {
 
         plantCategoryService.updatePlantCategory(id, updateName);
 
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
+
+    @PostMapping("/plant/admin")
+    public ResponseEntity<ResponseDto>  registerPlant(
+            @RequestBody @Validated PlantRegisterRequestDto plantRegisterRequestDto,
+            BindingResult bindingResult){
+        if(bindingResult.hasErrors())
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
+        PlantCategory category = plantCategoryService.findOneById(plantRegisterRequestDto.getCategoryId());
+        if(category == null)
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        // 이름 중복 검사를 안해도 되나..
+        plantService.savePlant(category, plantRegisterRequestDto);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
 }

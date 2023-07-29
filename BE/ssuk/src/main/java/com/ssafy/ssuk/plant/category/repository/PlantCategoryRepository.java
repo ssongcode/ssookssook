@@ -1,10 +1,9 @@
-package com.ssafy.ssuk.plant.repository;
+package com.ssafy.ssuk.plant.category.repository;
 
-import com.ssafy.ssuk.plant.PlantCategory;
+import com.ssafy.ssuk.plant.category.PlantCategory;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public interface PlantCategoryRepository {
     public void save(PlantCategory plantCategory);

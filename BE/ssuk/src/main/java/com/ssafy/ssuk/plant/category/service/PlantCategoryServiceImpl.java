@@ -1,7 +1,7 @@
-package com.ssafy.ssuk.plant.service;
+package com.ssafy.ssuk.plant.category.service;
 
-import com.ssafy.ssuk.plant.PlantCategory;
-import com.ssafy.ssuk.plant.repository.PlantCategoryRepository;
+import com.ssafy.ssuk.plant.category.PlantCategory;
+import com.ssafy.ssuk.plant.category.repository.PlantCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
