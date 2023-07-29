@@ -19,7 +19,7 @@ public class PlantSearchResponseDto {
     private Float tempMin;
     private Float moistureMax;
     private Float moistureMin;
-    private List<InfoSearchResponseDto> infos = new ArrayList<>();
+    private List<InfoSearchResponseDto> plantInfos = new ArrayList<>();
 
     public PlantSearchResponseDto(Plant plant) {
         plantId = plant.getId();
@@ -29,6 +29,6 @@ public class PlantSearchResponseDto {
         tempMin = plant.getTempMin();
         moistureMax = plant.getMoistureMax();
         moistureMin = plant.getMoistureMin();
-        infos = plant.getInfos().stream().map(pi -> new InfoSearchResponseDto(pi)).collect(Collectors.toList());
+        plantInfos = plant.getInfos().stream().map(pi -> new InfoSearchResponseDto(pi)).collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package com.ssafy.ssuk.plant.info;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
+import com.ssafy.ssuk.plant.info.dto.InfoUpdateRequestDto;
 import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,5 +48,14 @@ public class Info {
         this.characterName = infoRegisterRequestDto.getCharacterName();
         this.characterComment = infoRegisterRequestDto.getCharacterComment();
         this.characterImage = infoRegisterRequestDto.getCharacterImage();
+    }
+
+    public void modifyInfo(InfoUpdateRequestDto infoUpdateRequestDto) {
+        this.guide = infoUpdateRequestDto.getPlantGuide();
+        this.waterTerm = infoUpdateRequestDto.getWaterTerm();
+        this.waterAmount = infoUpdateRequestDto.getWaterAmount();
+        this.characterName = infoUpdateRequestDto.getCharacterName();
+        this.characterComment = infoUpdateRequestDto.getCharacterComment();
+        this.characterImage = infoUpdateRequestDto.getCharacterImage();
     }
 }

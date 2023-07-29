@@ -2,6 +2,7 @@ package com.ssafy.ssuk.plant.info.service;
 
 import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
+import com.ssafy.ssuk.plant.info.dto.InfoUpdateRequestDto;
 import com.ssafy.ssuk.plant.info.repository.InfoRepository;
 import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,21 @@ public class InfoServiceImpl implements InfoService {
     @Override
     public Info findOne(Integer plantId, Integer level) {
         return infoRepository.findOneById(plantId, level);
+    }
+
+    @Override
+    @Transactional
+    public boolean modifyInfo(InfoUpdateRequestDto infoUpdateRequestDto) {
+
+        Integer plantId = infoUpdateRequestDto.getPlantId();
+        Integer level = infoUpdateRequestDto.getLevel();
+
+        Info info = infoRepository.findOneById(plantId, level);
+
+        if(info == null)
+            return false;
+
+        info.modifyInfo(infoUpdateRequestDto);
+        return true;
     }
 }

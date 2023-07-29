@@ -2,6 +2,7 @@ package com.ssafy.ssuk.plant.info.service;
 
 import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
+import com.ssafy.ssuk.plant.info.dto.InfoUpdateRequestDto;
 import com.ssafy.ssuk.plant.plant.Plant;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface InfoService {
     List<Info> findAll(Integer plantId);
 
     Info findOne(Integer plantId, Integer level);
+
+    boolean modifyInfo(InfoUpdateRequestDto infoUpdateRequestDto);
 }

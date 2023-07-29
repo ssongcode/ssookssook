@@ -4,6 +4,7 @@ import com.ssafy.ssuk.plant.dto.ResponseDto;
 import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
 import com.ssafy.ssuk.plant.info.dto.InfoSearchResponseDto;
+import com.ssafy.ssuk.plant.info.dto.InfoUpdateRequestDto;
 import com.ssafy.ssuk.plant.info.service.InfoService;
 import com.ssafy.ssuk.plant.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
@@ -127,7 +128,7 @@ public class PlantInfoController {
     }
 
     @PutMapping("/plant/admin")
-    public ResponseEntity<ResponseDto> updateCategory(
+    public ResponseEntity<ResponseDto> updatePlant(
             @RequestBody @Validated PlantUpdateRequestDto plantUpdateRequestDto,
             BindingResult bindingResult) {
 
@@ -139,10 +140,10 @@ public class PlantInfoController {
         if(category == null)
             return new ResponseEntity<>(new ResponseDto("존재하지 않는 카테고리입니다."), HttpStatus.CONFLICT);
 
-        if(!plantService.modifyPlant(plantUpdateRequestDto, category))
-            return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
+        if(plantService.modifyPlant(plantUpdateRequestDto, category))
+            return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
 
-        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/info/{plantId}")
@@ -201,5 +202,19 @@ public class PlantInfoController {
 
         infoService.saveInfo(infoRegisterRequestDto, plant);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
+
+    @PutMapping("/info/admin")
+    public ResponseEntity<ResponseDto> updateInfo(
+            @RequestBody @Validated InfoUpdateRequestDto infoUpdateRequestDto,
+            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors())
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+
+        if(infoService.modifyInfo(infoUpdateRequestDto))
+            return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+
+        return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
     }
 }
