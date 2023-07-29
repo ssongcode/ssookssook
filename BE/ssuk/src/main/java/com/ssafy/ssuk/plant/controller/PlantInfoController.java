@@ -1,5 +1,6 @@
 package com.ssafy.ssuk.plant.controller;
 
+import com.ssafy.ssuk.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
 import com.ssafy.ssuk.plant.category.dto.CategoryRegisterRequestDto;
 import com.ssafy.ssuk.plant.category.dto.CategoryRegisterResponseDto;
@@ -89,6 +90,28 @@ public class PlantInfoController {
         // 이름 중복 검사를 안해도 되나..
         plantService.savePlant(category, plantRegisterRequestDto);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
+
+    @GetMapping("/plant/{plantId}")
+    public ResponseEntity<ResponseDto> searchPlant(@PathVariable Integer plantId) {
+        // 필요없을듯?
+//        if(plantId == null)
+//            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
+        Plant plant = plantService.findOneById(plantId);
+        if(plant == null)
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        PlantSearchResponseDto returnDto = new PlantSearchResponseDto(
+                plant.getName(),
+                plant.getCategory().getName(),
+                plant.getTempMax(),
+                plant.getTempMin(),
+                plant.getMoistureMax(),
+                plant.getMoistureMin()
+        );
+        ResponseDto responseDto = new ResponseDto(SUCCESS);
+        responseDto.getData().put("plants", returnDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping("/plant")
