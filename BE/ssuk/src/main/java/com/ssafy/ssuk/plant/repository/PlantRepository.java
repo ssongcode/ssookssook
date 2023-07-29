@@ -8,4 +8,6 @@ public interface PlantRepository {
     void save(Plant newPlant);
 
     List<Plant> findAll();
+
+    Plant findOneById(Integer id);
 }

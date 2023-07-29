@@ -1,6 +1,7 @@
 package com.ssafy.ssuk.plant;
 
 import com.ssafy.ssuk.plant.category.Category;
+import com.ssafy.ssuk.plant.dto.PlantUpdateRequestDto;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -37,5 +38,15 @@ public class Plant {
         this.tempMin = tempMin;
         this.moistureMax = moistureMax;
         this.moistureMin = moistureMin;
+    }
+
+    // 비즈니스 로직
+    public void updateInfo(PlantUpdateRequestDto plantUpdateRequestDto, Category category) {
+        this.category = category;
+        this.name = plantUpdateRequestDto.getPlantName();
+        this.tempMax = plantUpdateRequestDto.getTempMax();
+        this.tempMin = plantUpdateRequestDto.getTempMin();
+        this.moistureMax = plantUpdateRequestDto.getMoistureMax();
+        this.moistureMin = plantUpdateRequestDto.getMoistureMin();
     }
 }

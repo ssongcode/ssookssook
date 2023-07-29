@@ -3,6 +3,7 @@ package com.ssafy.ssuk.plant.service;
 import com.ssafy.ssuk.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
 import com.ssafy.ssuk.plant.dto.PlantRegisterRequestDto;
+import com.ssafy.ssuk.plant.dto.PlantUpdateRequestDto;
 import com.ssafy.ssuk.plant.repository.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,5 +35,21 @@ public class PlantServiceImpl implements PlantService{
     @Override
     public List<Plant> findPlants() {
         return plantRepository.findAll();
+    }
+
+    @Override
+    public Plant findOneById(Integer id) {
+        return plantRepository.findOneById(id);
+    }
+
+
+    @Override
+    @Transactional
+    public boolean modifyPlant(PlantUpdateRequestDto plantUpdateRequestDto, Category category) {
+        Plant plant = plantRepository.findOneById(plantUpdateRequestDto.getPlantId());
+        if(plant == null)
+            return false;
+        plant.updateInfo(plantUpdateRequestDto, category);
+        return true;
     }
 }

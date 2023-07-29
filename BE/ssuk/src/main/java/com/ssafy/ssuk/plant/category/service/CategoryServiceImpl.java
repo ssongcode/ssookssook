@@ -23,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public boolean updatePlantCategory(Integer categoryId, String updateName) {
+    public boolean modifyPlantCategory(Integer categoryId, String updateName) {
         Category plantCategory = plantCategoryRepository.findOneById(categoryId);
         if(plantCategory == null)
             return false;

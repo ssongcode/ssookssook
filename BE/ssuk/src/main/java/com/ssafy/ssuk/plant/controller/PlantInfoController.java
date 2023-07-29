@@ -1,6 +1,5 @@
 package com.ssafy.ssuk.plant.controller;
 
-import com.ssafy.ssuk.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
 import com.ssafy.ssuk.plant.category.dto.CategoryRegisterRequestDto;
 import com.ssafy.ssuk.plant.category.dto.CategoryRegisterResponseDto;
@@ -72,7 +71,7 @@ public class PlantInfoController {
         if(plantCategoryService.isDuplicateName(id, updateName))
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);
 
-        plantCategoryService.updatePlantCategory(id, updateName);
+        plantCategoryService.modifyPlantCategory(id, updateName);
 
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
@@ -108,5 +107,22 @@ public class PlantInfoController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @PutMapping("/plant/admin")
+    public ResponseEntity<ResponseDto> updateCategory(
+            @RequestBody @Validated PlantUpdateRequestDto plantUpdateRequestDto,
+            BindingResult bindingResult) {
 
+        if(bindingResult.hasErrors())
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
+        Category category = plantCategoryService.findOneById(plantUpdateRequestDto.getCategoryId());
+
+        if(category == null)
+            return new ResponseEntity<>(new ResponseDto("존재하지 않는 카테고리입니다."), HttpStatus.CONFLICT);
+
+        if(!plantService.modifyPlant(plantUpdateRequestDto, category))
+            return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
 }

@@ -8,7 +8,7 @@ public interface CategoryService {
 
     public void savePlantCategory(Category plantCategory);
 
-    public boolean updatePlantCategory(Integer categoryId, String updateName);
+    public boolean modifyPlantCategory(Integer categoryId, String updateName);
 
     public List<Category> findPlantCategories();
 

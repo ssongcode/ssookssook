@@ -23,4 +23,15 @@ public class PlantRepositoryImpl implements PlantRepository{
         return em.createQuery("select p from Plant p" +
                 " join fetch p.category pc", Plant.class).getResultList();
     }
+
+    @Override
+    public Plant findOneById(Integer id) {
+        List<Plant> result = em.createQuery("select p from Plant p" +
+                " join fetch p.category pc" +
+                " where p.id = :id", Plant.class)
+                .setParameter("id", id).getResultList();
+        if(result.isEmpty())
+            return null;
+        return result.get(0);
+    }
 }
