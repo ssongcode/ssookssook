@@ -102,6 +102,7 @@ public class PlantInfoController {
         if(plant == null)
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         PlantSearchResponseDto returnDto = new PlantSearchResponseDto(
+                plant.getId(),
                 plant.getName(),
                 plant.getCategory().getName(),
                 plant.getTempMax(),
@@ -119,6 +120,7 @@ public class PlantInfoController {
         List<PlantSearchResponseDto> collect = plantService.findPlants()
                 .stream()
                 .map(p -> new PlantSearchResponseDto(
+                        p.getId(),
                         p.getName(),
                         p.getCategory().getName(),
                         p.getTempMax(), p.getTempMin(),
