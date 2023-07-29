@@ -23,5 +23,7 @@ public class User {
     @Column(name = "USER_ID")
     private Integer id;
 
+    @Column(name = "USER_NICKNAME")
     private String name;
+
 }

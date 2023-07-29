@@ -42,8 +42,20 @@ public class PotController {
         Pot pot = potMapper.insertDtoToPot(potInsertDto);
 
         potService.save(pot);
-        return null;
+
+        return ResponseEntity.ok().build();
         //엔티티 변환
+    }
+
+    //화분 삭제
+    @PutMapping("")
+    public ResponseEntity<?> delete(@RequestBody PotInsertDto potInsertDto)
+    {
+        //Pot pot = potMapper.insertDtoToPot(potInsertDto);
+
+        potService.delete(potInsertDto);
+
+        return ResponseEntity.ok().build();
     }
 
 }

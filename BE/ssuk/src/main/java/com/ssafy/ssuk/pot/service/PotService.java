@@ -18,4 +18,5 @@ public interface PotService {
     //수정
 
     //삭제
+    void delete(PotInsertDto potInsertDto);
 }
