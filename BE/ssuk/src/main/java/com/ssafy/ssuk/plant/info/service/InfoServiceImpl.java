@@ -3,6 +3,7 @@ package com.ssafy.ssuk.plant.info.service;
 import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
 import com.ssafy.ssuk.plant.info.repository.InfoRepository;
+import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +24,8 @@ public class InfoServiceImpl implements InfoService {
 
     @Override
     @Transactional
-    public void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto) {
-        infoRepository.save(new Info(infoRegisterRequestDto));
+    public void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto, Plant plant) {
+        infoRepository.save(new Info(infoRegisterRequestDto, plant));
     }
 
     @Override

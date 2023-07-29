@@ -1,10 +1,15 @@
 package com.ssafy.ssuk.plant.info;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
+import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.ibatis.annotations.One;
 
 import javax.persistence.*;
+
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Table(name = "plant_info")
@@ -14,8 +19,10 @@ import javax.persistence.*;
 public class Info {
 
     @Id
-    @Column(name = "plant_id")
-    private Integer plantId;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "plant_id")
+    @JsonIgnore
+    private Plant plant;
     @Id
     private Integer level;
     @Column(name = "plant_guide")
@@ -31,8 +38,8 @@ public class Info {
     @Column(name = "character_image")
     private String characterImage;
 
-    public Info(InfoRegisterRequestDto infoRegisterRequestDto) {
-        this.plantId = infoRegisterRequestDto.getPlantId();
+    public Info(InfoRegisterRequestDto infoRegisterRequestDto, Plant plant) {
+        this.plant = plant;
         this.level = infoRegisterRequestDto.getLevel();
         this.guide = infoRegisterRequestDto.getPlantGuide();
         this.waterTerm = infoRegisterRequestDto.getWaterTerm();

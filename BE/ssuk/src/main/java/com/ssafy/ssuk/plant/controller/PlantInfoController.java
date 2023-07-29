@@ -1,5 +1,6 @@
 package com.ssafy.ssuk.plant.controller;
 
+import com.ssafy.ssuk.plant.dto.ResponseDto;
 import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
 import com.ssafy.ssuk.plant.info.dto.InfoSearchResponseDto;
@@ -13,7 +14,6 @@ import com.ssafy.ssuk.plant.category.dto.CategoryUpdateRequestDto;
 import com.ssafy.ssuk.plant.plant.dto.PlantRegisterRequestDto;
 import com.ssafy.ssuk.plant.plant.dto.PlantSearchResponseDto;
 import com.ssafy.ssuk.plant.plant.dto.PlantUpdateRequestDto;
-import com.ssafy.ssuk.plant.plant.dto.ResponseDto;
 import com.ssafy.ssuk.plant.category.service.CategoryService;
 import com.ssafy.ssuk.plant.plant.service.PlantService;
 import lombok.RequiredArgsConstructor;
@@ -199,7 +199,7 @@ public class PlantInfoController {
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);
         }
 
-        infoService.saveInfo(infoRegisterRequestDto);
+        infoService.saveInfo(infoRegisterRequestDto, plant);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
 }

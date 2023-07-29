@@ -1,11 +1,15 @@
 package com.ssafy.ssuk.plant.plant;
 
 import com.ssafy.ssuk.plant.category.Category;
+import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.plant.dto.PlantUpdateRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.*;
 
@@ -30,6 +34,8 @@ public class Plant {
     private Float moistureMax;
     @Column(name = "moisture_min")
     private Float moistureMin;
+    @OneToMany(mappedBy = "plant", cascade = CascadeType.ALL)
+    private List<Info> infos = new ArrayList<>();
 
     public Plant(Category plantCategory, String name, Float tempMax, Float tempMin, Float moistureMax, Float moistureMin) {
         this.category = plantCategory;

@@ -1,7 +1,13 @@
 package com.ssafy.ssuk.plant.plant.dto;
 
+import com.ssafy.ssuk.plant.info.Info;
+import com.ssafy.ssuk.plant.info.dto.InfoSearchResponseDto;
 import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class PlantSearchResponseDto {
@@ -13,6 +19,7 @@ public class PlantSearchResponseDto {
     private Float tempMin;
     private Float moistureMax;
     private Float moistureMin;
+    private List<InfoSearchResponseDto> infos = new ArrayList<>();
 
     public PlantSearchResponseDto(Plant plant) {
         plantId = plant.getId();
@@ -22,5 +29,6 @@ public class PlantSearchResponseDto {
         tempMin = plant.getTempMin();
         moistureMax = plant.getMoistureMax();
         moistureMin = plant.getMoistureMin();
+        infos = plant.getInfos().stream().map(pi -> new InfoSearchResponseDto(pi)).collect(Collectors.toList());
     }
 }

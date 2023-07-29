@@ -18,7 +18,7 @@ public class InfoRepositoryImpl implements InfoRepository {
     public Info findOneById(Integer plantId, Integer level) {
         System.out.println("plantId = " + plantId);
         System.out.println("level = " + level);
-        List<Info> resultList = em.createQuery("select pi from Info pi where pi.plantId = :plantId and pi.level = :level", Info.class)
+        List<Info> resultList = em.createQuery("select pi from Info pi where pi.plant.id = :plantId and pi.level = :level", Info.class)
                 .setParameter("plantId", plantId)
                 .setParameter("level", level)
                 .getResultList();
@@ -34,7 +34,7 @@ public class InfoRepositoryImpl implements InfoRepository {
 
     @Override
     public List<Info> findAll(Integer plantId) {
-        return em.createQuery("select pi from Info pi where pi.plantId=:plantId", Info.class)
+        return em.createQuery("select pi from Info pi where pi.plant.id=:plantId", Info.class)
                 .setParameter("plantId", plantId).getResultList();
     }
 }

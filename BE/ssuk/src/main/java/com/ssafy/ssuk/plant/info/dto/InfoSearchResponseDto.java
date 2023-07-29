@@ -8,7 +8,6 @@ import javax.persistence.Id;
 
 @Data
 public class InfoSearchResponseDto {
-    private Integer plantId;
     private Integer level;
     private String guide;
     private Integer waterTerm;
@@ -18,7 +17,6 @@ public class InfoSearchResponseDto {
     private String characterImage;
 
     public InfoSearchResponseDto(Info info) {
-        this.plantId = info.getPlantId();
         this.level = info.getLevel();
         this.guide = info.getGuide();
         this.waterTerm = info.getWaterTerm();

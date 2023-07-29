@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InfoId implements Serializable {
-    private Integer plantId;
+    private Integer plant;
 
     private Integer level;
 }
