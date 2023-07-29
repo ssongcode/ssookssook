@@ -22,7 +22,6 @@ public class Info {
     @Id
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "plant_id")
-    @JsonIgnore
     private Plant plant;
     @Id
     private Integer level;

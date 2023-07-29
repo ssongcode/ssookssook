@@ -1,7 +1,9 @@
 package com.ssafy.ssuk.plant.category.service;
 
 import com.ssafy.ssuk.plant.category.Category;
+import com.ssafy.ssuk.plant.category.repository.CategoryQueryRepository;
 import com.ssafy.ssuk.plant.category.repository.CategoryRepository;
+import com.ssafy.ssuk.plant.dto.TotalCategoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,18 +15,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository plantCategoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final CategoryQueryRepository categoryQueryRepository;
 
     @Override
     @Transactional
     public void savePlantCategory(Category plantCategory) {
-        plantCategoryRepository.save(plantCategory);
+        categoryRepository.save(plantCategory);
     }
 
     @Override
     @Transactional
     public boolean modifyPlantCategory(Integer categoryId, String updateName) {
-        Category plantCategory = plantCategoryRepository.findOneById(categoryId);
+        Category plantCategory = categoryRepository.findOneById(categoryId);
         if(plantCategory == null)
             return false;
         plantCategory.setName(updateName);
@@ -33,21 +36,31 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> findPlantCategories() {
-        return plantCategoryRepository.findAll();
+        return categoryRepository.findAll();
     }
 
     @Override
     public Category findOneById(Integer categoryId) {
-        return plantCategoryRepository.findOneById(categoryId);
+        return categoryRepository.findOneById(categoryId);
     }
 
     @Override
     public boolean isDuplicateName(String name) {
-        return !plantCategoryRepository.findAllByName(name).isEmpty();
+        return !categoryRepository.findAllByName(name).isEmpty();
     }
 
     @Override
     public boolean isDuplicateName(Integer id, String name) {
-        return !plantCategoryRepository.findAllByNameExceptId(id, name).isEmpty();
+        return !categoryRepository.findAllByNameExceptId(id, name).isEmpty();
+    }
+
+    @Override
+    public List<TotalCategoryResponseDto> findTotalInfo() {
+        return categoryQueryRepository.findTotalInfo();
+    }
+
+    @Override
+    public List<TotalCategoryResponseDto> findTotalInfo(List<Integer> categoryIds) {
+        return categoryQueryRepository.findTotalInfo(categoryIds);
     }
 }

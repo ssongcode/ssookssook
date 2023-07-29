@@ -19,7 +19,6 @@ public class Category {
     private Integer id;
     @Column(name = "category_name")
     private String name;
-    @JsonIgnore // 양방향 연관관계가 있으면 둘 중하나는 JsonIgnore 해줘야 함
     @OneToMany(mappedBy = "category")
     private List<Plant> plants = new ArrayList<>();
 

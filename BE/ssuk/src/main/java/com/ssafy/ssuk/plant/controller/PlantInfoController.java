@@ -1,6 +1,8 @@
 package com.ssafy.ssuk.plant.controller;
 
 import com.ssafy.ssuk.plant.dto.ResponseDto;
+import com.ssafy.ssuk.plant.dto.TotalCategoryRequestDto;
+import com.ssafy.ssuk.plant.dto.TotalCategoryResponseDto;
 import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
 import com.ssafy.ssuk.plant.info.dto.InfoSearchResponseDto;
@@ -9,7 +11,6 @@ import com.ssafy.ssuk.plant.info.service.InfoService;
 import com.ssafy.ssuk.plant.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
 import com.ssafy.ssuk.plant.category.dto.CategoryRegisterRequestDto;
-import com.ssafy.ssuk.plant.category.dto.CategoryRegisterResponseDto;
 import com.ssafy.ssuk.plant.category.dto.CategorySearchResponseDto;
 import com.ssafy.ssuk.plant.category.dto.CategoryUpdateRequestDto;
 import com.ssafy.ssuk.plant.plant.dto.PlantRegisterRequestDto;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("plantinfo")
+@RequestMapping("/plantinfo")
 @RequiredArgsConstructor
 @Slf4j
 public class PlantInfoController {
@@ -47,24 +48,22 @@ public class PlantInfoController {
                 .stream()
                 .map(pc -> new CategorySearchResponseDto(pc.getId(), pc.getName()))
                 .collect(Collectors.toList());
-        ResponseDto responseDto = new ResponseDto(SUCCESS);
-        responseDto.getData().put("categories", collect);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "categories", collect), HttpStatus.OK);
     }
 
     @PostMapping("/category/admin")
-    public ResponseEntity<CategoryRegisterResponseDto> registerCategory(@RequestBody @Validated CategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<ResponseDto> registerCategory(@RequestBody @Validated CategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
-            return new ResponseEntity<>(new CategoryRegisterResponseDto("입력 확인"), HttpStatus.CONFLICT);   // 수정해야함 코드
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.CONFLICT);   // 수정해야함 코드
         }
 
         String name = plantCategoryRegisterRequestDto.getCategoryName();
         log.debug("name={}", name);
         if(plantCategoryService.isDuplicateName(name)) {
-            return new ResponseEntity<>(new CategoryRegisterResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
         }
         plantCategoryService.savePlantCategory(new Category(name));
-        return new ResponseEntity<>(new CategoryRegisterResponseDto(SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
 
     @PutMapping("/category/admin")
@@ -111,9 +110,7 @@ public class PlantInfoController {
         if(plant == null)
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         PlantSearchResponseDto returnDto = new PlantSearchResponseDto(plant);
-        ResponseDto responseDto = new ResponseDto(SUCCESS);
-        responseDto.getData().put("plant", returnDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plant", returnDto), HttpStatus.OK);
     }
 
     @GetMapping("/plant")
@@ -122,9 +119,7 @@ public class PlantInfoController {
                 .stream()
                 .map(p -> new PlantSearchResponseDto(p))
                 .collect(Collectors.toList());
-        ResponseDto responseDto = new ResponseDto(SUCCESS);
-        responseDto.getData().put("plants", collect);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plants", collect), HttpStatus.OK);
     }
 
     @PutMapping("/plant/admin")
@@ -159,9 +154,7 @@ public class PlantInfoController {
                 .stream()
                 .map(i -> new InfoSearchResponseDto(i))
                 .collect(Collectors.toList());
-        ResponseDto responseDto = new ResponseDto(SUCCESS);
-        responseDto.getData().put("plantInfos", collect);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plantInfos", collect), HttpStatus.OK);
     }
 
     @GetMapping("/info/{plantId}/{level}")
@@ -174,9 +167,7 @@ public class PlantInfoController {
         if(plant == null)
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         Info info = infoService.findOne(plantId, level);
-        ResponseDto responseDto = new ResponseDto(SUCCESS);
-        responseDto.getData().put("plantInfo", info);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plantInfo", new InfoSearchResponseDto(info)), HttpStatus.OK);
     }
 
     @PostMapping("/info/admin")
@@ -216,5 +207,22 @@ public class PlantInfoController {
             return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
 
         return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseDto> searchTotalInfo() {
+        log.debug("왜안됨..");
+        List<TotalCategoryResponseDto> result = plantCategoryService.findTotalInfo();
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "categories", result), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<ResponseDto> searchTotalInfo(@RequestBody @Validated TotalCategoryRequestDto totalCategoryRequestDto, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+        }
+
+        List<TotalCategoryResponseDto> result = plantCategoryService.findTotalInfo(totalCategoryRequestDto.getCategoryIds());
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "categories", result), HttpStatus.OK);
     }
 }
