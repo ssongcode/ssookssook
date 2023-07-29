@@ -31,4 +31,9 @@ public class InfoServiceImpl implements InfoService {
     public List<Info> findAll(Integer plantId) {
         return infoRepository.findAll(plantId);
     }
+
+    @Override
+    public Info findOne(Integer plantId, Integer level) {
+        return infoRepository.findOneById(plantId, level);
+    }
 }

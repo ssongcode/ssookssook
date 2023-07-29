@@ -111,7 +111,7 @@ public class PlantInfoController {
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         PlantSearchResponseDto returnDto = new PlantSearchResponseDto(plant);
         ResponseDto responseDto = new ResponseDto(SUCCESS);
-        responseDto.getData().put("plants", returnDto);
+        responseDto.getData().put("plant", returnDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -159,7 +159,22 @@ public class PlantInfoController {
                 .map(i -> new InfoSearchResponseDto(i))
                 .collect(Collectors.toList());
         ResponseDto responseDto = new ResponseDto(SUCCESS);
-        responseDto.getData().put("plants", collect);
+        responseDto.getData().put("plantInfos", collect);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/info/{plantId}/{level}")
+    public ResponseEntity<ResponseDto> searchInfo(@PathVariable Integer plantId, @PathVariable Integer level) {
+        // 필요없을듯?
+//        if(plantId == null)
+//            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
+        Plant plant = plantService.findOneById(plantId);
+        if(plant == null)
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        Info info = infoService.findOne(plantId, level);
+        ResponseDto responseDto = new ResponseDto(SUCCESS);
+        responseDto.getData().put("plantInfo", info);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

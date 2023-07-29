@@ -11,4 +11,6 @@ public interface InfoService {
     void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto);
 
     List<Info> findAll(Integer plantId);
+
+    Info findOne(Integer plantId, Integer level);
 }
