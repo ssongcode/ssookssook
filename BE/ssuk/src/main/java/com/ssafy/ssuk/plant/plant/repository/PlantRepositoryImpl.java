@@ -28,7 +28,7 @@ public class PlantRepositoryImpl implements PlantRepository{
      */
     @Override
     public List<Plant> findAll() {
-        return em.createQuery("select p from Plant p" +
+        return em.createQuery("select distinct p from Plant p" +
                 " join fetch p.category pc" +
                 " join fetch p.infos pi", Plant.class).getResultList();
     }
@@ -38,7 +38,7 @@ public class PlantRepositoryImpl implements PlantRepository{
      */
     @Override
     public Plant findOneById(Integer id) {
-        List<Plant> result = em.createQuery("select p from Plant p" +
+        List<Plant> result = em.createQuery("select distinct p from Plant p" +
                         " join fetch p.category pc" +
                         " join fetch p.infos pi" +
                         " where p.id = :id", Plant.class)
