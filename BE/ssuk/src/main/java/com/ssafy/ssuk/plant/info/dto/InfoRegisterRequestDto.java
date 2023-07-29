@@ -16,8 +16,10 @@ public class InfoRegisterRequestDto {
     @NotBlank
     private String plantGuide;
     @NotNull
+    @Range(min = 1, max = 100)
     private Integer waterTerm;
     @NotNull
+    @Range(min = 1, max = 1000)
     private Integer waterAmount;
     @NotBlank
     private String characterName;

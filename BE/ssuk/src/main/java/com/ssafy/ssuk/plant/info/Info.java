@@ -1,6 +1,7 @@
 package com.ssafy.ssuk.plant.info;
 
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "plant_info")
 @IdClass(InfoId.class)
 @NoArgsConstructor
+@Getter
 public class Info {
 
     @Id

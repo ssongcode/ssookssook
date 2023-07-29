@@ -1,5 +1,6 @@
 package com.ssafy.ssuk.plant.plant.dto;
 
+import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.Data;
 
 @Data
@@ -13,13 +14,13 @@ public class PlantSearchResponseDto {
     private Float moistureMax;
     private Float moistureMin;
 
-    public PlantSearchResponseDto(Integer plantId, String plantName, String categoryName, Float tempMax, Float tempMin, Float moistureMax, Float moistureMin) {
-        this.plantId = plantId;
-        this.plantName = plantName;
-        this.categoryName = categoryName;
-        this.tempMax = tempMax;
-        this.tempMin = tempMin;
-        this.moistureMax = moistureMax;
-        this.moistureMin = moistureMin;
+    public PlantSearchResponseDto(Plant plant) {
+        plantId = plant.getId();
+        plantName = plant.getName();
+        categoryName = plant.getCategory().getName();
+        tempMax = plant.getTempMax();
+        tempMin = plant.getTempMin();
+        moistureMax = plant.getMoistureMax();
+        moistureMin = plant.getMoistureMin();
     }
 }

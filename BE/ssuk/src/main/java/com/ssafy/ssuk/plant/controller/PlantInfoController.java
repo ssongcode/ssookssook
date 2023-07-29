@@ -1,6 +1,8 @@
 package com.ssafy.ssuk.plant.controller;
 
+import com.ssafy.ssuk.plant.info.Info;
 import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
+import com.ssafy.ssuk.plant.info.dto.InfoSearchResponseDto;
 import com.ssafy.ssuk.plant.info.service.InfoService;
 import com.ssafy.ssuk.plant.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
@@ -107,15 +109,7 @@ public class PlantInfoController {
         Plant plant = plantService.findOneById(plantId);
         if(plant == null)
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
-        PlantSearchResponseDto returnDto = new PlantSearchResponseDto(
-                plant.getId(),
-                plant.getName(),
-                plant.getCategory().getName(),
-                plant.getTempMax(),
-                plant.getTempMin(),
-                plant.getMoistureMax(),
-                plant.getMoistureMin()
-        );
+        PlantSearchResponseDto returnDto = new PlantSearchResponseDto(plant);
         ResponseDto responseDto = new ResponseDto(SUCCESS);
         responseDto.getData().put("plants", returnDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -125,13 +119,7 @@ public class PlantInfoController {
     public ResponseEntity<ResponseDto> searchPlants() {
         List<PlantSearchResponseDto> collect = plantService.findPlants()
                 .stream()
-                .map(p -> new PlantSearchResponseDto(
-                        p.getId(),
-                        p.getName(),
-                        p.getCategory().getName(),
-                        p.getTempMax(), p.getTempMin(),
-                        p.getMoistureMax(),
-                        p.getMoistureMin()))
+                .map(p -> new PlantSearchResponseDto(p))
                 .collect(Collectors.toList());
         ResponseDto responseDto = new ResponseDto(SUCCESS);
         responseDto.getData().put("plants", collect);
@@ -155,6 +143,24 @@ public class PlantInfoController {
             return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
+
+    @GetMapping("/info/{plantId}")
+    public ResponseEntity<ResponseDto> searchInfos(@PathVariable Integer plantId) {
+        // 필요없을듯?
+//        if(plantId == null)
+//            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
+        Plant plant = plantService.findOneById(plantId);
+        if(plant == null)
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        List<InfoSearchResponseDto> collect = infoService.findAll(plantId)
+                .stream()
+                .map(i -> new InfoSearchResponseDto(i))
+                .collect(Collectors.toList());
+        ResponseDto responseDto = new ResponseDto(SUCCESS);
+        responseDto.getData().put("plants", collect);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PostMapping("/info/admin")

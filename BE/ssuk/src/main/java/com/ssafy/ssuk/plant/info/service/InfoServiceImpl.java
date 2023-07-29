@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -23,5 +25,10 @@ public class InfoServiceImpl implements InfoService {
     @Transactional
     public void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto) {
         infoRepository.save(new Info(infoRegisterRequestDto));
+    }
+
+    @Override
+    public List<Info> findAll(Integer plantId) {
+        return infoRepository.findAll(plantId);
     }
 }

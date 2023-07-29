@@ -31,4 +31,10 @@ public class InfoRepositoryImpl implements InfoRepository {
     public void save(Info info) {
         em.persist(info);
     }
+
+    @Override
+    public List<Info> findAll(Integer plantId) {
+        return em.createQuery("select pi from Info pi where pi.plantId=:plantId", Info.class)
+                .setParameter("plantId", plantId).getResultList();
+    }
 }
