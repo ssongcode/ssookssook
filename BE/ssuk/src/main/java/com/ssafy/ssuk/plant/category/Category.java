@@ -1,9 +1,9 @@
 package com.ssafy.ssuk.plant.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ssafy.ssuk.plant.Plant;
+import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "plant_category")
-@Getter @Setter
+@Getter
+@NoArgsConstructor  // 디폴트 생성자(한줄로 대체하는게 깔끔해보여서 써봤음)
 public class Category {
     @Id @GeneratedValue
     @Column(name = "category_id")
@@ -26,7 +27,11 @@ public class Category {
         this.name = name;
     }
 
-    public Category() {
-
+    /**
+     * name만 수정하면 돼서 setter만들어 줌
+     * 만약 column이 더 많았다면 modifyCategory(컬럼1, 컬럼2, ...) 이런식으로 했을듯
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 }

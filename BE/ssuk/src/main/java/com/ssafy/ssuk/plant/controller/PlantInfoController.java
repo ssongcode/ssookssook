@@ -1,14 +1,19 @@
 package com.ssafy.ssuk.plant.controller;
 
-import com.ssafy.ssuk.plant.Plant;
+import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
+import com.ssafy.ssuk.plant.info.service.InfoService;
+import com.ssafy.ssuk.plant.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
 import com.ssafy.ssuk.plant.category.dto.CategoryRegisterRequestDto;
 import com.ssafy.ssuk.plant.category.dto.CategoryRegisterResponseDto;
 import com.ssafy.ssuk.plant.category.dto.CategorySearchResponseDto;
 import com.ssafy.ssuk.plant.category.dto.CategoryUpdateRequestDto;
-import com.ssafy.ssuk.plant.dto.*;
+import com.ssafy.ssuk.plant.plant.dto.PlantRegisterRequestDto;
+import com.ssafy.ssuk.plant.plant.dto.PlantSearchResponseDto;
+import com.ssafy.ssuk.plant.plant.dto.PlantUpdateRequestDto;
+import com.ssafy.ssuk.plant.plant.dto.ResponseDto;
 import com.ssafy.ssuk.plant.category.service.CategoryService;
-import com.ssafy.ssuk.plant.service.PlantService;
+import com.ssafy.ssuk.plant.plant.service.PlantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,6 +33,7 @@ public class PlantInfoController {
 
     private final CategoryService plantCategoryService;
     private final PlantService plantService;
+    private final InfoService infoService;
 
     private final String SUCCESS = "OK";
     private final String FAIL = "false";
@@ -46,7 +52,7 @@ public class PlantInfoController {
     @PostMapping("/category/admin")
     public ResponseEntity<CategoryRegisterResponseDto> registerCategory(@RequestBody @Validated CategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
-            return new ResponseEntity<>(new CategoryRegisterResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
+            return new ResponseEntity<>(new CategoryRegisterResponseDto("입력 확인"), HttpStatus.CONFLICT);   // 수정해야함 코드
         }
 
         String name = plantCategoryRegisterRequestDto.getCategoryName();
@@ -64,7 +70,7 @@ public class PlantInfoController {
             BindingResult bindingResult) {
 
         if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
 
         Integer id = plantCategoryUpdateRequestDto.getCategoryId();
         String updateName = plantCategoryUpdateRequestDto.getUpdateName();
@@ -82,7 +88,7 @@ public class PlantInfoController {
             @RequestBody @Validated PlantRegisterRequestDto plantRegisterRequestDto,
             BindingResult bindingResult){
         if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
 
         Category category = plantCategoryService.findOneById(plantRegisterRequestDto.getCategoryId());
         if(category == null)
@@ -138,7 +144,7 @@ public class PlantInfoController {
             BindingResult bindingResult) {
 
         if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
 
         Category category = plantCategoryService.findOneById(plantUpdateRequestDto.getCategoryId());
 
@@ -148,6 +154,31 @@ public class PlantInfoController {
         if(!plantService.modifyPlant(plantUpdateRequestDto, category))
             return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
 
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
+
+    @PostMapping("/info/admin")
+    public ResponseEntity<ResponseDto>  registerPlantInfo(
+            @RequestBody @Validated InfoRegisterRequestDto infoRegisterRequestDto,
+            BindingResult bindingResult){
+        if(bindingResult.hasErrors())
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+
+
+        Integer plantId = infoRegisterRequestDto.getPlantId();
+        Integer level = infoRegisterRequestDto.getLevel();
+
+
+        Plant plant = plantService.findOneById(plantId);
+        if(plant == null) {
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        }
+
+        if(infoService.isDuplicated(plantId, level)){
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);
+        }
+
+        infoService.saveInfo(infoRegisterRequestDto);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
 }

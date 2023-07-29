@@ -1,10 +1,10 @@
-package com.ssafy.ssuk.plant.service;
+package com.ssafy.ssuk.plant.plant.service;
 
-import com.ssafy.ssuk.plant.Plant;
+import com.ssafy.ssuk.plant.plant.Plant;
 import com.ssafy.ssuk.plant.category.Category;
-import com.ssafy.ssuk.plant.dto.PlantRegisterRequestDto;
-import com.ssafy.ssuk.plant.dto.PlantUpdateRequestDto;
-import com.ssafy.ssuk.plant.repository.PlantRepository;
+import com.ssafy.ssuk.plant.plant.dto.PlantRegisterRequestDto;
+import com.ssafy.ssuk.plant.plant.dto.PlantUpdateRequestDto;
+import com.ssafy.ssuk.plant.plant.repository.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

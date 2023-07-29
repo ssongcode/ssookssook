@@ -1,6 +1,6 @@
-package com.ssafy.ssuk.plant.repository;
+package com.ssafy.ssuk.plant.plant.repository;
 
-import com.ssafy.ssuk.plant.Plant;
+import com.ssafy.ssuk.plant.plant.Plant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -27,8 +27,8 @@ public class PlantRepositoryImpl implements PlantRepository{
     @Override
     public Plant findOneById(Integer id) {
         List<Plant> result = em.createQuery("select p from Plant p" +
-                " join fetch p.category pc" +
-                " where p.id = :id", Plant.class)
+                        " join fetch p.category pc" +
+                        " where p.id = :id", Plant.class)
                 .setParameter("id", id).getResultList();
         if(result.isEmpty())
             return null;

@@ -1,13 +1,14 @@
-package com.ssafy.ssuk.plant.dto;
+package com.ssafy.ssuk.plant.plant.dto;
 
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class PlantRegisterRequestDto {
+public class PlantUpdateRequestDto {
+    @NotNull
+    private Integer plantId;
     @NotNull
     private Integer categoryId;
     @NotBlank

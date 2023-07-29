@@ -1,4 +1,4 @@
-package com.ssafy.ssuk.plant.dto;
+package com.ssafy.ssuk.plant.plant.dto;
 
 import lombok.Data;
 

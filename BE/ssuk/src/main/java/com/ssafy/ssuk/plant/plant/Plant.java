@@ -1,8 +1,9 @@
-package com.ssafy.ssuk.plant;
+package com.ssafy.ssuk.plant.plant;
 
 import com.ssafy.ssuk.plant.category.Category;
-import com.ssafy.ssuk.plant.dto.PlantUpdateRequestDto;
+import com.ssafy.ssuk.plant.plant.dto.PlantUpdateRequestDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -10,6 +11,8 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
+@Table(name = "plant")
+@NoArgsConstructor  // 디폴트 생성자(한줄로 대체하는게 깔끔해보여서 써봤음)
 public class Plant {
     @Id @GeneratedValue
     @Column(name = "plant_id")
@@ -27,9 +30,6 @@ public class Plant {
     private Float moistureMax;
     @Column(name = "moisture_min")
     private Float moistureMin;
-
-    public Plant() {
-    }
 
     public Plant(Category plantCategory, String name, Float tempMax, Float tempMin, Float moistureMax, Float moistureMin) {
         this.category = plantCategory;
