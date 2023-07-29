@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class PlantCategoryUpdateRequestDto {
+public class CategoryUpdateRequestDto {
     @NotNull
     private Integer categoryId;
 

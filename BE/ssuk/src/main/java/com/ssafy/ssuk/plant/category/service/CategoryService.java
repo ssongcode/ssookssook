@@ -1,18 +1,18 @@
 package com.ssafy.ssuk.plant.category.service;
 
-import com.ssafy.ssuk.plant.category.PlantCategory;
+import com.ssafy.ssuk.plant.category.Category;
 
 import java.util.List;
 
-public interface PlantCategoryService {
+public interface CategoryService {
 
-    public void savePlantCategory(PlantCategory plantCategory);
+    public void savePlantCategory(Category plantCategory);
 
     public boolean updatePlantCategory(Integer categoryId, String updateName);
 
-    public List<PlantCategory> findPlantCategories();
+    public List<Category> findPlantCategories();
 
-    public PlantCategory findOneById(Integer categoryId);
+    public Category findOneById(Integer categoryId);
 
     public boolean isDuplicateName(String name);
 

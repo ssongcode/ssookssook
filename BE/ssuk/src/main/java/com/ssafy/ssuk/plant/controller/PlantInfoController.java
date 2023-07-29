@@ -1,12 +1,13 @@
 package com.ssafy.ssuk.plant.controller;
 
-import com.ssafy.ssuk.plant.category.PlantCategory;
-import com.ssafy.ssuk.plant.category.dto.PlantCategoryRegisterRequestDto;
-import com.ssafy.ssuk.plant.category.dto.PlantCategoryRegisterResponseDto;
-import com.ssafy.ssuk.plant.category.dto.PlantCategorySearchResponseDto;
-import com.ssafy.ssuk.plant.category.dto.PlantCategoryUpdateRequestDto;
+import com.ssafy.ssuk.plant.Plant;
+import com.ssafy.ssuk.plant.category.Category;
+import com.ssafy.ssuk.plant.category.dto.CategoryRegisterRequestDto;
+import com.ssafy.ssuk.plant.category.dto.CategoryRegisterResponseDto;
+import com.ssafy.ssuk.plant.category.dto.CategorySearchResponseDto;
+import com.ssafy.ssuk.plant.category.dto.CategoryUpdateRequestDto;
 import com.ssafy.ssuk.plant.dto.*;
-import com.ssafy.ssuk.plant.category.service.PlantCategoryService;
+import com.ssafy.ssuk.plant.category.service.CategoryService;
 import com.ssafy.ssuk.plant.service.PlantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +26,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PlantInfoController {
 
-    private final PlantCategoryService plantCategoryService;
+    private final CategoryService plantCategoryService;
     private final PlantService plantService;
 
     private final String SUCCESS = "OK";
     private final String FAIL = "false";
 
-    @GetMapping("/category/admin")
+    @GetMapping("/category")
     public ResponseEntity<ResponseDto> searchCategories() {
-        List<PlantCategorySearchResponseDto> collect = plantCategoryService.findPlantCategories()
+        List<CategorySearchResponseDto> collect = plantCategoryService.findPlantCategories()
                 .stream()
-                .map(pc -> new PlantCategorySearchResponseDto(pc.getId(), pc.getName()))
+                .map(pc -> new CategorySearchResponseDto(pc.getId(), pc.getName()))
                 .collect(Collectors.toList());
         ResponseDto responseDto = new ResponseDto(SUCCESS);
         responseDto.getData().put("categories", collect);
@@ -43,23 +44,23 @@ public class PlantInfoController {
     }
 
     @PostMapping("/category/admin")
-    public ResponseEntity<PlantCategoryRegisterResponseDto> registerCategory(@RequestBody @Validated PlantCategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<CategoryRegisterResponseDto> registerCategory(@RequestBody @Validated CategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
-            return new ResponseEntity<>(new PlantCategoryRegisterResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
+            return new ResponseEntity<>(new CategoryRegisterResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
         }
 
         String name = plantCategoryRegisterRequestDto.getCategoryName();
         log.debug("name={}", name);
         if(plantCategoryService.isDuplicateName(name)) {
-            return new ResponseEntity<>(new PlantCategoryRegisterResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
+            return new ResponseEntity<>(new CategoryRegisterResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
         }
-        plantCategoryService.savePlantCategory(new PlantCategory(name));
-        return new ResponseEntity<>(new PlantCategoryRegisterResponseDto(SUCCESS), HttpStatus.OK);
+        plantCategoryService.savePlantCategory(new Category(name));
+        return new ResponseEntity<>(new CategoryRegisterResponseDto(SUCCESS), HttpStatus.OK);
     }
 
     @PutMapping("/category/admin")
     public ResponseEntity<ResponseDto> updateCategory(
-            @RequestBody @Validated PlantCategoryUpdateRequestDto plantCategoryUpdateRequestDto,
+            @RequestBody @Validated CategoryUpdateRequestDto plantCategoryUpdateRequestDto,
             BindingResult bindingResult) {
 
         if(bindingResult.hasErrors())
@@ -83,11 +84,29 @@ public class PlantInfoController {
         if(bindingResult.hasErrors())
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
 
-        PlantCategory category = plantCategoryService.findOneById(plantRegisterRequestDto.getCategoryId());
+        Category category = plantCategoryService.findOneById(plantRegisterRequestDto.getCategoryId());
         if(category == null)
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         // 이름 중복 검사를 안해도 되나..
         plantService.savePlant(category, plantRegisterRequestDto);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
+
+    @GetMapping("/plant")
+    public ResponseEntity<ResponseDto> searchPlants() {
+        List<PlantSearchResponseDto> collect = plantService.findPlants()
+                .stream()
+                .map(p -> new PlantSearchResponseDto(
+                        p.getName(),
+                        p.getCategory().getName(),
+                        p.getTempMax(), p.getTempMin(),
+                        p.getMoistureMax(),
+                        p.getMoistureMin()))
+                .collect(Collectors.toList());
+        ResponseDto responseDto = new ResponseDto(SUCCESS);
+        responseDto.getData().put("plants", collect);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+
 }

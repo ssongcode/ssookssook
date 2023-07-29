@@ -12,21 +12,21 @@ import java.util.List;
 @Entity
 @Table(name = "plant_category")
 @Getter @Setter
-public class PlantCategory {
+public class Category {
     @Id @GeneratedValue
     @Column(name = "category_id")
     private Integer id;
     @Column(name = "category_name")
     private String name;
     @JsonIgnore // 양방향 연관관계가 있으면 둘 중하나는 JsonIgnore 해줘야 함
-    @OneToMany(mappedBy = "plantCategory")
+    @OneToMany(mappedBy = "category")
     private List<Plant> plants = new ArrayList<>();
 
-    public PlantCategory(String name) {
+    public Category(String name) {
         this.name = name;
     }
 
-    public PlantCategory() {
+    public Category() {
 
     }
 }

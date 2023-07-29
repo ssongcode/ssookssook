@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class PlantCategoryRegisterRequestDto {
+public class CategoryRegisterRequestDto {
     @NotBlank
     private String categoryName;
 }
