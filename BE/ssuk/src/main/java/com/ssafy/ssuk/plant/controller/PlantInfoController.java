@@ -1,23 +1,23 @@
 package com.ssafy.ssuk.plant.controller;
 
-import com.ssafy.ssuk.plant.dto.ResponseDto;
-import com.ssafy.ssuk.plant.dto.TotalCategoryRequestDto;
-import com.ssafy.ssuk.plant.dto.TotalCategoryResponseDto;
-import com.ssafy.ssuk.plant.info.Info;
-import com.ssafy.ssuk.plant.info.dto.InfoRegisterRequestDto;
-import com.ssafy.ssuk.plant.info.dto.InfoSearchResponseDto;
-import com.ssafy.ssuk.plant.info.dto.InfoUpdateRequestDto;
-import com.ssafy.ssuk.plant.info.service.InfoService;
-import com.ssafy.ssuk.plant.plant.Plant;
-import com.ssafy.ssuk.plant.category.Category;
-import com.ssafy.ssuk.plant.category.dto.CategoryRegisterRequestDto;
-import com.ssafy.ssuk.plant.category.dto.CategorySearchResponseDto;
-import com.ssafy.ssuk.plant.category.dto.CategoryUpdateRequestDto;
-import com.ssafy.ssuk.plant.plant.dto.PlantRegisterRequestDto;
-import com.ssafy.ssuk.plant.plant.dto.PlantSearchResponseDto;
-import com.ssafy.ssuk.plant.plant.dto.PlantUpdateRequestDto;
-import com.ssafy.ssuk.plant.category.service.CategoryService;
-import com.ssafy.ssuk.plant.plant.service.PlantService;
+import com.ssafy.ssuk.plant.dto.Response.ResponseDto;
+import com.ssafy.ssuk.plant.dto.request.TotalCategoryRequestDto;
+import com.ssafy.ssuk.plant.dto.response.TotalCategoryResponseDto;
+import com.ssafy.ssuk.plant.domain.Info;
+import com.ssafy.ssuk.plant.dto.request.InfoRegisterRequestDto;
+import com.ssafy.ssuk.plant.dto.Response.InfoSearchResponseDto;
+import com.ssafy.ssuk.plant.dto.request.InfoUpdateRequestDto;
+import com.ssafy.ssuk.plant.service.InfoService;
+import com.ssafy.ssuk.plant.domain.Plant;
+import com.ssafy.ssuk.plant.domain.Category;
+import com.ssafy.ssuk.plant.dto.request.CategoryRegisterRequestDto;
+import com.ssafy.ssuk.plant.dto.response.CategorySearchResponseDto;
+import com.ssafy.ssuk.plant.dto.request.CategoryUpdateRequestDto;
+import com.ssafy.ssuk.plant.dto.request.PlantRegisterRequestDto;
+import com.ssafy.ssuk.plant.dto.Response.PlantSearchResponseDto;
+import com.ssafy.ssuk.plant.dto.request.PlantUpdateRequestDto;
+import com.ssafy.ssuk.plant.service.CategoryService;
+import com.ssafy.ssuk.plant.service.PlantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -167,6 +167,8 @@ public class PlantInfoController {
         if(plant == null)
             return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         Info info = infoService.findOne(plantId, level);
+        if(info == null)
+            return new ResponseEntity<>(new ResponseDto(SUCCESS, "plantInfo", null), HttpStatus.OK);
         return new ResponseEntity<>(new ResponseDto(SUCCESS, "plantInfo", new InfoSearchResponseDto(info)), HttpStatus.OK);
     }
 
