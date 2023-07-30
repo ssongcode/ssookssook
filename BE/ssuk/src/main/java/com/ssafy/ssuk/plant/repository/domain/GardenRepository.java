@@ -6,4 +6,6 @@ public interface GardenRepository {
     Garden findUsingByPotId(Integer potId);
 
     void save(Garden garden);
+
+    Garden findOneById(Integer id);
 }

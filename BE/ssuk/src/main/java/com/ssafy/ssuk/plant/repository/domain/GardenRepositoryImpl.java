@@ -28,4 +28,9 @@ public class GardenRepositoryImpl implements GardenRepository {
     public void save(Garden garden) {
         em.persist(garden);
     }
+
+    @Override
+    public Garden findOneById(Integer id) {
+        return em.find(Garden.class, id);
+    }
 }
