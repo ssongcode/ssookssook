@@ -1,7 +1,6 @@
 package com.ssafy.ssuk.plant.domain;
 
-import com.ssafy.ssuk.plant.dto.request.GardenRegisterRequestDto;
-import com.ssafy.ssuk.plant.dto.request.GardenUpdateRequestDto;
+import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -66,9 +65,11 @@ public class Garden {
     }
 
     // 비즈니스 로직
-    public void modifyGarden(Plant plant, GardenUpdateRequestDto gardenUpdateRequestDto) {
-        this.plant = plant;
-        this.category = plant.getCategory();
-        this.nickname = gardenUpdateRequestDto.getNickname();
+    public void unUseGarden() {
+        this.isUse = false;
+    }
+
+    public void rename(String nickname) {
+        this.nickname = nickname;
     }
 }

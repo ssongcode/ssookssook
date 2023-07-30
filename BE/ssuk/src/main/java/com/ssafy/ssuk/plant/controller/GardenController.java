@@ -2,12 +2,12 @@ package com.ssafy.ssuk.plant.controller;
 
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
+import com.ssafy.ssuk.plant.dto.request.GardenDeleteRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRegisterRequestDto;
-import com.ssafy.ssuk.plant.dto.request.GardenUpdateRequestDto;
+import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
 import com.ssafy.ssuk.plant.dto.response.ResponseDto;
 import com.ssafy.ssuk.plant.service.GardenService;
 import com.ssafy.ssuk.plant.service.PlantService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -59,26 +59,40 @@ public class GardenController {
     }
 
     @PutMapping("")
-    public ResponseEntity<ResponseDto> updateGarden(
+    public ResponseEntity<ResponseDto> renameGarden(
             @RequestAttribute Integer userId,
-            @RequestBody @Validated GardenUpdateRequestDto gardenUpdateRequestDto,
+            @RequestBody @Validated GardenRenameRequestDto gardenRenameRequestDto,
             BindingResult bindingResult) {
 
         if(bindingResult.hasErrors())
             return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
 
-        // 식물 확인(존재하는지, 이때 카테고리도 같이확인)
-        Plant plant = plantService.findOneById(gardenUpdateRequestDto.getPlantId());
-        if(plant == null){
-            return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
-        } else if(plant.getCategory().getId() != gardenUpdateRequestDto.getCategoryId()){
-            return new ResponseEntity<>(new ResponseDto("식물 카테고리가 유효하지 않습니다."), HttpStatus.NOT_FOUND);
-        }
 
         // 유저 확인(이건 믿고 가야하는거 같음, 수정도 자주 일어나지 않으니 확인해도 괜찮으려나)
-        // 화분 확인(존재하는지, 소유자가 유저인지)
         // 정원 확인(service에서 진행)
-        if(gardenService.modifyGarden(userId, plant, gardenUpdateRequestDto)) {
+        Integer gardenId = gardenRenameRequestDto.getGardenId();
+        String nickname = gardenRenameRequestDto.getNickname();
+        if(gardenService.renameGarden(gardenId, userId, nickname)) {
+            return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/kill")
+    public ResponseEntity<ResponseDto> unUseGarden(
+            @RequestAttribute Integer userId,
+            @RequestBody @Validated GardenDeleteRequestDto gardenDeleteRequestDto,
+            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors())
+            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+
+
+        // 유저 확인(이건 믿고 가야하는거 같음, 삭제는 더더욱 자주 일어나지 않으니 확인해도 괜찮으려나)
+        // 정원 확인(service에서 진행)
+
+        Integer gardenId = gardenDeleteRequestDto.getGardenId();
+        if(gardenService.deleteGarden(userId, gardenId)) {
             return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
         }
         return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);

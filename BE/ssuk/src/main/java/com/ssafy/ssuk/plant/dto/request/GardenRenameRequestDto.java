@@ -6,15 +6,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class GardenUpdateRequestDto {
+public class GardenRenameRequestDto {
     @NotNull
     private Integer gardenId;
-    @NotNull
-    private Integer plantId;
-    @NotNull
-    private Integer potId;
-    @NotNull
-    private Integer categoryId;
     @NotBlank
     private String nickname;
 }

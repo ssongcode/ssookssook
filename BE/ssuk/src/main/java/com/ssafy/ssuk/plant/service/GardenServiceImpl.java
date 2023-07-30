@@ -2,13 +2,9 @@ package com.ssafy.ssuk.plant.service;
 
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
-import com.ssafy.ssuk.plant.dto.request.GardenRegisterRequestDto;
-import com.ssafy.ssuk.plant.dto.request.GardenUpdateRequestDto;
-import com.ssafy.ssuk.plant.dto.response.ResponseDto;
+import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
 import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,13 +35,25 @@ public class GardenServiceImpl implements GardenService {
 
     @Override
     @Transactional
-    public boolean modifyGarden(Integer userId, Plant plant, GardenUpdateRequestDto gardenUpdateRequestDto) {
+    public boolean deleteGarden(Integer userId, Integer gardenId) {
         // 정원 확인(해당 심은 식물의 소유자가 맞는지)
-        Garden garden = gardenRepository.findOneById(gardenUpdateRequestDto.getGardenId());
-        if(garden == null || garden.getUserId() != userId || garden.getPotId() != gardenUpdateRequestDto.getPotId()) {
+        Garden garden = gardenRepository.findOneById(gardenId);
+        if(garden == null || garden.getUserId() != userId) {
             return false;
         }
-        garden.modifyGarden(plant, gardenUpdateRequestDto);
+        garden.unUseGarden();
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean renameGarden(Integer gardenId, Integer userId, String nickname) {
+        // 정원 확인(해당 심은 식물의 소유자가 맞는지)
+        Garden garden = gardenRepository.findOneById(gardenId);
+        if(garden == null || garden.getUserId() != userId) {
+            return false;
+        }
+        garden.rename(nickname);
         return true;
     }
 }
