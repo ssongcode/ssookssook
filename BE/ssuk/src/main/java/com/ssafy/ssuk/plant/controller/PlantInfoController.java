@@ -1,6 +1,6 @@
 package com.ssafy.ssuk.plant.controller;
 
-import com.ssafy.ssuk.plant.dto.Response.ResponseDto;
+import com.ssafy.ssuk.plant.dto.response.ResponseDto;
 import com.ssafy.ssuk.plant.dto.request.TotalCategoryRequestDto;
 import com.ssafy.ssuk.plant.dto.response.TotalCategoryResponseDto;
 import com.ssafy.ssuk.plant.domain.Info;
