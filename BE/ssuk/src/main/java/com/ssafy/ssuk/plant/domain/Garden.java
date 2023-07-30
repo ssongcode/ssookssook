@@ -1,6 +1,6 @@
 package com.ssafy.ssuk.plant.domain;
 
-import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
+import com.ssafy.ssuk.pot.domain.Pot;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,7 +14,7 @@ import static javax.persistence.FetchType.*;
 @Table(name = "garden")
 @Getter
 @NoArgsConstructor
-@DynamicInsert
+@DynamicInsert  // select 할 때 null이면 default 값 자동으로 들어감
 public class Garden {
     @Id @GeneratedValue
     @Column(name = "garden_id")
@@ -24,24 +24,19 @@ public class Garden {
     private Plant plant;
 
     // 이부분은 추후에 객체지향적으로 바꿀 예정
-    // 바꿀때 복합키로 바꿀 예정
+    // 바꿀때 복합키로 바꿀 예정 -> 못바꿈... 복합키는 GeneratedValue를 사용할 수 없음
+    // 근데 그러면 왜 굳이 복합키를 쓰는거지? jpa에서 굳이 그럴필요가있나?
     ///////////////////////////////
 //    @ManyToOne(fetch = LAZY)
 //    @JoinColumn(name = "user_id")
 //    private User user;
+    //////////////////
     @Column(name = "user_id")
     private Integer userId;
-//    @ManyToOne(fetch = LAZY)
-//    @JoinColumn(name = "pot_id")
-//    private Pot pot;
-    @Column(name = "pot_id")
-    private Integer potId;
-    ///////////////////////////////
-
-
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "pot_id")
+    private Pot pot;
+
     @Column(name = "level")
     private Integer level;
     @Column(name = "plant_nickname")
@@ -56,11 +51,10 @@ public class Garden {
     private LocalDateTime thirdDate;
 
 
-    public Garden(Integer userId, Plant plant, Integer potId, String nickname) {
+    public Garden(Integer userId, Plant plant, Pot pot, String nickname) {
         this.plant = plant;
         this.userId = userId;
-        this.potId = potId;
-        this.category = plant.getCategory();
+        this.pot = pot;
         this.nickname = nickname;
     }
 

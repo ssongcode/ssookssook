@@ -4,6 +4,7 @@ import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
 import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
 import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
+import com.ssafy.ssuk.pot.domain.Pot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +23,8 @@ public class GardenServiceImpl implements GardenService {
 
     @Override
     @Transactional
-    public void save(Integer userId, Plant plant, String nickname) {
-        // 일단 potId는 1로 고정...
-        Garden garden = new Garden(userId, plant, 1, nickname);
+    public void save(Integer userId, Plant plant, Pot pot, String nickname) {
+        Garden garden = new Garden(userId, plant, pot, nickname);
         gardenRepository.save(garden);
     }
 
