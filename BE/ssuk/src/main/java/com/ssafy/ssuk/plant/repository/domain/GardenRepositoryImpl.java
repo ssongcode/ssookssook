@@ -35,4 +35,21 @@ public class GardenRepositoryImpl implements GardenRepository {
     public Garden findOneById(Integer id) {
         return em.find(Garden.class, id);
     }
+
+    @Override
+    public Garden findOneByIdAndUserId(Integer gardenId, Integer userId) {
+        List<Garden> resultList = em.createQuery("select g from Garden g" +
+                        " join fetch g.plant plant" +
+                        " join fetch plant.category pc" +
+                        " join fetch g.pot pot" +
+                        " where g.id = :gardenId and g.userId = :userId", Garden.class)
+                .setParameter("gardenId", gardenId)
+                .setParameter("userId", userId)
+                .getResultList();
+        if(resultList.isEmpty()) {
+            return null;
+        } else {
+            return resultList.get(0);
+        }
+    }
 }

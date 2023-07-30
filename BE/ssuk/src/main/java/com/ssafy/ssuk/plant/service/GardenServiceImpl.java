@@ -2,7 +2,7 @@ package com.ssafy.ssuk.plant.service;
 
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
-import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
+import com.ssafy.ssuk.plant.dto.response.GardenSearchOneResponseDto;
 import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
 import com.ssafy.ssuk.pot.domain.Pot;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +55,10 @@ public class GardenServiceImpl implements GardenService {
         }
         garden.rename(nickname);
         return true;
+    }
+
+    @Override
+    public Garden findOndByIdAndUserId(Integer gardenId, Integer userId) {
+        return gardenRepository.findOneByIdAndUserId(gardenId, userId);
     }
 }

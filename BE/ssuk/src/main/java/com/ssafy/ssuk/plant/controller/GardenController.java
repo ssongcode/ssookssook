@@ -5,6 +5,7 @@ import com.ssafy.ssuk.plant.domain.Plant;
 import com.ssafy.ssuk.plant.dto.request.GardenDeleteRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRegisterRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
+import com.ssafy.ssuk.plant.dto.response.GardenSearchOneResponseDto;
 import com.ssafy.ssuk.plant.dto.response.ResponseDto;
 import com.ssafy.ssuk.plant.service.GardenService;
 import com.ssafy.ssuk.plant.service.PlantService;
@@ -18,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.annotation.Repeatable;
 
 @RestController
 @RequestMapping("/plant")
@@ -115,5 +118,12 @@ public class GardenController {
             return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
         }
         return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/{gardenId}")
+    public ResponseEntity<ResponseDto> searchOneNow(@PathVariable(required = true) Integer gardenId, @RequestAttribute Integer userId) {
+        log.debug("userId={}", userId);
+        Garden garden = gardenService.findOndByIdAndUserId(gardenId, userId);
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "garden", new GardenSearchOneResponseDto(garden)), HttpStatus.OK);
     }
 }
