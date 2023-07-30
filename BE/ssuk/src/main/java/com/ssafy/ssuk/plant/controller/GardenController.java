@@ -21,6 +21,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Repeatable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/plant")
@@ -122,8 +124,21 @@ public class GardenController {
 
     @GetMapping("/{gardenId}")
     public ResponseEntity<ResponseDto> searchOneNow(@PathVariable(required = true) Integer gardenId, @RequestAttribute Integer userId) {
-        log.debug("userId={}", userId);
         Garden garden = gardenService.findOndByIdAndUserId(gardenId, userId);
+        if(garden == null)
+            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.OK);
         return new ResponseEntity<>(new ResponseDto(SUCCESS, "garden", new GardenSearchOneResponseDto(garden)), HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ResponseDto> searchAllNow(@RequestAttribute(required = true) Integer userId) {
+        List<GardenSearchOneResponseDto> collect = gardenService.findAllByUserId(userId, true).stream().map(g -> new GardenSearchOneResponseDto(g)).collect(Collectors.toList());
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "gardens", collect), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDto> searchAll(@RequestAttribute(required = true) Integer userId) {
+        List<GardenSearchOneResponseDto> collect = gardenService.findAllByUserId(userId).stream().map(g -> new GardenSearchOneResponseDto(g)).collect(Collectors.toList());
+        return new ResponseEntity<>(new ResponseDto(SUCCESS, "gardens", collect), HttpStatus.OK);
     }
 }

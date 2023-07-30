@@ -6,6 +6,9 @@ import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
 import com.ssafy.ssuk.plant.dto.response.GardenSearchOneResponseDto;
 import com.ssafy.ssuk.pot.domain.Pot;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface GardenService {
     Garden findUsingByPotId(Integer potId);
 
@@ -18,4 +21,8 @@ public interface GardenService {
     boolean renameGarden(Integer gardenId, Integer userId, String nickname);
 
     Garden findOndByIdAndUserId(Integer gardenId, Integer userId);
+
+    List<Garden> findAllByUserId(Integer userId, Boolean isUse);
+
+    List<Garden> findAllByUserId(Integer userId);
 }

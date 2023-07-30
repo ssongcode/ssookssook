@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -42,7 +43,7 @@ public class GardenRepositoryImpl implements GardenRepository {
                         " join fetch g.plant plant" +
                         " join fetch plant.category pc" +
                         " join fetch g.pot pot" +
-                        " where g.id = :gardenId and g.userId = :userId", Garden.class)
+                        " where g.id = :gardenId and g.userId = :userId and g.isUse = true", Garden.class)
                 .setParameter("gardenId", gardenId)
                 .setParameter("userId", userId)
                 .getResultList();
@@ -51,5 +52,28 @@ public class GardenRepositoryImpl implements GardenRepository {
         } else {
             return resultList.get(0);
         }
+    }
+
+    @Override
+    public List<Garden> findAllByUserId(Integer userId, Boolean isUse) {
+        return em.createQuery("select g from Garden g" +
+                        " join fetch g.plant plant" +
+                        " join fetch plant.category pc" +
+                        " join fetch g.pot pot" +
+                        " where g.userId = :userId and g.isUse = :isUse", Garden.class)
+                .setParameter("userId", userId)
+                .setParameter("isUse", isUse)
+                .getResultList();
+    }
+
+    @Override
+    public List<Garden> findAllByUserId(Integer userId) {
+        return em.createQuery("select g from Garden g" +
+                        " join fetch g.plant plant" +
+                        " join fetch plant.category pc" +
+                        " join fetch g.pot pot" +
+                        " where g.userId = :userId", Garden.class)
+                .setParameter("userId", userId)
+                .getResultList();
     }
 }

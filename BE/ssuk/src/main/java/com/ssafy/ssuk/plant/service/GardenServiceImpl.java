@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -60,5 +63,15 @@ public class GardenServiceImpl implements GardenService {
     @Override
     public Garden findOndByIdAndUserId(Integer gardenId, Integer userId) {
         return gardenRepository.findOneByIdAndUserId(gardenId, userId);
+    }
+
+    @Override
+    public List<Garden> findAllByUserId(Integer userId, Boolean isUse) {
+        return gardenRepository.findAllByUserId(userId, isUse);
+    }
+
+    @Override
+    public List<Garden> findAllByUserId(Integer userId) {
+        return gardenRepository.findAllByUserId(userId);
     }
 }

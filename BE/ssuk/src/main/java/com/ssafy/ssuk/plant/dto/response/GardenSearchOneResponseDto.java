@@ -21,6 +21,7 @@ public class GardenSearchOneResponseDto {
     private LocalDateTime firstDate;
     private LocalDateTime secondDate;
     private LocalDateTime thirdDate;
+    private Boolean isUse;
 
     public GardenSearchOneResponseDto(Garden garden) {
         this.gardenId = garden.getId();
@@ -34,5 +35,6 @@ public class GardenSearchOneResponseDto {
         this.firstDate = garden.getFirstDate();
         this.secondDate = garden.getSecondDate();
         this.thirdDate = garden.getThirdDate();
+        this.isUse = garden.getIsUse();
     }
 }
