@@ -31,3 +31,4 @@ logging:
     org.hibernate.SQL: debug
     # 일단 ssuk패키지 debug로 설정해놓을게요
     com.ssafy.ssuk: debug
+
