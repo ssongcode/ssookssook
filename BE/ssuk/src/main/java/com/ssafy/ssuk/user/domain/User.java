@@ -44,5 +44,5 @@ public class User {
 
     @Column(name = "PLANT_COUNT")
     private Integer plantCount = 0;
-
+ //
 }
