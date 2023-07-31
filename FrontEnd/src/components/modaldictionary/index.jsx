@@ -107,7 +107,7 @@ const ModalDictionary = ({ isVisible, onClose }) => {
         </View>
         <View>
           <View style={styles.content}>
-            <CookieRunBold style={styles.dictionaryText}>비밀</CookieRunBold>
+            <CookieRunBold style={styles.dictionaryText}>비밀임</CookieRunBold>
             <View style={styles.dictionaryContainer}>
               <TouchableOpacity>
                 <Image
