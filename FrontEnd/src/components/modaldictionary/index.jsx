@@ -25,6 +25,13 @@ const ModalDictionary = ({ isVisible, onClose }) => {
       backdropTransitionOutTiming={300}
     >
       <View style={styles.modalContainer}>
+        <View style={styles.category}>
+          <CookieRunBold style={styles.categoryActiveText}>야채</CookieRunBold>
+          <CookieRunBold style={styles.categoryInactiveText}>꽃</CookieRunBold>
+          <CookieRunBold style={styles.categoryInactiveText}>
+            선인장
+          </CookieRunBold>
+        </View>
         {/* 모달 내용 */}
         <CookieRunBold style={styles.modalText}>도감</CookieRunBold>
         <View>
