@@ -15,10 +15,10 @@ from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common
 from pycoral.adapters import classify
 
-PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
+# PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
 BaudRate = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
-ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정 - PC
-# ARD = serial.Serial("/dev/ttyACM0",BaudRate) # 아두이노 통신 설정 - 라즈베리파이4
+# ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정 - PC
+ARD = serial.Serial("/dev/ttyACM0",BaudRate) # 아두이노 통신 설정 - 라즈베리파이4
 # the TFLite converted to be used with edgetpu
 modelPath = 'model_unquant.tflite'
 
@@ -93,7 +93,7 @@ def TM(frame):
     labels = read_label_file(labelPath)
     # 판정 결과
     results = classifyImage(interpreter, frame)
-    print(f'Label: {labels[results[0].id]}, Score: {results[0].score}')
+    print(results)
     
 # Teachable Machine 작동 로직 = PC
 # def TM():
