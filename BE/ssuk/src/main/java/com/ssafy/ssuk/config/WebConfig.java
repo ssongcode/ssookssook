@@ -24,4 +24,5 @@ public class WebConfig implements WebMvcConfigurer {
 //                        "/check/email/{email}",
 //                        "/login/kakao");
 //    }
+//
 }
