@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id @GeneratedValue
+    @Column(name = "USER_ID")
     private Integer id;
 
     @Column(name = "EMAIL")
@@ -44,5 +45,10 @@ public class User {
 
     @Column(name = "PLANT_COUNT")
     private Integer plantCount = 0;
- //
+
+    public User(String email, String password, String nickname) {
+    }
+    //
+    
+    
 }
