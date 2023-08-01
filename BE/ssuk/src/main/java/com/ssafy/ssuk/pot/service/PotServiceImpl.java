@@ -2,10 +2,12 @@ package com.ssafy.ssuk.pot.service;
 
 import com.ssafy.ssuk.exception.dto.CustomException;
 import com.ssafy.ssuk.exception.dto.ErrorCode;
+import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.pot.domain.Pot;
 import com.ssafy.ssuk.pot.dto.requset.PotInsertDto;
 import com.ssafy.ssuk.pot.repository.PotRepository;
 import com.ssafy.ssuk.user.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.jdbc.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class PotServiceImpl implements PotService {
 
     PotRepository potRepository;
@@ -26,8 +29,9 @@ public class PotServiceImpl implements PotService {
     //화분 조회 (유저가 가지고 있는 전체 화분 조회)
     @Override
     public List<Pot> findByUser_Id(Integer user_id) {
+        List<Pot> result = potRepository.findByUser_Id(user_id);
 
-        return potRepository.findByUser_Id(user_id);
+        return result;
     }
 
     @Override
@@ -70,4 +74,5 @@ public class PotServiceImpl implements PotService {
             throw new CustomException(ErrorCode.POT_NOT_FOUND);
         }
     }
+
 }
