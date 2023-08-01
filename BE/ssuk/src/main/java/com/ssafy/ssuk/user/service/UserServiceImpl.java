@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.user.service;
 
+import com.ssafy.ssuk.exception.dto.CustomException;
+import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.user.domain.User;
 import com.ssafy.ssuk.user.dto.request.CheckEmailRequestDto;
 import com.ssafy.ssuk.user.dto.request.LoginRequestDto;
@@ -9,6 +11,7 @@ import com.ssafy.ssuk.utils.jwt.JwtTokenProvider;
 import com.ssafy.ssuk.utils.jwt.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -21,7 +24,7 @@ import java.util.Optional;
 @Transactional(readOnly = true) // 읽기 전용
 @RequiredArgsConstructor // final로 선언된 모든 필드에 대한 생성자
 @Slf4j
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -60,6 +63,18 @@ public class UserServiceImpl implements UserService{
         TokenInfo tokenInfo = jwtTokenProvider.createToken(authentication);
 
         return tokenInfo;
+    }
+
+    @Override
+    public User findById(Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+
+        if (user.isPresent()) {
+            log.info("service : " + user.get().getId());
+            return user.get();
+        } else
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
     }
 
 

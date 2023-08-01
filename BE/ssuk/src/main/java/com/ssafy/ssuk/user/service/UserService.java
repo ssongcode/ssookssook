@@ -17,4 +17,6 @@ public interface UserService {
 
     // 로그인
     public TokenInfo login(LoginRequestDto loginRequestDto);
+
+    User findById(Integer userId);
 }
