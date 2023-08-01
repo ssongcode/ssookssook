@@ -31,5 +31,5 @@ void loop(){
   // Serial.println(waterTank);
   Serial.print(waterTank);
   Serial.println();
-  delay(5000);
+  delay(30000);
 }

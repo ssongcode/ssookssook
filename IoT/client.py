@@ -72,22 +72,28 @@ async def send_json_message():
 				conn.send(-1);
 				return
 		# Create a JSON message
+		image_cnt = 59;
 		while True:
 			sensor_data = read()
-			for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
-				json_message = {
-					"potId" : 1,
-					"serialNumber" : serial_number,
-					"measurementValue" : data,
-					"sensorType" : s_type
-				}
-				#T,H,M,W
-				# Convert the JSON message to a string and send it as the STOMP SEND frame
-				send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
-				await websocket.send(send_frame.encode())
-				print("Send data : ", data, s_type)
-				sleep(5)
-			sleep(10)
+			if sensor_data:
+				for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
+					json_message = {
+						"potId" : 1,
+						"serialNumber" : serial_number,
+						"measurementValue" : data,
+						"sensorType" : s_type
+					}
+					#T,H,M,W
+					# Convert the JSON message to a string and send it as the STOMP SEND frame
+					send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
+					await websocket.send(send_frame.encode())
+					print("Send data : ", data, s_type)
+					sleep(5)
+				image_cnt+=1
+				if image_cnt == 60: # 사진 30분 간격으로 전송
+					# send_image_to_server()
+					cnt = 0
+				sleep(10)
 # Arduino Sensor Value 시리얼 통신
 def read():
 	if ARD.readable():
@@ -109,6 +115,7 @@ def classifyImage(interpreter, image):
     interpreter.invoke()
     return classify.get_classes(interpreter)
 
+# Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
     # Load your model onto the TF Lite Interpreter
     interpreter = make_interpreter(modelPath)
@@ -165,6 +172,7 @@ def TM(frame):
 # 	print(class_name)
 # 	print("Class:", class_name[2:], end="")
 # 	print("Confidence Score:", confidence_score)
+#	result = int(class_name[0])
 
 def send_image_to_server():
 	# 카메라 세팅
@@ -194,13 +202,15 @@ def send_image_to_server():
 	print("Capture request Complete!")
 	# TM 체크
 	# TM() # PC 버전
-	# TM(frame)
+	# result = TM(frame) # Raspberry PI 버전
+	# print("tflite result : ", result)
 	# 서버로 전송
-	# url = "http://localhost:8080/upload" # 이미지 전송 할 uri
+	# 이미지 전송 할 uri
+	# url = "https://i9b102.p.ssafy.io:8080/upload"
+	
 	# dto = {
-	# 	'image' : open(../python37/img/filenname, 'rb'),
-	#	'pot_id' : 1,
-	#   'capture_time' : capture_time
+	# 	'pot_id' : 1,
+	# 	'level' : 
 	# }
 	# response = request.post(url, files=dto)
 	# if response.status_code == 200:
@@ -211,10 +221,3 @@ def send_image_to_server():
 if __name__ == "__main__":
 	asyncio.get_event_loop().run_until_complete(send_json_message())
 	asyncio.get_event_loop().run_until_complete(connect_and_subscribe())
-	cnt = 2
-	while True:
-		read()
-		cnt += 1
-		if cnt == 3:
-			send_image_to_server()
-			cnt = 0
