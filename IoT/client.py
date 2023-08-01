@@ -6,6 +6,7 @@ import requests
 import re
 import os
 import cv2
+from time import sleep
 # from keras.models import load_model  # TensorFlow is required for Keras to work
 # from PIL import Image, ImageOps  # Install pillow instead of PIL
 # import numpy as np
@@ -15,10 +16,10 @@ from datetime import datetime
 # from pycoral.adapters import common
 # from pycoral.adapters import classify
 
-PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
+# PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
 BaudRate = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
-ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정 - PC
-# ARD = serial.Serial("/dev/ttyACM0",BaudRate) # 아두이노 통신 설정 - 라즈베리파이4
+# ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정 - PC
+ARD = serial.Serial("/dev/ttyACM0",BaudRate) # 아두이노 통신 설정 - 라즈베리파이4
 # the TFLite converted to be used with edgetpu
 modelPath = 'model_unquant.tflite'
 
@@ -71,28 +72,32 @@ async def send_json_message():
 				conn.send(-1);
 				return
 		# Create a JSON message
-		json_message = {
-			"potId" : 1,
-			"serialNumber" : serial_number,
-			"measurementValue" : 2.3,
-			"sensorType" : "T"
-		}
-
-		#T,H,M
-
-		# Convert the JSON message to a string and send it as the STOMP SEND frame
-		send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
-		await websocket.send(send_frame.encode())
-
+		while True:
+			sensor_data = read()
+			for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
+				json_message = {
+					"potId" : 1,
+					"serialNumber" : serial_number,
+					"measurementValue" : data,
+					"sensorType" : s_type
+				}
+				#T,H,M,W
+				# Convert the JSON message to a string and send it as the STOMP SEND frame
+				send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
+				await websocket.send(send_frame.encode())
+				print("Send data : ", data, s_type)
+				sleep(5)
+			sleep(10)
 # Arduino Sensor Value 시리얼 통신
 def read():
 	if ARD.readable():
 		line = ARD.readline()
 		temperature, humidity, groundMoisture, waterTank = map(int,line.decode().split())
-		print("temperature :",temperature)
-		print("humidity :", humidity)
-		print("groundMoisture :",groundMoisture)
-		print("waterTank :",waterTank)
+		# print("temperature :",temperature)
+		# print("humidity :", humidity)
+		# print("groundMoisture :",groundMoisture)
+		# print("waterTank :",waterTank)
+		return [ temperature, humidity, groundMoisture, waterTank ]
 	else:
 		print("Read Failed!!")
 
