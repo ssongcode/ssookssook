@@ -11,10 +11,9 @@ from time import sleep
 # from PIL import Image, ImageOps  # Install pillow instead of PIL
 # import numpy as np
 from datetime import datetime
-# from pycoral.utils.dataset import read_label_file
-# from pycoral.utils.edgetpu import make_interpreter
-# from pycoral.adapters import common
-# from pycoral.adapters import classify
+import tflite_runtime.interpreter as tflite
+import numpy as np
+import tensorflow as tf
 
 # PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
 BaudRate = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
@@ -118,8 +117,9 @@ def classifyImage(interpreter, image):
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
     # Load your model onto the TF Lite Interpreter
-    interpreter = make_interpreter(modelPath)
+    interpreter = tf.lite.Interpreter(model_path=modelPath)
     interpreter.allocate_tensors()
+    
     labels = read_label_file(labelPath)
     # 판정 결과
     results = classifyImage(interpreter, frame)
@@ -202,8 +202,8 @@ def send_image_to_server():
 	print("Capture request Complete!")
 	# TM 체크
 	# TM() # PC 버전
-	# result = TM(frame) # Raspberry PI 버전
-	# print("tflite result : ", result)
+	result = TM(frame) # Raspberry PI 버전
+	print("tflite result : ", result)
 	# 서버로 전송
 	# 이미지 전송 할 uri
 	# url = "https://i9b102.p.ssafy.io:8080/upload"
@@ -219,5 +219,6 @@ def send_image_to_server():
 	# 	print("이미지 업로드 실패")
 
 if __name__ == "__main__":
-	asyncio.get_event_loop().run_until_complete(send_json_message())
-	asyncio.get_event_loop().run_until_complete(connect_and_subscribe())
+	# asyncio.get_event_loop().run_until_complete(send_json_message())
+	# asyncio.get_event_loop().run_until_complete(connect_and_subscribe())
+    send_image_to_server()
