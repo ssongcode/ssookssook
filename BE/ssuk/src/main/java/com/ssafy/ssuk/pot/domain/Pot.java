@@ -43,7 +43,6 @@ public class Pot {
     @Column(name="IS_REGISTED")
     private Boolean isRegisted;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "pot")
     private List<Garden> garden;
 }

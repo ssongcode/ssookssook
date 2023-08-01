@@ -5,6 +5,7 @@ import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.pot.domain.Pot;
 import com.ssafy.ssuk.pot.dto.requset.PotInsertDto;
+import com.ssafy.ssuk.pot.dto.response.PotResponseDto;
 import com.ssafy.ssuk.pot.repository.PotRepository;
 import com.ssafy.ssuk.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +29,8 @@ public class PotServiceImpl implements PotService {
 
     //화분 조회 (유저가 가지고 있는 전체 화분 조회)
     @Override
-    public List<Pot> findByUser_Id(Integer user_id) {
-        List<Pot> result = potRepository.findByUser_Id(user_id);
+    public List<PotResponseDto> findByUser_Id(Integer user_id) {
+        List<PotResponseDto> result = potRepository.findByUser_Id(user_id);
 
         return result;
     }

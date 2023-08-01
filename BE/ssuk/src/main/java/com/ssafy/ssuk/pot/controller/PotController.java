@@ -7,6 +7,7 @@ import com.ssafy.ssuk.plant.service.GardenService;
 import com.ssafy.ssuk.pot.domain.Pot;
 import com.ssafy.ssuk.pot.dto.requset.PotDeleteDto;
 import com.ssafy.ssuk.pot.dto.requset.PotInsertDto;
+import com.ssafy.ssuk.pot.dto.response.PotResponseDto;
 import com.ssafy.ssuk.pot.mapper.PotMapper;
 import com.ssafy.ssuk.pot.service.PotService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class PotController {
     //보유한 화분 전체 조회
     @GetMapping("")
     public ResponseEntity<?> potLIst(@RequestAttribute Integer userId) {
-        List<Pot> potList = potService.findByUser_Id(userId);
+        List<PotResponseDto> potList = potService.findByUser_Id(userId);
         //List<Garden> result = gardenService.findAllByUserId(userId);
 
         return ResponseEntity.ok(potList);
