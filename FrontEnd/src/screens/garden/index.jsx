@@ -5,12 +5,9 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import Icon2 from "react-native-vector-icons/AntDesign";
 import { ScrollView } from "react-native-gesture-handler";
 import CookieRunBold from "../../components/common/CookieRunBold";
-<<<<<<< HEAD
 import ModalPlantDelete from "../../components/modalplantdelete";
 import * as Animatable from "react-native-animatable";
-=======
 import { useNavigation } from "@react-navigation/native";
->>>>>>> bc177841cff15d53b7047e9b8fa1b43b789ef080
 
 const GardenScreen = () => {
   const navigation = useNavigation();
