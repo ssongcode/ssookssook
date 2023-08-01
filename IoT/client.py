@@ -106,24 +106,23 @@ def read():
 	else:
 		print("Read Failed!!")
 
-# Teachable Machine Lite 작동 로직 = 라즈베리파이
-def classifyImage(interpreter, image):
-    size = common.input_size(interpreter)
-    common.set_input(interpreter, cv2.resize(image, size, fx=0, fy=0,
-                                             interpolation=cv2.INTER_CUBIC))
-    interpreter.invoke()
-    return classify.get_classes(interpreter)
-
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
     # Load your model onto the TF Lite Interpreter
     interpreter = tf.lite.Interpreter(model_path=modelPath)
     interpreter.allocate_tensors()
-    
-    labels = read_label_file(labelPath)
-    # 판정 결과
-    results = classifyImage(interpreter, frame)
-    print(results)
+    # 정보 얻기
+    input_details = interpreter.get_input_details()
+    image_resized = cv2.resize(frame, 224, 224)
+    image = tf.expand_dims(image_resized, axis=0)
+    # 모델의 입력 텐서에 이미지 데이터 넣기
+    interpreter.set_tensor(input_details[0]['index'], image)
+    # 판정
+    interpreter.invoke()
+    # 출력 정보
+    output_details = interpreter.get_output_details()
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    print(output_data)
     
 # Teachable Machine 작동 로직 = PC
 # def TM():
