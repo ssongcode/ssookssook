@@ -9,7 +9,6 @@ import com.ssafy.ssuk.utils.jwt.TokenInfo;
 import java.util.Optional;
 
 public interface UserService {
-
     // 사용자 등록
     public void createUser(RegisterUserRequestDto registerUserRequestDto);
 

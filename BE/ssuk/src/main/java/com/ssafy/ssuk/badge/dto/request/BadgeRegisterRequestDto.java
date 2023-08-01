@@ -14,7 +14,6 @@ public class BadgeRegisterRequestDto {
     private String condition;
     @NotBlank
     private String description;
-    @NotNull
     private Boolean isHidden;
     @NotBlank
     private String badgeImage;
