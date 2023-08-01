@@ -2,6 +2,7 @@ package com.ssafy.ssuk.pot.controller;
 
 import com.ssafy.ssuk.exception.dto.CustomException;
 import com.ssafy.ssuk.pot.domain.Pot;
+import com.ssafy.ssuk.pot.dto.requset.PotDeleteDto;
 import com.ssafy.ssuk.pot.dto.requset.PotInsertDto;
 import com.ssafy.ssuk.pot.mapper.PotMapper;
 import com.ssafy.ssuk.pot.service.PotService;
@@ -25,8 +26,8 @@ public class PotController {
     }
 
     //보유한 화분 전체 조회
-    @GetMapping("/{user_id}")
-    public ResponseEntity<?> potLIst(@PathVariable("user_id") Integer user_id) {
+    @GetMapping("")
+    public ResponseEntity<?> potLIst(@RequestAttribute Integer user_id) {
         List<Pot> potList = potService.findByUser_Id(user_id);
 
         return ResponseEntity.ok(potList);
@@ -36,8 +37,8 @@ public class PotController {
 
     //화분 등록
     @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody PotInsertDto potInsertDto) throws CustomException {
-        Pot pot = potMapper.insertDtoToPot(potInsertDto);
+    public ResponseEntity<?> save(@RequestAttribute Integer userId, @RequestBody PotInsertDto potInsertDto) throws CustomException {
+        Pot pot = potMapper.insertDtoToPot(potInsertDto, userId);
 
         potService.save(pot);
 
@@ -47,10 +48,10 @@ public class PotController {
 
     //화분 삭제
     @PutMapping("")
-    public ResponseEntity<?> delete(@RequestBody PotInsertDto potInsertDto) {
-        //Pot pot = potMapper.insertDtoToPot(potInsertDto);
+    public ResponseEntity<?> delete(@RequestAttribute Integer userId, @RequestBody PotDeleteDto potDeleteDto) {
+        //Pot pot = potMapper.deleteDtoToPot(potDeleteDto, userId);
 
-        potService.delete(potInsertDto);
+        potService.delete(potDeleteDto.getPotId(), userId);
 
         return ResponseEntity.ok().build();
     }

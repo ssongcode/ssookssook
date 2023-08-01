@@ -14,8 +14,8 @@ public interface PotRepository extends JpaRepository<Pot, Integer> {
     Pot findBySerialNumber(String serialNumber);
 
     //해당 유저가 시리얼넘버를 물고 있는지 체크
-    @Query(value = "select p from Pot p where p.serialNumber = :serial_number and p.user.id =:user_id")
-    Pot selectPotBySerialNumAndUserId(@Param("user_id") Integer user_id, @Param("serial_number") String serialNumber);
+    @Query(value = "select p from Pot p where p.id = :pot_id and p.user.id =:user_id")
+    Pot selectPotBySerialNumAndUserId(@Param("pot_id") Integer potId, @Param("user_id") Integer user_id);
     //조회
 
     List<Pot> findByUser_Id(Integer user_id);
