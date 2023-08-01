@@ -1,6 +1,7 @@
 package com.ssafy.ssuk.badge;
 
 import com.ssafy.ssuk.badge.dto.request.BadgeRegisterRequestDto;
+import com.ssafy.ssuk.badge.dto.request.BadgeUpdateRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -45,5 +46,13 @@ public class Badge {
                 ", isHidden=" + isHidden +
                 ", badgeImage='" + badgeImage + '\'' +
                 '}';
+    }
+
+    public void modify(BadgeUpdateRequestDto badgeUpdateRequestDto) {
+        this.badgeName = badgeUpdateRequestDto.getBadgeName();
+        this.condition = badgeUpdateRequestDto.getCondition();
+        this.description = badgeUpdateRequestDto.getDescription();
+        this.isHidden = badgeUpdateRequestDto.getIsHidden();
+        this.badgeImage = badgeUpdateRequestDto.getBadgeImage();
     }
 }

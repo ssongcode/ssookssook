@@ -1,6 +1,7 @@
 package com.ssafy.ssuk.badge.controller;
 
 import com.ssafy.ssuk.badge.dto.request.BadgeRegisterRequestDto;
+import com.ssafy.ssuk.badge.dto.request.BadgeUpdateRequestDto;
 import com.ssafy.ssuk.badge.dto.response.BadgeSearchResponseDto;
 import com.ssafy.ssuk.badge.service.BadgeService;
 import com.ssafy.ssuk.plant.dto.response.ResponseDto;
@@ -46,6 +47,25 @@ public class BadgeController {
         }
 
         badgeService.saveBadge(badgeRegisterRequestDto);
+
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/admin")
+    public ResponseEntity<ResponseDto> updateBadge(
+            @RequestBody @Validated BadgeUpdateRequestDto badgeUpdateRequestDto, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            return new ResponseEntity<>(new ResponseDto(INPUT_ERROR), HttpStatus.BAD_REQUEST);
+        }
+
+        Integer badgeId = badgeUpdateRequestDto.getBadgeId();
+        String badgeName = badgeUpdateRequestDto.getBadgeName();
+        if(badgeService.isDuplicatedExceptThis(badgeId, badgeName)){
+            return new ResponseEntity<>(new ResponseDto(DUPLICATE), HttpStatus.CONFLICT);
+        }
+
+        badgeService.modifyBadge(badgeUpdateRequestDto);
 
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.BAD_REQUEST);
     }
