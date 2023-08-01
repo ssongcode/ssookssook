@@ -90,7 +90,7 @@ async def send_json_message():
 					sleep(5)
 				image_cnt+=1
 				if image_cnt == 60: # 사진 30분 간격으로 전송
-					# send_image_to_server()
+					send_image_to_server()
 					cnt = 0
 				sleep(10)
 # Arduino Sensor Value 시리얼 통신
@@ -113,8 +113,10 @@ def TM(frame):
     interpreter.allocate_tensors()
     # 정보 얻기
     input_details = interpreter.get_input_details()
-    image_resized = cv2.resize(frame, 224, 224)
+    # 사진 resize
+    image_resized = cv2.resize(frame, (224, 224))
     image = tf.expand_dims(image_resized, axis=0)
+    image = tf.cast(image,tf.float32)
     # 모델의 입력 텐서에 이미지 데이터 넣기
     interpreter.set_tensor(input_details[0]['index'], image)
     # 판정
@@ -122,7 +124,15 @@ def TM(frame):
     # 출력 정보
     output_details = interpreter.get_output_details()
     output_data = interpreter.get_tensor(output_details[0]['index'])
-    print(output_data)
+    result = ""
+    with open("labels.txt","r") as label:
+        max_data = 0
+        for per in output_data[0]:
+            line = label.readline()
+            if per > max_data:
+               result = line
+               max_data = per
+    return int(result[0])+1
     
 # Teachable Machine 작동 로직 = PC
 # def TM():
@@ -218,6 +228,5 @@ def send_image_to_server():
 	# 	print("이미지 업로드 실패")
 
 if __name__ == "__main__":
-	# asyncio.get_event_loop().run_until_complete(send_json_message())
-	# asyncio.get_event_loop().run_until_complete(connect_and_subscribe())
-    send_image_to_server()
+	asyncio.get_event_loop().run_until_complete(send_json_message())
+	asyncio.get_event_loop().run_until_complete(connect_and_subscribe())
