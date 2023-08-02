@@ -34,7 +34,7 @@ public class AuthenticationConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/*").permitAll()
 //                .antMatchers("/user/join").permitAll() // 모든 사용자 접근 허용
 //                .antMatchers(HttpMethod.POST, "/user").permitAll() // POST /user 요청에 대해 모든 사용자 접근 허용
 //                .anyRequest().authenticated() // 나머지 요청에 대해 인증 필요

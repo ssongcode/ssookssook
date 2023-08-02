@@ -32,6 +32,7 @@ public class EmailMessage {
 
     public MimeMessage createMessage(String to) throws Exception {
         MimeMessage message = javaMailSender.createMimeMessage();
+
         randomCode = createCode(8);
         message.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
         message.setSubject("[쑥쑥] 이메일 인증을 위한 인증코드 발송"); // 제목

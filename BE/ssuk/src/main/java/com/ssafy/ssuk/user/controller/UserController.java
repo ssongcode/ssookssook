@@ -6,10 +6,12 @@ import com.ssafy.ssuk.collection.service.CollectionService;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.dto.response.ResponseDto;
 import com.ssafy.ssuk.plant.service.GardenService;
+import com.ssafy.ssuk.redis.service.RedisService;
 import com.ssafy.ssuk.user.domain.User;
 import com.ssafy.ssuk.user.dto.request.CheckEmailRequestDto;
 import com.ssafy.ssuk.user.dto.request.LoginRequestDto;
 import com.ssafy.ssuk.user.dto.request.RegisterUserRequestDto;
+import com.ssafy.ssuk.user.dto.request.VerifyEmailCodeDto;
 import com.ssafy.ssuk.user.dto.response.InfoResponseDto;
 import com.ssafy.ssuk.user.service.UserService;
 import com.ssafy.ssuk.utils.email.EmailMessage;
@@ -27,7 +29,7 @@ import java.util.List;
 
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
 @Slf4j
@@ -37,11 +39,12 @@ public class UserController {
     private final GardenService gardenService;
     private final BadgeService badgeService;
     private final CollectionService collectionService;
+    private final RedisService redisService;
 
-    // 회원가입 시 이메일 인증
+    // 회원가입시 이메일 인증코드 발송
     @GetMapping("/email")
     public ResponseEntity<?> checkEmail
-    (@RequestBody @Validated CheckEmailRequestDto checkEmailRequestDto, BindingResult bindingResult) throws Exception {
+            (@RequestBody @Validated CheckEmailRequestDto checkEmailRequestDto, BindingResult bindingResult) throws Exception {
         if(bindingResult.hasErrors()){
             return new ResponseEntity<>("Email is empty", HttpStatus.FORBIDDEN);
         }
@@ -51,9 +54,29 @@ public class UserController {
             return new ResponseEntity<>("FALSE", HttpStatus.CONFLICT);
         }
         // 사용자 존재X => 이메일로 인증번호 전송
-        String authCode = emailMessage.sendMail(checkEmailRequestDto.getEmail());
-//        System.out.println(authCode);
+        String userEmail = checkEmailRequestDto.getEmail();
+        String authCode = emailMessage.sendMail(userEmail);
+//        log.debug("userEmail={}",userEmail);
+//        log.debug("authCode={}",authCode);
+        redisService.setEmailCode(userEmail, authCode);
         return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+    // 회원가입시 이메일 인증코드 확인
+    @PostMapping("/email")
+    public ResponseEntity<?> verifyEmailCode
+            (@RequestBody @Validated VerifyEmailCodeDto verifyEmailCodeDto, BindingResult bindingResult) throws Exception {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>("인증코드 오류", HttpStatus.FORBIDDEN);
+        }
+        String userEmail = verifyEmailCodeDto.getEmail();
+        String entryCode = verifyEmailCodeDto.getCode();
+        String authCode = redisService.getEmailCode(userEmail);
+        log.debug("userEmail={}",userEmail);
+        log.debug("entryCode={}",entryCode);
+        log.debug("authCode={}",authCode);
+        if (entryCode.equals(authCode))
+            return new ResponseEntity<>("OK", HttpStatus.OK);
+        return new ResponseEntity<>("FALSE", HttpStatus.NOT_FOUND);
     }
 
     // 사용자 등록
