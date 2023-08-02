@@ -35,9 +35,6 @@ public class EmailMessage {
         randomCode = createCode(8);
         message.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
         message.setSubject("[쑥쑥] 이메일 인증을 위한 인증코드 발송"); // 제목
-//        String msg = "";
-//        msg += "인증 코드입니다.";
-//        msg += randomCode;
 
         String msg="";
         msg += "<div style='margin:5%;'>";
