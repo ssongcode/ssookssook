@@ -38,6 +38,8 @@ spring:
       hibernate.format_sql: true
       dialect: org.hibernate.dialect.MySQL8InnoDBDialect
 
+  config.import: aws.yml
+
 logging:
   level:
 #    root: debug
@@ -47,3 +49,13 @@ logging:
 
 jwt:
   secret: 6YCyHl8E+3j0FHz13dF4lNU6YFLx/8ZKdo/Z0rZzGps=
+
+cloud:
+  aws:
+    s3:
+      bucket: ssook
+      dir: image/
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
