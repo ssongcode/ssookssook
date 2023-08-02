@@ -44,14 +44,14 @@ public class MeasurementController {
 //        return ResponseEntity.ok("hi");
 //    }
 
+    //급수 요청
     @GetMapping("/water/{potId}")
-    void test(@PathVariable String potId)
+    ResponseEntity<?> insertWater(@PathVariable String potId)
     {
-        SensorMessageDto sensorMessageDto = new SensorMessageDto();
-        sensorMessageDto.setMeasurementValue(2.3);
-        sensorMessageDto.setPotId(1);
-        sensorMessageDto.setSerialNumber("11111111");
-        template.convertAndSend("/sub/socket/room/" + "11111111", sensorMessageDto);
+        log.info("물급수 요청");
+        template.convertAndSend("/sub/socket/room/" + "11111111", );
+
+        return null;
     }
 
 }

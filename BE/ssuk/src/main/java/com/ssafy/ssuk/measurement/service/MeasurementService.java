@@ -9,4 +9,6 @@ public interface MeasurementService {
     List<Measurement> findRecentValueByPot_Id(Integer user_id, Integer pot_id);
 
     void insertMeasurement(Measurement measurement);
+
+    
 }
