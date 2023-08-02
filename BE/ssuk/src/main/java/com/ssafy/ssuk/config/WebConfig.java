@@ -1,17 +1,17 @@
 package com.ssafy.ssuk.config;
 
 //import com.ssafy.ssuk.interceptor.LoginCheckInterceptor;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-/**
- * 유저 ID를 토큰에서 꺼내오니깐
- * 인터셉터에서 유저 ID를 requestAttribute에 추가하기 위해서
- * 임시로 만들었습니다.
- */
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+//import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+//
+///**
+// * 유저 ID를 토큰에서 꺼내오니깐
+// * 인터셉터에서 유저 ID를 requestAttribute에 추가하기 위해서
+// * 임시로 만들었습니다.
+// */
+//@Configuration
+//public class WebConfig implements WebMvcConfigurer {
 //    @Override
 //    public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(new LoginCheckInterceptor())
@@ -24,5 +24,5 @@ public class WebConfig implements WebMvcConfigurer {
 //                        "/check/email/{email}",
 //                        "/login/kakao");
 //    }
-
-}
+//
+//}

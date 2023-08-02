@@ -12,7 +12,7 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-    public RedisConnectionFactory redisConnectionFactory() {
-
-    }
+//    public RedisConnectionFactory redisConnectionFactory() {
+//
+//    }
 }

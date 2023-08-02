@@ -29,9 +29,11 @@ import javax.servlet.http.HttpServletResponse;
 //            log.debug("에세스토큰 없네용");
 //            log.debug("그냥 userId 1로 할게요");
 //            request.setAttribute("userId", 1);
+//            request.setAttribute("userNickname", "쑥숙");
 //            return true;
 //        }
-//        request.setAttribute("userId", Integer.parseInt(accessToken));
+//        request.setAttribute("userId",1);
+//        request.setAttribute("userNickname", "쑥숙");
 //        log.debug("userId={}", Integer.parseInt(accessToken));
 //        log.debug("JWT 인증 성공!!");
 //
