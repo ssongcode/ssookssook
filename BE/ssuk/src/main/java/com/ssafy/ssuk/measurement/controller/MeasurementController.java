@@ -30,9 +30,10 @@ public class MeasurementController {
         this.template = template;
     }
 
-    @GetMapping("/{user_id}/{pot_id}")
-    ResponseEntity<?> findByUser_IdAndPot_Id(@PathVariable Integer user_id, @PathVariable Integer pot_id) {
-        List<Measurement> result = mesurementService.findByUser_IdAndPot_Id(user_id, pot_id);
+    //조회
+    @GetMapping("/{pot_id}")
+    ResponseEntity<?> findByUser_IdAndPot_Id(@PathVariable Integer userId, @PathVariable Integer pot_id) {
+        List<Measurement> result = mesurementService.findByUser_IdAndPot_Id(userId, pot_id);
 
         return ResponseEntity.ok(result);
     }
