@@ -24,6 +24,14 @@ public class MeasurementServiceImpl implements MeasurementService {
         return measurementRepository.findRecentValueByPot_Id(pot_id);
     }
 
+    //시리얼 넘버 뱉기
+
+
+    @Override
+    public List<Measurement> findByPot_Id(Integer pot_id) {
+        return measurementRepository.findByPot_Id(pot_id);
+    }
+
     //센서값 저장
     @Override
     public void insertMeasurement(Measurement measurement) {

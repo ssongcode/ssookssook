@@ -1,6 +1,7 @@
 package com.ssafy.ssuk.measurement.controller;
 
 import com.ssafy.ssuk.measurement.domain.Measurement;
+import com.ssafy.ssuk.measurement.dto.request.RaspberryRequestDto;
 import com.ssafy.ssuk.measurement.dto.socket.SensorMessageDto;
 import com.ssafy.ssuk.measurement.service.MeasurementService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,10 +47,14 @@ public class MeasurementController {
 
     //급수 요청
     @GetMapping("/water/{potId}")
-    ResponseEntity<?> insertWater(@PathVariable String potId)
+    ResponseEntity<?> insertWater(@PathVariable Integer potId)
     {
         log.info("물급수 요청");
-        template.convertAndSend("/sub/socket/room/" + "11111111", );
+        Measurement findMeasurement = mesurementService.findByPot_Id(potId).get(0);
+
+        String serialNumber = findMeasurement.getPot().getSerialNumber();
+        log.info("물 급수 요청 : " + serialNumber);
+        template.convertAndSend("/sub/socket/room/" + serialNumber, new RaspberryRequestDto(1, "물 급수 요청"));
 
         return null;
     }

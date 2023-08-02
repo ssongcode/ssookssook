@@ -2,7 +2,7 @@ package com.ssafy.ssuk.measurement.dto.request;
 
 import lombok.*;
 
-@Builder
+@AllArgsConstructor
 @Getter
 @Setter
 public class RaspberryRequestDto {

@@ -10,5 +10,7 @@ public interface MeasurementService {
 
     void insertMeasurement(Measurement measurement);
 
+    List<Measurement> findByPot_Id(Integer pot_id);
+
     
 }
