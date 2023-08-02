@@ -17,7 +17,7 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Intege
     @Query(value = "select m from Measurement  m " +
             "where (m.sensorType, m.measurementTime) in" +
             "(select m.sensorType, max(m.measurementTime) as last_date from Measurement m " +
-            "group by m.sensorType order by last_date) and m.pot.id = :pot_id")
+            "group by m.sensorType order by max(m.measurementTime)) and m.pot.id = :pot_id")
     List<Measurement> findRecentValueByPot_Id(@Param("pot_id") Integer pot_id);
 
     //물 급수

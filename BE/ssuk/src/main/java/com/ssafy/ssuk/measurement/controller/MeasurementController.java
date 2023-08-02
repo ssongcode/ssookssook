@@ -32,8 +32,8 @@ public class MeasurementController {
 
     //조회
     @GetMapping("/{pot_id}")
-    ResponseEntity<?> findByUser_IdAndPot_Id(@PathVariable Integer userId, @PathVariable Integer pot_id) {
-        List<Measurement> result = mesurementService.findByUser_IdAndPot_Id(userId, pot_id);
+    ResponseEntity<?> findByUser_IdAndPot_Id(@RequestAttribute(required = true) Integer userId, @PathVariable Integer pot_id) {
+        List<Measurement> result = mesurementService.findRecentValueByPot_Id(userId, pot_id);
 
         return ResponseEntity.ok(result);
     }

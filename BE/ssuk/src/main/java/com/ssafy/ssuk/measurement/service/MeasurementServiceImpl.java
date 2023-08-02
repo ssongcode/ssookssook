@@ -17,11 +17,11 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public List<Measurement> findByUser_IdAndPot_Id(Integer user_id, Integer pot_id) {
+    public List<Measurement> findRecentValueByPot_Id(Integer user_id, Integer pot_id) {
         // 해당 유저가 화분을 보유하고 있는지 체킹을 할까? 고려해보자
 
         //화분아이디로 센서값 뱉기
-        return measurementRepository.findByPot_Id(pot_id);
+        return measurementRepository.findRecentValueByPot_Id(pot_id);
     }
 
     //센서값 저장
