@@ -19,7 +19,7 @@ const MainScreen = (props) => {
 
   const { potID } = props;
 
-  console.log(potID);
+  console.log("메인부분에서" + potID);
 
   const toggleSettingModal = () => {
     setSettingModalVisible(!isSettingModalVisible);
