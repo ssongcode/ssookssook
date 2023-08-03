@@ -53,10 +53,13 @@ async def connect():
 		image_cnt = 59;
 		while True: # 통신
 			# Server -> Raspberry PI Request
-			response = await websocket.recv()
-			dic = json.loads(response)
-			if dic:
+			
+			try:
+				response = await websocket.recv()
+				dic = json.loads(response)
 				print("Received data From server :"dic)
+			except json.JSONDecodeError as e:
+				print(f"JSON decoding error: {e}")
 			
 			# Raspberry PI -> Server Request
 			sensor_data = read()
