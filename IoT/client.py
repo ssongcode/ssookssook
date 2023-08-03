@@ -55,37 +55,38 @@ async def connect():
 			# Server -> Raspberry PI Request
 			try:
 				response = await websocket.recv()
-				dic = json.loads(response)
-				if dic['code']:
+				if "code" in response:
 					command = "A"
-					print("물 급수 ON")
+					print("ARD WRITE : ", dic)
 					ARD.write(command.encode())
-			except json.JSONDecodeError as e:
+			except:
 				pass
-			# Raspberry PI -> Server Request
-			sensor_data = read()
-			if sensor_data:
-				for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
-					json_message = {
-						"potId" : 1,
-						"serialNumber" : serial_number,
-						"measurementValue" : data,
-						"sensorType" : s_type
-					}
-					#T,H,M,W
-					# Convert the JSON message to a string and send it as the STOMP SEND frame
-					send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
-					await websocket.send(send_frame.encode())
-					print("Send data")
-				image_cnt+=1
-				if image_cnt == 60: # 사진 30분 간격으로 전송
-					send_image_to_server()
-					cnt = 0
-
+			try:
+				# Raspberry PI -> Server Request
+				sensor_data = read()
+				if sensor_data:
+					for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
+						json_message = {
+							"potId" : 1,
+							"serialNumber" : serial_number,
+							"measurementValue" : data,
+							"sensorType" : s_type
+						}
+						#T,H,M,W
+						# Convert the JSON message to a string and send it as the STOMP SEND frame
+						send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
+						await websocket.send(send_frame.encode())
+						# print("Send data")
+					image_cnt+=1
+					if image_cnt == 60: # 사진 30분 간격으로 전송
+						send_image_to_server()
+						cnt = 0
+			except:
+				pass
 # Arduino Sensor Value 시리얼 통신
-def read():
+async def read():
 	if ARD.readable():
-		line = ARD.readline()
+		line = await ARD.readline()
 		temperature, humidity, groundMoisture, waterTank = map(int,line.decode().split())
 		print("temperature :",temperature)
 		print("humidity :", humidity)
