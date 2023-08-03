@@ -84,9 +84,9 @@ async def connect():
 					cnt = 0
 
 # Arduino Sensor Value 시리얼 통신
-def read():
+async def read():
 	if ARD.readable():
-		line = ARD.readline()
+		line = await ARD.readline()
 		temperature, humidity, groundMoisture, waterTank = map(int,line.decode().split())
 		print("temperature :",temperature)
 		print("humidity :", humidity)
