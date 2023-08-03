@@ -116,6 +116,7 @@ public class UserController {
         redisService.setRefreshToken(userEmail, refreshToken);
         String token = redisService.getRefreshToken(userEmail);
         log.debug("token={}",token);
+//        log.debug("refreshToken={}",refreshToken);
         return new ResponseEntity<>(tokenInfo,HttpStatus.OK);
     }
 
@@ -158,8 +159,10 @@ public class UserController {
         }
         String userEmail = checkEmailRequestDto.getEmail();
         String authCode = emailMessage.sendMail(userEmail);
+        log.debug("인증코드 보낼거야");
         // 인증코드 Redis 서버에 저장
         redisService.setEmailCode(userEmail, authCode);
+        log.debug("인증코드 보냈어");
         return new ResponseEntity<>("인증코드 발송 완료", HttpStatus.OK);
     }
 
@@ -182,7 +185,7 @@ public class UserController {
     }
 
     // 비밀번호 재설정
-    @PutMapping("/password")
+    @PostMapping("/password")
     public ResponseEntity<?> updatePassword
     (@RequestBody @Validated UpdatePasswordDto updatePasswordDto, BindingResult bindingResult) throws Exception {
         if(bindingResult.hasErrors()){
