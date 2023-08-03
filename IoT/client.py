@@ -55,14 +55,12 @@ async def connect():
 			# Server -> Raspberry PI Request
 			try:
 				response = await websocket.recv()
-				print(response)
-				if response.strip():
-					dic = json.loads(response)
+				dic = json.loads(response)
+				if dic['code']:
 					command = "A"
 					ARD.write(command.encode())
 			except json.JSONDecodeError as e:
-				print(f"JSON decoding error: {e}")
-			
+				pass
 			# Raspberry PI -> Server Request
 			sensor_data = read()
 			if sensor_data:
