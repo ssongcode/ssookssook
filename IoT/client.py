@@ -54,7 +54,7 @@ async def connect():
 		while True: # 통신
 			# Server -> Raspberry PI Request
 			try:
-				response = ebsocket.recv()
+				response = websocket.recv()
 				if "code" in response:
 					command = "A"
 					print("ARD WRITE : ", response)
@@ -64,10 +64,10 @@ async def connect():
 				
 			try:
 				# Raspberry PI -> Server Request
-				sensor_data = read()
+				sensor_data = await read()
 				print("Arduino Data : ", sensor_data)
 				if sensor_data[4] == 1:
-					for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
+					for data, s_type in zip(sensor_data[:4], ["T", "H", "M", "W"]):
 						json_message = {
 							"potId" : 1,
 							"serialNumber" : serial_number,
