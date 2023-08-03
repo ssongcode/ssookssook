@@ -54,7 +54,7 @@ async def connect():
 		while True: # 통신
 			# Server -> Raspberry PI Request
 			try:
-				response = websocket.recv()
+				response = await asyncio.wait_for(websocket.recv().decode(), timeout=1.0)
 				if "code" in response:
 					command = "A"
 					print("ARD WRITE : ", response)
@@ -87,10 +87,10 @@ async def connect():
 				print(e)
 				break
 # Arduino Sensor Value 시리얼 통신
-def read():
+async def read():
 	if ARD.readable():
 		line = ARD.readline()
-		temperature, humidity, groundMoisture, waterTank = map(int,line.decode().split())
+		temperature, humidity, groundMoisture, waterTank, param = map(int,line.decode().split())
 		print("line :",line)
 		# print("humidity :", humidity)
 		# print("groundMoisture :",groundMoisture)
