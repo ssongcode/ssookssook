@@ -54,9 +54,9 @@ async def connect():
 		while True: # 통신
 			# Server -> Raspberry PI Request
 			response = await websocket.recv()
-            dic = json.loads(dic)
-            if dic:
-                print("Received message from Server :", dic)
+			dic = json.loads(dic)
+			if dic:
+				print("Received message from Server :", dic)
 
 			# Raspberry PI -> Server Request
 			sensor_data = read()
@@ -93,32 +93,32 @@ def read():
 
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
-    # Load your model onto the TF Lite Interpreter
-    interpreter = tf.lite.Interpreter(model_path=modelPath)
-    interpreter.allocate_tensors()
-    # 정보 얻기
-    input_details = interpreter.get_input_details()
-    # 사진 resize
-    image_resized = cv2.resize(frame, (224, 224))
-    image = tf.expand_dims(image_resized, axis=0)
-    image = tf.cast(image,tf.float32)
-    # 모델의 입력 텐서에 이미지 데이터 넣기
-    interpreter.set_tensor(input_details[0]['index'], image)
-    # 판정
-    interpreter.invoke()
-    # 출력 정보
-    output_details = interpreter.get_output_details()
-    output_data = interpreter.get_tensor(output_details[0]['index'])
-    result = ""
-    with open("labels.txt","r") as label:
-        max_data = 0
-        for per in output_data[0]:
-            line = label.readline()
-            if per > max_data:
-               result = line
-               max_data = per
-    return int(result[0])+1
-    
+	# Load your model onto the TF Lite Interpreter
+	interpreter = tf.lite.Interpreter(model_path=modelPath)
+	interpreter.allocate_tensors()
+	# 정보 얻기
+	input_details = interpreter.get_input_details()
+	# 사진 resize
+	image_resized = cv2.resize(frame, (224, 224))
+	image = tf.expand_dims(image_resized, axis=0)
+	image = tf.cast(image,tf.float32)
+	# 모델의 입력 텐서에 이미지 데이터 넣기
+	interpreter.set_tensor(input_details[0]['index'], image)
+	# 판정
+	interpreter.invoke()
+	# 출력 정보
+	output_details = interpreter.get_output_details()
+	output_data = interpreter.get_tensor(output_details[0]['index'])
+	result = ""
+	with open("labels.txt","r") as label:
+		max_data = 0
+		for per in output_data[0]:
+			line = label.readline()
+			if per > max_data:
+				result = line
+				max_data = per
+	return int(result[0])+1
+
 # Teachable Machine 작동 로직 = PC
 # def TM():
 # 	# Disable scientific notation for clarity
@@ -214,4 +214,3 @@ def send_image_to_server():
 
 if __name__ == "__main__":
 	asyncio.get_event_loop().run_until_complete(connect())
-	
