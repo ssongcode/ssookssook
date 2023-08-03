@@ -56,8 +56,9 @@ async def connect():
 			
 			try:
 				response = await websocket.recv()
-                if response.strip():
-                   dic = json.loads(response)
+				print(response)
+				if response.strip():
+					dic = json.loads(response)
 				   print("Received data From server :", dic)
 			except json.JSONDecodeError as e:
 				print(f"JSON decoding error: {e}")
