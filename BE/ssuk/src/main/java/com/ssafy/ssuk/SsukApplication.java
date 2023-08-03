@@ -15,14 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController // 테스트용
 @RequestMapping("/")
 public class SsukApplication {
-    public static final String APPLICATION_LOCATIONS = "spring.config.location=" +
-            "classpath:application.yml" +
-            "classpath:aws.yml";
 
     @GetMapping("")
     String home()
     {
-        return "ssook ssook!";
+        return "백엔드!";
     }
 
     @PostMapping("")

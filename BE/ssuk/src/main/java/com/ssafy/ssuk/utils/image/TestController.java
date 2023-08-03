@@ -6,15 +6,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @RequestMapping("/test")
-@RestController
+//@RestController
 public class TestController {
 
-    private final S3Uploader s3Uploader;
+//    private final S3Uploader s3Uploader;
 
-    @PostMapping("/upload")
-    public String upload(@RequestParam("image") MultipartFile multipartFile) throws IOException {
-        return s3Uploader.upload(multipartFile);
-    }
+//    @PostMapping("/upload")
+//    public String upload(@RequestParam("image") MultipartFile multipartFile) throws IOException {
+//        return s3Uploader.upload(multipartFile);
+//    }
 }
