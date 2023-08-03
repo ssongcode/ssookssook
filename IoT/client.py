@@ -11,9 +11,9 @@ from time import sleep
 # from PIL import Image, ImageOps  # Install pillow instead of PIL
 # import numpy as np
 from datetime import datetime
-# import tflite_runtime.interpreter as tflite
-# import numpy as np
-# import tensorflow as tf
+import tflite_runtime.interpreter as tflite
+import numpy as np
+import tensorflow as tf
 
 # PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
 BAUD_RATE = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
@@ -54,8 +54,10 @@ async def connect():
 		while True: # 통신
 			# Server -> Raspberry PI Request
 			response = await websocket.recv()
-			print("Received message:", response)
-			
+            dic = json.loads(dic)
+            if dic:
+                print("Received message from Server :", dic)
+
 			# Raspberry PI -> Server Request
 			sensor_data = read()
 			if sensor_data:
@@ -166,7 +168,7 @@ def TM(frame):
 # 	print("Confidence Score:", confidence_score)
 #	result = int(class_name[0])
 
-def send
+def send_image_to_server():
 	# 서버로 전송_image_to_server():
 	# 카메라 세팅
 	cam = cv2.VideoCapture(0)
