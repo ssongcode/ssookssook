@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ImageBackground, View, Image, TouchableOpacity } from "react-native";
 import CookieRunRegular from "../../components/common/CookieRunRegular";
 import ModalSetting from "../../components/modalsetting";
@@ -8,6 +8,7 @@ import ModalDictionary from "../../components/modaldictionary";
 import styles from "./style";
 import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
+import customAxios from "../../utils/axios";
 
 const MainScreen = (props) => {
   const navigation = useNavigation();
@@ -16,8 +17,50 @@ const MainScreen = (props) => {
   const [isOpenMapModalVisible, setIsOpenMapModalVisible] = useState(false);
   const [isDictionaryModalVisible, setIsDictionaryModalVisible] =
     useState(false);
+  const [temperature, setTemperature] = useState(0);
+  const [moisture, setMoisture] = useState(0);
+  const [humidity, setHumidity] = useState(0);
 
   const { potID } = props;
+
+  const getUserData = () => {
+    customAxios.get(`/sensor/${potID}`).then((res) => {
+      console.log(res.data);
+
+      const temperatureData = res.data.find(
+        (sensor) => sensor.sensorType === "T"
+      );
+      const moistureData = res.data.find((sensor) => sensor.sensorType === "M");
+      const humidityData = res.data.find((sensor) => sensor.sensorType === "H");
+
+      if (temperatureData) {
+        setTemperature(temperatureData.measurementValue);
+      }
+
+      if (moistureData) {
+        setMoisture(moistureData.measurementValue);
+      }
+
+      if (humidityData) {
+        setHumidity(humidityData.measurementValue);
+      }
+    });
+  };
+
+  useEffect(() => {
+    // 컴포넌트가 마운트될 때 getUserData 함수 호출
+    getUserData();
+
+    // 30초마다 getUserData 함수 호출하는 interval 설정
+    const interval = setInterval(() => {
+      getUserData();
+    }, 30000); // 30초를 밀리초로 변환
+
+    // 컴포넌트가 언마운트될 때 interval 정리
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   console.log("메인부분에서" + potID);
 
@@ -43,6 +86,12 @@ const MainScreen = (props) => {
     console.log("Selected option: " + option);
   };
 
+  const handleWateringPlant = () => {
+    customAxios.get(`/sensor/water/${potID}`).then(() => {
+      console.log("성공");
+    });
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -58,7 +107,7 @@ const MainScreen = (props) => {
                 style={styles.sensorSize}
               />
               <CookieRunRegular style={styles.tmpText}>
-                26.3 C°
+                {temperature} C°
               </CookieRunRegular>
             </View>
             <View style={styles.tmp}>
@@ -68,7 +117,7 @@ const MainScreen = (props) => {
                 style={styles.sensorSize}
               />
               <CookieRunRegular style={styles.tmpText}>
-                26.3 C°
+                {humidity} C°
               </CookieRunRegular>
             </View>
             <View style={styles.tmp}>
@@ -78,7 +127,7 @@ const MainScreen = (props) => {
                 style={styles.sensorSize}
               />
               <CookieRunRegular style={styles.tmpText}>
-                26.3 C°
+                {moisture} C°
               </CookieRunRegular>
             </View>
             <TouchableOpacity onPress={toggleOpenMap}>
@@ -147,7 +196,7 @@ const MainScreen = (props) => {
           />
         </TouchableOpacity>
         <View style={styles.wateringCanSection}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleWateringPlant}>
             <Image
               source={require("../../assets/img/wateringCanIcon.png")}
               resizeMode="contain"
