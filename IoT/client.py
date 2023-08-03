@@ -53,13 +53,12 @@ async def connect():
 		image_cnt = 59;
 		while True: # 통신
 			# Server -> Raspberry PI Request
-			
 			try:
 				response = await websocket.recv()
 				print(response)
 				if response.strip():
 					dic = json.loads(response)
-                    command = "A"
+					command = "A"
 					ARD.write(command.encode())
 			except json.JSONDecodeError as e:
 				print(f"JSON decoding error: {e}")
