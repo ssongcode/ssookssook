@@ -58,6 +58,7 @@ async def connect():
 				dic = json.loads(response)
 				if dic['code']:
 					command = "A"
+					print("물 급수 ON")
 					ARD.write(command.encode())
 			except json.JSONDecodeError as e:
 				pass
