@@ -11,27 +11,29 @@ from time import sleep
 # from PIL import Image, ImageOps  # Install pillow instead of PIL
 # import numpy as np
 from datetime import datetime
-import tflite_runtime.interpreter as tflite
-import numpy as np
-import tensorflow as tf
+# import tflite_runtime.interpreter as tflite
+# import numpy as np
+# import tensorflow as tf
 
-PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
-BaudRate = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
-ARD = serial.Serial(PORT, BaudRate) # 아두이노 통신 설정 - PC
-# ARD = serial.Serial("/dev/ttyACM0",BaudRate) # 아두이노 통신 설정 - 라즈베리파이4
+# PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
+BAUD_RATE = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
+# ARD = serial.Serial(PORT, BAUD_RATE) # 아두이노 통신 설정 - PC
+ARD = serial.Serial("/dev/ttyACM0",BAUD_RATE) # 아두이노 통신 설정 - 라즈베리파이4
 # the TFLite converted to be used with edgetpu
 modelPath = 'model_unquant.tflite'
 
 # The path to labels.txt that was downloaded with your model
 labelPath = 'labels.txt'
 
-async def connect_and_subscribe():
+async def connect():
 	# uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
 	uri = "ws://i9b102.p.ssafy.io:8080/stomp"
 	username = "your_username"  # Replace with your username
 	password = "your_password"  # Replace with your password
 	# destination = "/sub/chat/room/c5e9f525-0cbd-4191-9cfa-248b1cfb0131"  # The topic to subscribe to
-	destination = ""
+	serial_number = ""
+	recv_destination = "" # The destination to receive message.
+	send_destination = "/pub/socket/sensor"  # The destination to send the JSON message
 	with open("serial_number.txt","r") as file:
 		serial_number = file.readline()
 		if serial_number == "":
@@ -39,6 +41,7 @@ async def connect_and_subscribe():
 			conn.send(-1);
 			return
 		destination = "/sub/socket/room/" + serial_number
+	
 	async with websockets.connect(uri) as websocket:
 		# Send STOMP CONNECT frame with credentials
 		connect_frame = f"CONNECT\naccept-version:1.2\nlogin:{username}\npasscode:{password}\n\n\x00"
@@ -47,34 +50,13 @@ async def connect_and_subscribe():
 		# Send STOMP SUBSCRIBE frame to subscribe to the destination
 		subscribe_frame = f"SUBSCRIBE\ndestination:{destination}\nid:sub-1\nack:auto\n\n\x00"
 		await websocket.send(subscribe_frame.encode())
-
-		while True:
-			response = await websocket.recv()
-			print("Received message:", response.decode())
-			req = "Server Req!!"
-			ARD.write(A)
-
-async def send_json_message():
-	# uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
-	uri = "ws://i9b102.p.ssafy.io:8080/stomp"
-	username = "your_username"  # Replace with your username
-	password = "your_password"  # Replace with your password
-	destination = "/pub/socket/sensor"  # The destination to send the JSON message
-
-	async with websockets.connect(uri) as websocket:
-		# Send STOMP CONNECT frame with credentials
-		connect_frame = f"CONNECT\naccept-version:1.2\nlogin:{username}\npasscode:{password}\n\n\x00"
-		await websocket.send(connect_frame.encode())
-		serial_number = ""
-		with open("serial_number.txt","r") as file:
-			serial_number = file.readline()
-			if serial_number == "":
-				print("시리얼 넘버가 없습니다.")
-				conn.send(-1);
-				return
-		# Create a JSON message
 		image_cnt = 59;
-		while True:
+		while True: # 통신
+			# Server -> Raspberry PI Request
+			response = await websocket.recv()
+			print("Received message:", response)
+			
+			# Raspberry PI -> Server Request
 			sensor_data = read()
 			if sensor_data:
 				for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
@@ -88,22 +70,21 @@ async def send_json_message():
 					# Convert the JSON message to a string and send it as the STOMP SEND frame
 					send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
 					await websocket.send(send_frame.encode())
-					print("Send data : ", data, s_type)
-					sleep(5)
+					print("Send data")
 				image_cnt+=1
 				if image_cnt == 60: # 사진 30분 간격으로 전송
 					send_image_to_server()
 					cnt = 0
-				sleep(10)
+
 # Arduino Sensor Value 시리얼 통신
 def read():
 	if ARD.readable():
 		line = ARD.readline()
 		temperature, humidity, groundMoisture, waterTank = map(int,line.decode().split())
-		# print("temperature :",temperature)
-		# print("humidity :", humidity)
-		# print("groundMoisture :",groundMoisture)
-		# print("waterTank :",waterTank)
+		print("temperature :",temperature)
+		print("humidity :", humidity)
+		print("groundMoisture :",groundMoisture)
+		print("waterTank :",waterTank)
 		return [ temperature, humidity, groundMoisture, waterTank ]
 	else:
 		print("Read Failed!!")
@@ -185,7 +166,8 @@ def TM(frame):
 # 	print("Confidence Score:", confidence_score)
 #	result = int(class_name[0])
 
-def send_image_to_server():
+def send
+	# 서버로 전송_image_to_server():
 	# 카메라 세팅
 	cam = cv2.VideoCapture(0)
 	# 카메라가 열렸는지 체크
@@ -215,7 +197,6 @@ def send_image_to_server():
 	# TM() # PC 버전
 	result = TM(frame) # Raspberry PI 버전
 	print("tflite result : ", result)
-	# 서버로 전송
 	# 이미지 전송 할 uri
 	# url = "https://i9b102.p.ssafy.io:8080/upload"
 	
@@ -230,5 +211,5 @@ def send_image_to_server():
 	# 	print("이미지 업로드 실패")
 
 if __name__ == "__main__":
-	asyncio.get_event_loop().run_until_complete(send_json_message())
-	asyncio.get_event_loop().run_until_complete(connect_and_subscribe())
+	asyncio.get_event_loop().run_until_complete(connect())
+	

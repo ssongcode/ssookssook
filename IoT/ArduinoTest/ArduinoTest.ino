@@ -6,28 +6,25 @@ unsigned long sensorTime = 0;
 unsigned long pumpTime = 0;
 int pumpSwap = 0;
 void setup(){
-  pinMode(11, OUTPUT);
+  pinMode(2, OUTPUT);
   Serial.begin(9600);
-  digitalWrite(11, LOW);
+  digitalWrite(2, LOW);
 }
 
 void loop(){
   // 온습도 센서
   unsigned long time = millis();
   char data = Serial.read();
-  if(data == 'A') {
-    Serial.println("PUMP!");
-  }
   if(time - pumpTime >= 3000){ // 워터펌프 로직
     pumpTime = time;
     if(pumpSwap == 0){
-      digitalWrite(11, HIGH);
+      digitalWrite(2, HIGH);
       pumpSwap = 1;
-      Serial.println("ON!");
+      // Serial.println("ON!");
     }else{
-      digitalWrite(11, LOW);
+      digitalWrite(2, LOW);
       pumpSwap = 0;
-      Serial.println("OFF!");
+      // Serial.println("OFF!");
     }
 
   }
