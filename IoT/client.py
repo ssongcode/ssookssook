@@ -40,7 +40,7 @@ async def connect():
 			print("시리얼 넘버가 없습니다.")
 			conn.send(-1);
 			return
-		destination = "/sub/socket/room/" + serial_number
+		recv_destination = "/sub/socket/room/" + serial_number
 	
 	async with websockets.connect(uri) as websocket:
 		# Send STOMP CONNECT frame with credentials
@@ -48,23 +48,23 @@ async def connect():
 		await websocket.send(connect_frame.encode())
 
 		# Send STOMP SUBSCRIBE frame to subscribe to the destination
-		subscribe_frame = f"SUBSCRIBE\ndestination:{destination}\nid:sub-1\nack:auto\n\n\x00"
+		subscribe_frame = f"SUBSCRIBE\ndestination:{recv_destination}\nid:sub-1\nack:auto\n\n\x00"
 		await websocket.send(subscribe_frame.encode())
 		image_cnt = 59;
 		while True: # 통신
 			# Server -> Raspberry PI Request
 			try:
-				response = await websocket.recv()
+				response = ebsocket.recv()
 				if "code" in response:
 					command = "A"
-					print("ARD WRITE : ", dic)
+					print("ARD WRITE : ", response)
 					ARD.write(command.encode())
 			except:
 				pass
 			try:
 				# Raspberry PI -> Server Request
-				sensor_data = read()
-				if sensor_data:
+				sensor_data = await read()
+				if sensor_data[4] == 1:
 					for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
 						json_message = {
 							"potId" : 1,
@@ -74,7 +74,7 @@ async def connect():
 						}
 						#T,H,M,W
 						# Convert the JSON message to a string and send it as the STOMP SEND frame
-						send_frame = f"SEND\ndestination:{destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
+						send_frame = f"SEND\ndestination:{send_destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
@@ -84,18 +84,18 @@ async def connect():
 			except:
 				pass
 # Arduino Sensor Value 시리얼 통신
-async def read():
+def read():
 	if ARD.readable():
-		line = await ARD.readline()
+		line = ARD.readline()
 		temperature, humidity, groundMoisture, waterTank = map(int,line.decode().split())
-		print("temperature :",temperature)
-		print("humidity :", humidity)
-		print("groundMoisture :",groundMoisture)
-		print("waterTank :",waterTank)
-		return [ temperature, humidity, groundMoisture, waterTank ]
+		print("line :",line)
+		# print("humidity :", humidity)
+		# print("groundMoisture :",groundMoisture)
+		# print("waterTank :",waterTank)
+		return [ temperature, humidity, groundMoisture, waterTank, param ]
 	else:
 		print("Read Failed!!")
-
+        return [ 0,0,0,0,-1]
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
 	# Load your model onto the TF Lite Interpreter
