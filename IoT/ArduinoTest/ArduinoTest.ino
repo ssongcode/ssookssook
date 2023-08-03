@@ -14,19 +14,15 @@ void setup(){
 void loop(){
   // 온습도 센서
   unsigned long time = millis();
-  char data = Serial.read();
-  if(time - pumpTime >= 3000){ // 워터펌프 로직
-    pumpTime = time;
-    if(pumpSwap == 0){
+  if(Serial.available() > 0){ 
+    char data = Serial.read();
+    if(data == 'A') {// A : 물 급수
+      pumpTime = time;
       digitalWrite(2, HIGH);
-      pumpSwap = 1;
-      // Serial.println("ON!");
-    }else{
-      digitalWrite(2, LOW);
-      pumpSwap = 0;
-      // Serial.println("OFF!");
     }
-
+  }
+  if(time-pumpTime > 2000){
+    digitalWrite(2, LOW);
   }
   if(time - sensorTime >= 5000){ // 센서 로직
     sensorTime = time;
