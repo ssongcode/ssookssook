@@ -54,10 +54,10 @@ async def connect():
 		while True: # 통신
 			# Server -> Raspberry PI Request
 			response = await websocket.recv()
-			dic = json.loads(dic)
+			dic = json.loads(response)
 			if dic:
-				print("Received message from Server :", dic)
-
+				print("Received data From server :"dic)
+			
 			# Raspberry PI -> Server Request
 			sensor_data = read()
 			if sensor_data:
