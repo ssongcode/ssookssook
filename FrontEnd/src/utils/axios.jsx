@@ -1,11 +1,12 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // 토큰이 필요한 API 요청을 보내는 axios 인스턴스
 export const customAxios = axios.create({
   baseURL: `http://i9b102.p.ssafy.io:8080`,
-  // headers: {
-  //   Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  // },
+  headers: {
+    Authorization: `Bearer ${AsyncStorage.getItem("accessToken")}`,
+  },
 });
 
 // 토큰 갱신 API
@@ -14,7 +15,7 @@ export async function postRefreshToken() {
     const response = await axios.post(
       "http://i9b102.p.ssafy.io:8080/api/v1/auth/refresh",
       {
-        refreshToken: localStorage.getItem("refreshToken"),
+        refreshToken: AsyncStorage.getItem("refreshToken"),
       }
     );
     return response;
@@ -45,8 +46,8 @@ customAxios.interceptors.response.use(
         // 토큰 갱신 요청이 성공했을 때
         if (response.status === 200) {
           const newAccessToken = response.data.token;
-          localStorage.setItem("accessToken", newAccessToken);
-          localStorage.setItem("refreshToken", response.data.refreshToken);
+          AsyncStorage.setItem("accessToken", newAccessToken);
+          AsyncStorage.setItem("refreshToken", response.data.refreshToken);
           customAxios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
           // 진행 중인 요청을 이어서 처리
           originRequest.headers.Authorization = `Bearer ${newAccessToken}`;
