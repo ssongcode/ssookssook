@@ -63,7 +63,8 @@ async def connect():
 				pass
 			try:
 				# Raspberry PI -> Server Request
-				sensor_data = await read()
+				sensor_data = read()
+				print("Arduino Data : ", sensor_data)
 				if sensor_data[4] == 1:
 					for data, s_type in zip(sensor_data, ["T", "H", "M", "W"]):
 						json_message = {
@@ -95,7 +96,7 @@ def read():
 		return [ temperature, humidity, groundMoisture, waterTank, param ]
 	else:
 		print("Read Failed!!")
-        return [ 0,0,0,0,-1]
+		return [ 0, 0, 0, 0, 0]
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
 	# Load your model onto the TF Lite Interpreter

@@ -24,9 +24,9 @@ void loop(){
   if(time-pumpTime > 2000){
     digitalWrite(2, LOW);
   }
-  if(time - sensorTime >= 5000){ // 센서 로직
+  DHT.read(PIN);
+  if(time - sensorTime >= 20000){ // 센서 로직
     sensorTime = time;
-    DHT.read(PIN);
     // Serial.print("temp:");
     // Serial.print(DHT.temperature); // 온도 출력
     // Serial.print("  humi:");
@@ -48,6 +48,33 @@ void loop(){
     // Serial.print("waterTank : ");
     // Serial.println(waterTank);
     Serial.print(waterTank);
+    Serial.print(" ");
+    Serial.print(1);
+    Serial.println();
+  }else{
+    // Serial.print("temp:");
+    // Serial.print(DHT.temperature); // 온도 출력
+    // Serial.print("  humi:");
+    // Serial.println(DHT.humidity); //습도 출력
+    Serial.print(DHT.temperature);
+    Serial.print(" ");
+    Serial.print(DHT.humidity);
+    Serial.print(" ");
+    // 토양 수분 센서 (현재 -로 측정이 되는데 문제 확인 필요)
+    int groundMoisture = analogRead(PIN);  
+    groundMoisture = map(groundMoisture,550,0,0,100);  
+    // Serial.print("Mositure : ");  
+    // Serial.print(groundMoisture);  
+    // Serial.println("%");
+    Serial.print(groundMoisture);
+    Serial.print(" ");
+    // 수위 측정 센서 (물 감지시 300~500 사이, 물이 없다면 ~30 -> 범위는 100을 기준으로 두면 될듯)
+    int waterTank = analogRead(PIN);
+    // Serial.print("waterTank : ");
+    // Serial.println(waterTank);
+    Serial.print(waterTank);
+    Serial.print(" ");
+    Serial.print(0);
     Serial.println();
   }
 
