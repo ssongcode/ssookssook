@@ -58,27 +58,27 @@ public class UserController {
 //        log.debug("userEmail={}",userEmail);
 //        log.debug("authCode={}",authCode);
         // 인증코드 Redis 서버에 저장
-        redisService.setEmailCode(userEmail, authCode);
+//        redisService.setEmailCode(userEmail, authCode);
         return new ResponseEntity<>("인증코드 발송 완료", HttpStatus.OK);
     }
 
     // 회원가입시 이메일 인증코드 확인
-    @PostMapping("/join/emailcheck")
-    public ResponseEntity<?> verifyEmailCode
-            (@RequestBody @Validated VerifyEmailCodeDto verifyEmailCodeDto, BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>("요청값 검증 실패", HttpStatus.FORBIDDEN);
-        }
-        String userEmail = verifyEmailCodeDto.getEmail();
-        String entryCode = verifyEmailCodeDto.getCode();
-        String authCode = redisService.getEmailCode(userEmail);
-        log.debug("userEmail={}",userEmail);
-        log.debug("entryCode={}",entryCode);
-        log.debug("authCode={}",authCode);
-        if (entryCode.equals(authCode))
-            return new ResponseEntity<>("인증코드 일치", HttpStatus.OK);
-        return new ResponseEntity<>("인증코드 불일치", HttpStatus.NOT_FOUND);
-    }
+//    @PostMapping("/join/emailcheck")
+//    public ResponseEntity<?> verifyEmailCode
+//            (@RequestBody @Validated VerifyEmailCodeDto verifyEmailCodeDto, BindingResult bindingResult) throws Exception {
+//        if (bindingResult.hasErrors()) {
+//            return new ResponseEntity<>("요청값 검증 실패", HttpStatus.FORBIDDEN);
+//        }
+//        String userEmail = verifyEmailCodeDto.getEmail();
+//        String entryCode = verifyEmailCodeDto.getCode();
+//        String authCode = redisService.getEmailCode(userEmail);
+//        log.debug("userEmail={}",userEmail);
+//        log.debug("entryCode={}",entryCode);
+//        log.debug("authCode={}",authCode);
+//        if (entryCode.equals(authCode))
+//            return new ResponseEntity<>("인증코드 일치", HttpStatus.OK);
+//        return new ResponseEntity<>("인증코드 불일치", HttpStatus.NOT_FOUND);
+//    }
 
     // 닉네임 중복 확인
     @GetMapping("/nickname/{nickname}")
@@ -113,9 +113,10 @@ public class UserController {
         String userEmail = loginRequestDto.getEmail();
         String refreshToken = tokenInfo.getRefreshToken();
         // refreshToken Redis 서버에 저장
-        redisService.setRefreshToken(userEmail, refreshToken);
-        String token = redisService.getRefreshToken(userEmail);
-        log.debug("token={}",token);
+//        redisService.setRefreshToken(userEmail, refreshToken);
+//        String token = redisService.getRefreshToken(userEmail);
+//        log.debug("token={}",token);
+        log.debug("refreshToken={}",refreshToken);
         return new ResponseEntity<>(tokenInfo,HttpStatus.OK);
     }
 
@@ -159,37 +160,37 @@ public class UserController {
         String userEmail = checkEmailRequestDto.getEmail();
         String authCode = emailMessage.sendMail(userEmail);
         // 인증코드 Redis 서버에 저장
-        redisService.setEmailCode(userEmail, authCode);
+//        redisService.setEmailCode(userEmail, authCode);
         return new ResponseEntity<>("인증코드 발송 완료", HttpStatus.OK);
     }
 
     // 비밀번호 재설정시 이메일 인증코드 확인
-    @PostMapping("/password/emailcheck")
-    public ResponseEntity<?> verifyPasswordEmailCode
-    (@RequestBody @Validated VerifyEmailCodeDto verifyEmailCodeDto, BindingResult bindingResult) throws Exception {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>("요청값 검증 실패", HttpStatus.FORBIDDEN);
-        }
-        String userEmail = verifyEmailCodeDto.getEmail();
-        String entryCode = verifyEmailCodeDto.getCode();
-        String authCode = redisService.getEmailCode(userEmail);
-        log.debug("userEmail={}",userEmail);
-        log.debug("entryCode={}",entryCode);
-        log.debug("authCode={}",authCode);
-        if (entryCode.equals(authCode))
-            return new ResponseEntity<>("인증코드 일치", HttpStatus.OK);
-        return new ResponseEntity<>("인증코드 불일치", HttpStatus.NOT_FOUND);
-    }
+//    @PostMapping("/password/emailcheck")
+//    public ResponseEntity<?> verifyPasswordEmailCode
+//    (@RequestBody @Validated VerifyEmailCodeDto verifyEmailCodeDto, BindingResult bindingResult) throws Exception {
+//        if (bindingResult.hasErrors()) {
+//            return new ResponseEntity<>("요청값 검증 실패", HttpStatus.FORBIDDEN);
+//        }
+//        String userEmail = verifyEmailCodeDto.getEmail();
+//        String entryCode = verifyEmailCodeDto.getCode();
+//        String authCode = redisService.getEmailCode(userEmail);
+//        log.debug("userEmail={}",userEmail);
+//        log.debug("entryCode={}",entryCode);
+//        log.debug("authCode={}",authCode);
+//        if (entryCode.equals(authCode))
+//            return new ResponseEntity<>("인증코드 일치", HttpStatus.OK);
+//        return new ResponseEntity<>("인증코드 불일치", HttpStatus.NOT_FOUND);
+//    }
 
     // 비밀번호 재설정
-    @PostMapping("/password")
-    public ResponseEntity<?> updatePassword
-    (@RequestBody @Validated UpdatePasswordDto updatePasswordDto, BindingResult bindingResult) throws Exception {
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>("error", HttpStatus.FORBIDDEN);
-        }
-        userService.updatePassword(updatePasswordDto);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
-    }
+//    @PostMapping("/password")
+//    public ResponseEntity<?> updatePassword
+//    (@RequestBody @Validated UpdatePasswordDto updatePasswordDto, BindingResult bindingResult) throws Exception {
+//        if(bindingResult.hasErrors()){
+//            return new ResponseEntity<>("error", HttpStatus.FORBIDDEN);
+//        }
+//        userService.updatePassword(updatePasswordDto);
+//        return new ResponseEntity<>("OK", HttpStatus.OK);
+//    }
 
 }
