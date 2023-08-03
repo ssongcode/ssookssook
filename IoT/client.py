@@ -59,8 +59,9 @@ async def connect():
 					command = "A"
 					print("ARD WRITE : ", response)
 					ARD.write(command.encode())
-			except:
-				pass
+			except Exception as e:
+				print(e)
+				
 			try:
 				# Raspberry PI -> Server Request
 				sensor_data = read()
@@ -82,8 +83,9 @@ async def connect():
 					if image_cnt == 60: # 사진 30분 간격으로 전송
 						send_image_to_server()
 						cnt = 0
-			except:
-				pass
+			except Exception as e:
+				print(e)
+				break
 # Arduino Sensor Value 시리얼 통신
 def read():
 	if ARD.readable():
