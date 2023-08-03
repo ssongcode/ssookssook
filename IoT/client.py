@@ -59,7 +59,8 @@ async def connect():
 				print(response)
 				if response.strip():
 					dic = json.loads(response)
-					print("Received data From server :", dic)
+                    command = "A"
+					ARD.write(command.encode())
 			except json.JSONDecodeError as e:
 				print(f"JSON decoding error: {e}")
 			
@@ -84,9 +85,9 @@ async def connect():
 					cnt = 0
 
 # Arduino Sensor Value 시리얼 통신
-async def read():
+def read():
 	if ARD.readable():
-		line = await ARD.readline()
+		line = ARD.readline()
 		temperature, humidity, groundMoisture, waterTank = map(int,line.decode().split())
 		print("temperature :",temperature)
 		print("humidity :", humidity)
