@@ -17,15 +17,14 @@ const MainScreen = (props) => {
   const [isOpenMapModalVisible, setIsOpenMapModalVisible] = useState(false);
   const [isDictionaryModalVisible, setIsDictionaryModalVisible] =
     useState(false);
+  const [isCharacterTrue, setCharacterTrue] = useState(false);
   const [temperature, setTemperature] = useState(0);
   const [moisture, setMoisture] = useState(0);
   const [humidity, setHumidity] = useState(0);
 
-  const { potID } = props;
-
   const getUserData = () => {
-    customAxios.get(`/sensor/${potID}`).then((res) => {
-      console.log(res.data);
+    customAxios.get(`/sensor/${props.potID}`).then((res) => {
+      console.log("여기", res.data);
 
       const temperatureData = res.data.find(
         (sensor) => sensor.sensorType === "T"
@@ -62,7 +61,33 @@ const MainScreen = (props) => {
     };
   }, []);
 
-  console.log("메인부분에서" + potID);
+  const getPlantData = (gardenId) => {
+    if (gardenId === 999) {
+      customAxios
+        .get(`/plant/${props.gardenID}`)
+        .then((res) => {
+          console.log(res.data);
+          setCharacterTrue(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      customAxios
+        .get(`/plant/${gardenId}`)
+        .then((res) => {
+          console.log(res.data);
+          setCharacterTrue(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  useEffect(() => {
+    getPlantData(999);
+  }, []);
 
   const toggleSettingModal = () => {
     setSettingModalVisible(!isSettingModalVisible);
@@ -80,14 +105,31 @@ const MainScreen = (props) => {
     setIsDictionaryModalVisible(!isDictionaryModalVisible);
   };
 
-  const handleSeedPlant = (nickname, option) => {
+  const handleSeedPlant = (plantId, plantName, nickname) => {
     // 씨앗 심기 관련 로직
+    // customr
+
+    customAxios
+      .post("/plant", {
+        plantId: plantId,
+        potId: props.potID,
+        nickname: nickname,
+      })
+      .then((res) => {
+        console.log("식물 등록 성공");
+        getPlantData(res.data.data.gardenId);
+      })
+      .catch(() => {
+        navigation.navigate("Error");
+      });
+
     console.log("Planting seed with nickname: " + nickname);
-    console.log("Selected option: " + option);
+    console.log("Selected plantId: " + plantId);
+    console.log("Selected plantName: " + plantName);
   };
 
   const handleWateringPlant = () => {
-    customAxios.get(`/sensor/water/${potID}`).then(() => {
+    customAxios.get(`/sensor/water/${props.potID}`).then(() => {
       console.log("성공");
     });
   };
@@ -185,16 +227,29 @@ const MainScreen = (props) => {
             style={styles.nameTagSize}
           />
         </View>
-        <TouchableOpacity
-          style={styles.characterSection}
-          onPress={toggleCharacterModal}
-        >
-          <Image
-            source={require("../../assets/img/lettuce_3.gif")}
-            resizeMode="contain"
-            style={styles.characterSize}
-          />
-        </TouchableOpacity>
+        {isCharacterTrue ? (
+          <TouchableOpacity
+            style={styles.characterSection}
+            onPress={toggleCharacterModal}
+          >
+            <Image
+              source={require("../../assets/img/lettuce_3.gif")}
+              resizeMode="contain"
+              style={styles.characterSize}
+            />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.characterSection}
+            onPress={toggleCharacterModal}
+          >
+            <Image
+              source={require("../../assets/img/silhouette.png")}
+              resizeMode="contain"
+              style={styles.characterSize}
+            />
+          </TouchableOpacity>
+        )}
         <View style={styles.wateringCanSection}>
           <TouchableOpacity onPress={handleWateringPlant}>
             <Image
@@ -230,7 +285,8 @@ const MainScreen = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    potID: state.potID, // 'potID' should match the name you have in your Redux state
+    potID: state.app.potID,
+    gardenID: state.app.gardenID,
   };
 };
 
