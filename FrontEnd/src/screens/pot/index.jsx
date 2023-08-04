@@ -11,14 +11,15 @@ import { useNavigation } from "@react-navigation/native";
 import customAxios from "../../utils/axios";
 import { connect } from "react-redux";
 import { storePotID, setGardenID } from "../../redux/action";
+import QRCodeScanner from "../../components/qrCode";
 
 const PotScreen = (props) => {
   const navigation = useNavigation();
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isRegistModalVisible, setRegistModalVisible] = useState(false);
   const [isDeleteIconVisible, setDeleteIconVisible] = useState(false);
+  const [isQRcodeVisible, setQRcodeVisible] = useState(false);
   const [isPotId, setPotID] = useState(0);
-
   const [isPotData, setPotData] = useState([]);
 
   const getPotData = () => {
@@ -31,6 +32,28 @@ const PotScreen = (props) => {
   useEffect(() => {
     getPotData();
   }, []);
+
+  const handleScannedData = (data) => {
+    const serialNumber = {
+      serialNumber: data,
+    };
+    console.log(serialNumber);
+
+    // customAxios
+    //   .post("/pot", serialNumber)
+    //   .then(() => {
+    //     console.log("등록 성공");
+    //     getPotData();
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    toggleQRCodeScanner();
+  };
+
+  const toggleQRCodeScanner = () => {
+    setQRcodeVisible(!isQRcodeVisible);
+  };
 
   const toggleDeleteModal = (potId) => {
     setPotID(potId);
@@ -209,12 +232,17 @@ const PotScreen = (props) => {
         style={styles.container}
       >
         <ScrollView>
-          <View style={styles.potWood}>
-            <View style={styles.potWoodGroup}>
-              <Image source={require("../../assets/img/potTag.png")} />
-              <CookieRunBold style={styles.PotWoodText}>내 화분</CookieRunBold>
+          <TouchableOpacity onPress={toggleQRCodeScanner}>
+            <View style={styles.potWood}>
+              <View style={styles.potWoodGroup}>
+                <Image source={require("../../assets/img/potTag.png")} />
+                <CookieRunBold style={styles.PotWoodText}>
+                  내 화분{" "}
+                  <Image source={require("../../assets/img/QRcode.png")} />
+                </CookieRunBold>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
           <View style={styles.alignCenterContainer}>
             <View style={styles.reContainer}>
               <View style={styles.gardenContainer}>
@@ -265,6 +293,12 @@ const PotScreen = (props) => {
         title="화분 등록"
         placeholder="화분 고유 ID를 입력해주세요"
       />
+      {isQRcodeVisible && (
+        <QRCodeScanner
+          onScannedData={handleScannedData}
+          onCloseQRCodeScanner={toggleQRCodeScanner}
+        />
+      )}
     </View>
   );
 };
