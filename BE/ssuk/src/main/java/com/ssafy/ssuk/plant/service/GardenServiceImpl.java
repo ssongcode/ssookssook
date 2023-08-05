@@ -2,14 +2,12 @@ package com.ssafy.ssuk.plant.service;
 
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
-import com.ssafy.ssuk.plant.dto.response.GardenSearchOneResponseDto;
 import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
 import com.ssafy.ssuk.pot.domain.Pot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -46,7 +44,7 @@ public class GardenServiceImpl implements GardenService {
         if(garden == null || garden.getUserId() != userId) {
             return false;
         }
-        garden.unUseGarden();
+        garden.unUsePot();
         return true;
     }
 

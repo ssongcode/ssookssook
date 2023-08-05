@@ -65,7 +65,7 @@ public class Garden {
     }
 
     // 비즈니스 로직
-    public void unUseGarden() {
+    public void unUsePot() {
         this.isUse = false;
     }
 
@@ -76,5 +76,6 @@ public class Garden {
     public void removeFromGarden() {
         this.isUse = false;
         this.isDeleted = true;
+        this.orders = 0;
     }
 }
