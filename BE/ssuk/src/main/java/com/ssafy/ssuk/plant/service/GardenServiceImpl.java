@@ -2,6 +2,7 @@ package com.ssafy.ssuk.plant.service;
 
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
+import com.ssafy.ssuk.plant.dto.request.GardenOrdersRequestDto;
 import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
 import com.ssafy.ssuk.pot.domain.Pot;
 import lombok.RequiredArgsConstructor;
@@ -82,5 +83,10 @@ public class GardenServiceImpl implements GardenService {
     public boolean deleteFromGarden(Integer gardenId) {
         gardenRepository.removeFromGarden(gardenId);
         return false;
+    }
+
+    @Override
+    public void modifyOrders(Integer userId, GardenOrdersRequestDto gardenOrdersRequestDto) {
+        List<Garden> gardens = gardenRepository.findAllByUserId(userId);
     }
 }

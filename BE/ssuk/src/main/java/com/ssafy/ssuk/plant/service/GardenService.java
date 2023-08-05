@@ -2,6 +2,7 @@ package com.ssafy.ssuk.plant.service;
 
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
+import com.ssafy.ssuk.plant.dto.request.GardenOrdersRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
 import com.ssafy.ssuk.plant.dto.response.GardenSearchOneResponseDto;
 import com.ssafy.ssuk.pot.domain.Pot;
@@ -27,4 +28,6 @@ public interface GardenService {
     List<Garden> findAllByUserId(Integer userId);
 
     boolean deleteFromGarden(Integer gardenId);
+
+    void modifyOrders(Integer userId, GardenOrdersRequestDto gardenOrdersRequestDto);
 }

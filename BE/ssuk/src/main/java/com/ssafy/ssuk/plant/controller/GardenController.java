@@ -3,6 +3,7 @@ package com.ssafy.ssuk.plant.controller;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
 import com.ssafy.ssuk.plant.dto.request.GardenDeleteRequestDto;
+import com.ssafy.ssuk.plant.dto.request.GardenOrdersRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRegisterRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
 import com.ssafy.ssuk.plant.dto.response.GardenSearchOneResponseDto;
@@ -151,4 +152,12 @@ public class GardenController {
         gardenService.deleteFromGarden(gardenId);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
+
+    @PutMapping("/orders")
+    public ResponseEntity<ResponseDto> ordersSave(
+            @RequestAttribute Integer userId,
+            @RequestBody @Validated GardenOrdersRequestDto gardenOrdersRequestDto) {
+        gardenService.modifyOrders(userId, gardenOrdersRequestDto)
+    }
+
 }
