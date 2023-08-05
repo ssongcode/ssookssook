@@ -80,8 +80,6 @@ public class GardenRepositoryImpl implements GardenRepository {
     @Override
     public void removeFromGarden(Integer gardenId) {
         Garden garden = em.find(Garden.class, gardenId);
-        log.debug("garden delete {}", garden.getIsDeleted());
         garden.removeFromGarden();
-        log.debug("garden delete {}", garden.getIsDeleted());
     }
 }

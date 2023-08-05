@@ -53,14 +53,15 @@ public class Garden {
     @Column(name = "IS_DELETED")
     private Boolean isDeleted;
     @Column(name = "ORDERS")
-    private Integer orders = 0;
+    private Integer orders;
 
 
-    public Garden(Integer userId, Plant plant, Pot pot, String nickname) {
+    public Garden(Integer userId, Plant plant, Pot pot, String nickname, Integer orders) {
         this.plant = plant;
         this.userId = userId;
         this.pot = pot;
         this.nickname = nickname;
+        this.orders = orders;
     }
 
     // 비즈니스 로직
@@ -72,5 +73,8 @@ public class Garden {
         this.nickname = nickname;
     }
 
-    public void removeFromGarden() {this.isDeleted = true;}
+    public void removeFromGarden() {
+        this.isUse = false;
+        this.isDeleted = true;
+    }
 }
