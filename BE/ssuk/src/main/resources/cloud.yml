@@ -8,5 +8,5 @@ cloud:
     stack:
       auto: false
     credentials:
-      accessKey: ${ack}
-      secretKey: ${sck}
+      accessKey: hello
+      secretKey: hi

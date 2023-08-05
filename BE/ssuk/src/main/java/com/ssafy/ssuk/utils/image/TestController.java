@@ -22,23 +22,16 @@ import java.util.UUID;
 public class TestController {
 
     private final S3Uploader s3Uploader;
-    private final UserService userService;
-    private final UserRepository userRepository;
     private final static String IMAGE_URL = "https://ssook.s3.ap-northeast-2.amazonaws.com/image/";
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, String>> upload(@RequestParam("image") MultipartFile multipartFile) throws IOException {
-        String imageName = s3Uploader.upload(multipartFile);
-        Map<String, String> map = new HashMap<>();
-        map.put("imageName", imageName);
-        map.put("imageUrl", IMAGE_URL + imageName);
-        return new ResponseEntity<>(map, HttpStatus.OK);
+    public ResponseEntity<ImageInfo> upload(@RequestParam("image") MultipartFile multipartFile) throws IOException {
+        return new ResponseEntity<>(s3Uploader.upload(multipartFile), HttpStatus.OK);
     }
 
-    @GetMapping("")
-    public String length() {
-        User user = userService.findById(3);
-
-        return IMAGE_URL + user.getProfileImage();
+    @PostMapping("/update")
+    public ResponseEntity<ImageInfo> update(@RequestParam String origin, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+        return new ResponseEntity<>(s3Uploader.modifyFile(origin, multipartFile), HttpStatus.OK);
     }
+
 }
