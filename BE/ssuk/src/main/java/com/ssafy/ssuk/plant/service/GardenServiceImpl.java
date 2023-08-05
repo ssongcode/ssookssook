@@ -73,7 +73,9 @@ public class GardenServiceImpl implements GardenService {
 
     @Override
     public List<Garden> findAllByUserId(Integer userId) {
-        return gardenRepository.findAllByUserId(userId);
+        List<Garden> gardens = gardenRepository.findAllByUserId(userId);
+        gardens.sort((g1, g2) -> g1.getOrders().compareTo(g2.getOrders()));
+        return gardens;
     }
 
     @Override
