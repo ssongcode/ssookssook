@@ -16,11 +16,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
-//@RequiredArgsConstructor
-//@Component
+@RequiredArgsConstructor
+@Component
 public class S3Uploader {
 
-//    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -36,25 +36,24 @@ public class S3Uploader {
     }
 
     private String upload(File uploadFile) {
-        String fileName = dir + UUID.randomUUID();
-//        String uploadImageUrl = putS3(uploadFile, fileName);
-        String uploadImageUrl = null;
+        String fileName = UUID.randomUUID() + "";
+        String uploadImageUrl = putS3(uploadFile, dir + fileName);
+        log.debug("uploadImageUrl={}", uploadImageUrl);
         removeNewFile(uploadFile);  // 로컬에 생성된 파일 삭제
-        return uploadImageUrl;
+        return fileName;
     }
 
-//    private String putS3(File uploadFile, String fileName) {
-//        // 권한을 public read로 올렸는데 나중에 수정할수도있음
-//        log.debug("bucket={}",bucket);
-//        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile));//.withCannedAcl(CannedAccessControlList.PublicRead));
-//        return amazonS3Client.getUrl(bucket, fileName).toString();
-//    }
+    private String putS3(File uploadFile, String fileName) {
+        log.debug("bucket={}",bucket);
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile));//.withCannedAcl(CannedAccessControlList.PublicRead));
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
 
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
+            log.debug("파일이 삭제되었습니다.");
         } else {
-            log.info("파일이 삭제되지 못했습니다.");
+            log.debug("파일이 삭제되지 못했습니다.");
         }
     }
 
