@@ -43,7 +43,7 @@ public class GardenRepositoryImpl implements GardenRepository {
                         " join fetch g.plant plant" +
                         " join fetch plant.category pc" +
                         " join fetch g.pot pot" +
-                        " where g.id = :gardenId and g.userId = :userId and g.isUse = true", Garden.class)
+                        " where g.id = :gardenId and g.user.id = :userId and g.isUse = true", Garden.class)
                 .setParameter("gardenId", gardenId)
                 .setParameter("userId", userId)
                 .getResultList();
@@ -60,7 +60,7 @@ public class GardenRepositoryImpl implements GardenRepository {
                         " join fetch g.plant plant" +
                         " join fetch plant.category pc" +
                         " join fetch g.pot pot" +
-                        " where g.userId = :userId and g.isUse = :isUse", Garden.class)
+                        " where g.user.id = :userId and g.isUse = :isUse", Garden.class)
                 .setParameter("userId", userId)
                 .setParameter("isUse", isUse)
                 .getResultList();
@@ -72,7 +72,7 @@ public class GardenRepositoryImpl implements GardenRepository {
                         " join fetch g.plant plant" +
                         " join fetch plant.category pc" +
                         " join fetch g.pot pot" +
-                        " where g.userId = :userId and g.isDeleted = false", Garden.class)
+                        " where g.user.id = :userId and g.isDeleted = false", Garden.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
