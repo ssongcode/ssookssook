@@ -157,11 +157,12 @@ public class GardenController {
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
 
-//    @PutMapping("/orders")
-//    public ResponseEntity<ResponseDto> ordersSave(
-//            @RequestAttribute Integer userId,
-//            @RequestBody @Validated GardenOrdersRequestDto gardenOrdersRequestDto) {
-//        gardenService.modifyOrders(userId, gardenOrdersRequestDto)
-//    }
+    @PutMapping("/orders")
+    public ResponseEntity<ResponseDto> ordersSave(
+            @RequestAttribute Integer userId,
+            @RequestBody @Validated GardenOrdersRequestDto gardenOrdersRequestDto) {
+        gardenService.modifyOrders(userId, gardenOrdersRequestDto.getGardenIdsOrderBy());
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
 
 }

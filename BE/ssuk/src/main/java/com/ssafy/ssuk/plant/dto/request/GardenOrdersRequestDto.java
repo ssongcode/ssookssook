@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class GardenOrdersRequestDto {
-    List<GardenOrderRequestDto> orders;
+    List<Integer> gardenIdsOrderBy;
 }
 
 

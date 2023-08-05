@@ -30,5 +30,5 @@ public interface GardenService {
 
     boolean deleteFromGarden(Integer gardenId);
 
-    void modifyOrders(Integer userId, GardenOrdersRequestDto gardenOrdersRequestDto);
+    void modifyOrders(Integer userId, List<Integer> gardenIdsOrderBy);
 }

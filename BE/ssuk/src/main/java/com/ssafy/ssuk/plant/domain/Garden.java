@@ -77,4 +77,8 @@ public class Garden {
         this.isDeleted = true;
         this.orders = 0;
     }
+
+    public void modifyOrders(Integer order) {
+        this.orders = order;
+    }
 }

@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.plant.service;
 
+import com.ssafy.ssuk.exception.dto.CustomException;
+import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
 import com.ssafy.ssuk.plant.dto.request.GardenOrdersRequestDto;
@@ -7,17 +9,24 @@ import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
 import com.ssafy.ssuk.pot.domain.Pot;
 import com.ssafy.ssuk.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class GardenServiceImpl implements GardenService {
 
     private final GardenRepository gardenRepository;
+    private final EntityManager em;
 
     @Override
     public Garden findUsingByPotId(Integer potId) {
@@ -87,7 +96,24 @@ public class GardenServiceImpl implements GardenService {
     }
 
     @Override
-    public void modifyOrders(Integer userId, GardenOrdersRequestDto gardenOrdersRequestDto) {
-        List<Garden> gardens = gardenRepository.findAllByUserId(userId);
+    @Transactional
+    public void modifyOrders(Integer userId, List<Integer> gardenIdsOrderBy) {
+        List<Integer> gardenIds = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for(int i = 0; i < gardenIdsOrderBy.size(); i++) {
+            map.put(gardenIdsOrderBy.get(i), i);
+            log.debug("key, value={} / {}", gardenIdsOrderBy.get(i), i);
+        }
+        List<Garden> gardenList = gardenRepository.findAllByUserIdAndIds(userId, gardenIdsOrderBy);
+        gardenList.forEach(g -> {
+                    Integer order = map.get(g.getId());
+                    if(order == null){
+                        gardenList.forEach(errorGarden -> em.detach(errorGarden));
+                        throw new CustomException(ErrorCode.TEST_NOT_FOUND);
+                    }
+                    log.debug("{} / {}", g.getId(), g.getOrders());
+                    g.modifyOrders(order);
+                });
     }
 }
