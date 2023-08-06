@@ -217,11 +217,9 @@ public class UserController {
     public ResponseEntity<?> kakaoCallback(@RequestParam String code) {
             log.debug("code={}", code);
         String kakaoAccessToken = kakaoAuthService.getAccessToken(code).getAccessToken();
-        // 사용자 정보 받거나 회원가입
-        User saveUser = kakaoAuthService.saveUser(kakaoAccessToken);
-        KakaoProfile kakaoProfile = kakaoAuthService.getUserInfo(kakaoAccessToken);
-        log.debug("kakaoProfile={}", kakaoProfile);
-        TokenInfo tokenInfo = kakaoAuthService.login(kakaoProfile.getKakaoAccount().getEmail());
+        // 사용자 정보 가져오거나 회원가입
+        User user = kakaoAuthService.saveOrGetUser(kakaoAccessToken);
+        TokenInfo tokenInfo = kakaoAuthService.login(user.getEmail());
         log.debug("tokenInfo={}", tokenInfo);
         return new ResponseEntity<>(tokenInfo, HttpStatus.OK);
     }

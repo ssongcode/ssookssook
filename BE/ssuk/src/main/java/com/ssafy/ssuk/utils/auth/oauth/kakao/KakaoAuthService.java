@@ -6,7 +6,6 @@ import com.ssafy.ssuk.exception.dto.CustomException;
 import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.user.domain.Role;
 import com.ssafy.ssuk.user.domain.User;
-import com.ssafy.ssuk.user.dto.request.LoginRequestDto;
 import com.ssafy.ssuk.user.repository.RoleRepository;
 import com.ssafy.ssuk.user.repository.UserRepository;
 import com.ssafy.ssuk.utils.auth.jwt.JwtTokenProvider;
@@ -15,7 +14,6 @@ import com.ssafy.ssuk.utils.auth.oauth.kakao.dto.KakaoProfile;
 import com.ssafy.ssuk.utils.auth.oauth.kakao.dto.KakaoProperties;
 import com.ssafy.ssuk.utils.auth.oauth.kakao.dto.KakaoProviderProperties;
 import com.ssafy.ssuk.utils.auth.oauth.kakao.dto.KakaoToken;
-import jdk.nashorn.internal.ir.LiteralNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -63,8 +61,7 @@ public class KakaoAuthService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
-        log.debug("token={}", response);
+        log.debug("kakaoToken={}", response);
         // 응답 파싱해서 토큰 반환
         ObjectMapper objectMapper = new ObjectMapper();
         KakaoToken kakaoToken = null;
@@ -88,12 +85,10 @@ public class KakaoAuthService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
         log.debug("userInfo={}", response);
         // 응답 파싱해서 유저 정보 반환
         ObjectMapper objectMapper = new ObjectMapper();
         KakaoProfile kakaoProfile = null;
-
         try {
             kakaoProfile = objectMapper.readValue(response, KakaoProfile.class);
         } catch (JsonProcessingException e) {
@@ -103,11 +98,10 @@ public class KakaoAuthService {
     }
 
     @Transactional
-    public User saveUser(String accessToken) {
+    public User saveOrGetUser(String accessToken) {
         KakaoProfile profile = getUserInfo(accessToken);
         Optional<User> findUser = userRepository.findByEmail(profile.getKakaoAccount().email);
         if (findUser.isPresent()) return findUser.get();
-
         // 사용자가 프로필 사진, 닉네임 동의했는지 체크
         // 동의안했으면 디폴트값이나 임시 닉네임 지어줘야함
         String nickname = null;
@@ -118,7 +112,6 @@ public class KakaoAuthService {
             nickname = "쑥쑥";
             profileImage = "default";
         }
-
         // 2. 닉네임만 동의
         else if (profile.kakaoAccount.profile.profileImageUrl == null) {
             nickname = profile.getKakaoAccount().getProfile().getNickname();
@@ -141,10 +134,8 @@ public class KakaoAuthService {
                 passwordEncoder.encode("password"),
                 nickname,
                 profileImage);
-
         Role userRole = roleRepository.findByRolename("USER");
         newUser.addRole(userRole);
-
         userRepository.save(newUser);
         return newUser;
     }
