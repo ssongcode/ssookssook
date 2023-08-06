@@ -47,18 +47,12 @@ public class PlantInfoController {
     private final String FAIL = "false";
 
     @GetMapping("/category")
-    public ResponseEntity<ResponseDto> searchCategories() {
+    public ResponseEntity<CommonResponseEntity> searchCategories() {
         List<CategorySearchResponseDto> collect = plantCategoryService.findPlantCategories()
                 .stream()
                 .map(pc -> new CategorySearchResponseDto(pc.getName(), pc.getPlants()))
                 .collect(Collectors.toList());
-//        CommonResponseDto<List<CategorySearchResponseDto>> result =
-//                CommonResponseDto.<List<CategorySearchResponseDto>>builder()
-//                .data(collect)
-//                .status(2)
-//                .message("이게 맞네")
-//                .build();
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "categories", collect), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, collect);
     }
 
     @PostMapping("/category/admin")
