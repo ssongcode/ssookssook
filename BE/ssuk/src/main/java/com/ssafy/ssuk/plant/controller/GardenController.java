@@ -5,17 +5,20 @@ import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
 import com.ssafy.ssuk.plant.dto.request.GardenDeleteRequestDto;
+import com.ssafy.ssuk.plant.dto.request.GardenOrdersRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRegisterRequestDto;
 import com.ssafy.ssuk.plant.dto.request.GardenRenameRequestDto;
+import com.ssafy.ssuk.plant.dto.response.GardenRegisterResponseDto;
 import com.ssafy.ssuk.plant.dto.response.GardenSearchOneResponseDto;
 import com.ssafy.ssuk.plant.dto.response.ResponseDto;
 import com.ssafy.ssuk.plant.service.GardenService;
 import com.ssafy.ssuk.plant.service.PlantService;
 import com.ssafy.ssuk.pot.domain.Pot;
 import com.ssafy.ssuk.pot.repository.PotRepository;
-import com.ssafy.ssuk.pot.service.PotService;
 import com.ssafy.ssuk.user.domain.User;
 import com.ssafy.ssuk.user.repository.UserRepository;
+import com.ssafy.ssuk.utils.response.CommonResponseEntity;
+import com.ssafy.ssuk.utils.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
@@ -25,9 +28,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.annotation.Repeatable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,7 +46,7 @@ public class GardenController {
     private final String SUCCESS = "OK";
     private final String FAIL = "false";
     @PostMapping("")
-    public ResponseEntity<ResponseDto> registerGarden(
+    public ResponseEntity<CommonResponseEntity> registerGarden(
             @RequestAttribute(required = true) Integer userId,
             @RequestBody @Validated GardenRegisterRequestDto gardenRegisterRequestDto,
             BindingResult bindingResult) {
@@ -60,30 +61,28 @@ public class GardenController {
         // 유저 확인(이건 믿고 가야하는거 같음, 등록은 자주 일어나지 않으니 확인해도 괜찮으려나)
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         // 화분 확인(존재하는지, 소유자가 유저인지)
-        Pot pot = potRepository.findById(gardenRegisterRequestDto.getPotId()).orElseThrow(() -> new CustomException(ErrorCode.POT_NOT_FOUND));
+        Integer potId = gardenRegisterRequestDto.getPotId();
+        Pot pot = potRepository.findById(potId).orElseThrow(() -> new CustomException(ErrorCode.POT_NOT_FOUND));
         /** 이부분 쿼리 또 발생함
-         * 아닌가 발생안할지도.. user가 일치하면 안할거같기도한데
-         * 얘기해봐야함
+         * lazy에 대해 하나 잘못 이해하고 있었네!!
          */
-        if (pot.getUser() == null || user.getId() != pot.getUser().getId()) {
+        if (pot.getIsRegisted() && (pot.getUser() == null || user.getId() != pot.getUser().getId())) {
             throw new CustomException(ErrorCode.POT_NOT_MATCH_USER);
         }
 
         // 정원 확인(해당 화분이 사용중인지)
-        Garden garden = gardenService.findUsingByPotId(gardenRegisterRequestDto.getPotId());
-        if(garden != null){
-            return new ResponseEntity<>(new ResponseDto("해당 화분이 이미 사용중입니다."), HttpStatus.CONFLICT);
+        if(!gardenService.isDuplicateUsingByPotId(potId)){
+            throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }
 
         String nickname = gardenRegisterRequestDto.getNickname();
-        Garden newGarden = gardenService.save(userId, plant, pot, nickname);
+        Garden newGarden = gardenService.save(user, plant, pot, nickname);
 
         /**
          * user의 plantcount 늘리는 메소드 추가해야함
          * user.plusPlantCount()
          */
-
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "gardenId", newGarden.getId()), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, new GardenRegisterResponseDto(newGarden.getId()));
     }
 
     @PutMapping("")
@@ -153,4 +152,13 @@ public class GardenController {
         gardenService.deleteFromGarden(gardenId);
         return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
     }
+
+    @PutMapping("/orders")
+    public ResponseEntity<ResponseDto> ordersSave(
+            @RequestAttribute Integer userId,
+            @RequestBody @Validated GardenOrdersRequestDto gardenOrdersRequestDto) {
+        gardenService.modifyOrders(userId, gardenOrdersRequestDto.getGardenIdsOrderBy());
+        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+    }
+
 }

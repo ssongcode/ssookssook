@@ -24,6 +24,9 @@ public enum ErrorCode {
     POT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 화분이 유효하지 않습니다."),
     POT_NOT_MATCH_USER(HttpStatus.FORBIDDEN, "해당 화분을 소유하지 않습니다."),
 
+    //정원
+    GARDEN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 심은 식물이 유효하지 않습니다."),
+
     //기타
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다."),
     INPUT_EXCEPTION(HttpStatus.BAD_REQUEST, "입력값을 확인하세요")
