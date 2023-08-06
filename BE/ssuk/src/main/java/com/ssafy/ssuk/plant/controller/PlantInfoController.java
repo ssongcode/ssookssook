@@ -106,16 +106,10 @@ public class PlantInfoController {
     }
 
     @GetMapping("/plant/{plantId}")
-    public ResponseEntity<ResponseDto> searchPlant(@PathVariable(required = true) Integer plantId) {
-        // 필요없을듯?
-//        if(plantId == null)
-//            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
-
+    public ResponseEntity<CommonResponseEntity> searchPlant(@PathVariable(required = true) Integer plantId) {
         Plant plant = plantService.findOneById(plantId);
-        if(plant == null)
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         PlantSearchResponseDto returnDto = new PlantSearchResponseDto(plant);
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plant", returnDto), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, returnDto);
     }
 
     @GetMapping("/plant")

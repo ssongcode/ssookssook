@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.plant.repository.domain;
 
+import com.ssafy.ssuk.exception.dto.CustomException;
+import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Plant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -41,8 +43,9 @@ public class PlantRepositoryImpl implements PlantRepository{
                         " join fetch p.category pc" +
                         " where p.id = :id", Plant.class)
                 .setParameter("id", id).getResultList();
-        if(result.isEmpty())
-            return null;
+        if (result.isEmpty()) {
+            throw new CustomException(ErrorCode.PLANT_NOT_FOUND);
+        }
         return result.get(0);
     }
 }
