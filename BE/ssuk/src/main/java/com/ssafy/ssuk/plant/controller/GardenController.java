@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.plant.controller;
 
+import com.ssafy.ssuk.exception.dto.CustomException;
+import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.domain.Plant;
 import com.ssafy.ssuk.plant.dto.request.GardenDeleteRequestDto;
@@ -12,6 +14,8 @@ import com.ssafy.ssuk.plant.service.PlantService;
 import com.ssafy.ssuk.pot.domain.Pot;
 import com.ssafy.ssuk.pot.repository.PotRepository;
 import com.ssafy.ssuk.pot.service.PotService;
+import com.ssafy.ssuk.user.domain.User;
+import com.ssafy.ssuk.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.annotation.Repeatable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,37 +39,34 @@ public class GardenController {
 
     private final GardenService gardenService;
     private final PlantService plantService;
-    private final PotService potService;
     private final PotRepository potRepository;
+    private final UserRepository userRepository;
 
     private final String SUCCESS = "OK";
     private final String FAIL = "false";
     @PostMapping("")
     public ResponseEntity<ResponseDto> registerGarden(
-            @RequestAttribute Integer userId,
+            @RequestAttribute(required = true) Integer userId,
             @RequestBody @Validated GardenRegisterRequestDto gardenRegisterRequestDto,
             BindingResult bindingResult) {
-        log.debug("userId={}",userId);
 
-        if(bindingResult.hasErrors()) {
-            log.debug("{}", bindingResult.getAllErrors().stream().map(e -> e.toString()));
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
         }
 
         // 식물 확인(존재하는지)
         Plant plant = plantService.findOneById(gardenRegisterRequestDto.getPlantId());
-        if(plant == null){
-            return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
-        }
 
         // 유저 확인(이건 믿고 가야하는거 같음, 등록은 자주 일어나지 않으니 확인해도 괜찮으려나)
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         // 화분 확인(존재하는지, 소유자가 유저인지)
-        /**
-         * 화분 소유자 확인은 나중에!!!
+        Pot pot = potRepository.findById(gardenRegisterRequestDto.getPotId()).orElseThrow(() -> new CustomException(ErrorCode.POT_NOT_FOUND));
+        /** 이부분 쿼리 또 발생함
+         * 아닌가 발생안할지도.. user가 일치하면 안할거같기도한데
+         * 얘기해봐야함
          */
-        Pot pot = potRepository.getReferenceById(gardenRegisterRequestDto.getPotId());
-        if(pot == null){
-            return new ResponseEntity<>(new ResponseDto("존재하지 않는 화분입니다."), HttpStatus.NOT_FOUND);
+        if (pot.getUser() == null || user.getId() != pot.getUser().getId()) {
+            throw new CustomException(ErrorCode.POT_NOT_MATCH_USER);
         }
 
         // 정원 확인(해당 화분이 사용중인지)
