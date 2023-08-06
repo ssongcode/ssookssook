@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.plant.service;
 
+import com.ssafy.ssuk.exception.dto.CustomException;
+import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Category;
 import com.ssafy.ssuk.plant.repository.query.CategoryQueryRepository;
 import com.ssafy.ssuk.plant.repository.domain.CategoryRepository;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,12 +29,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public boolean modifyPlantCategory(Integer categoryId, String updateName) {
+    public void modifyPlantCategory(Integer categoryId, String updateName) {
         Category plantCategory = categoryRepository.findOneById(categoryId);
-        if(plantCategory == null)
-            return false;
         plantCategory.setName(updateName);
-        return true;
     }
 
     @Override

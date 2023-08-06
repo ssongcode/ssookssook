@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.plant.repository.domain;
 
+import com.ssafy.ssuk.exception.dto.CustomException;
+import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,8 +22,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Optional<Category> findOneById(Integer id) {
-        return Optional.ofNullable(em.find(Category.class, id));
+    public Category findOneById(Integer id) {
+        return Optional.ofNullable(em.find(Category.class, id)).orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override

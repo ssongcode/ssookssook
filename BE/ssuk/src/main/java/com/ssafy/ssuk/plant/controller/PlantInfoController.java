@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.plant.controller;
 
+import com.ssafy.ssuk.exception.dto.CustomException;
+import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.dto.response.ResponseDto;
 import com.ssafy.ssuk.plant.dto.response.TotalCategoryResponseDto;
 import com.ssafy.ssuk.plant.domain.Info;
@@ -18,6 +20,8 @@ import com.ssafy.ssuk.plant.dto.request.PlantUpdateRequestDto;
 import com.ssafy.ssuk.plant.service.CategoryService;
 import com.ssafy.ssuk.plant.service.PlantService;
 //import com.ssafy.ssuk.utils.response.CommonResponseDto;
+import com.ssafy.ssuk.utils.response.CommonResponseEntity;
+import com.ssafy.ssuk.utils.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -73,22 +77,25 @@ public class PlantInfoController {
     }
 
     @PutMapping("/category/admin")
-    public ResponseEntity<ResponseDto> updateCategory(
+    public ResponseEntity<CommonResponseEntity> updateCategory(
             @RequestBody @Validated CategoryUpdateRequestDto plantCategoryUpdateRequestDto,
             BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+        }
+
 
         Integer id = plantCategoryUpdateRequestDto.getCategoryId();
         String updateName = plantCategoryUpdateRequestDto.getUpdateName();
 
-        if(plantCategoryService.isDuplicateName(id, updateName))
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);
+        if (plantCategoryService.isDuplicateName(id, updateName)) {
+            throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
+        }
 
         plantCategoryService.modifyPlantCategory(id, updateName);
 
-        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @PostMapping("/plant/admin")

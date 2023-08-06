@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface CategoryRepository {
     public void save(Category plantCategory);
-    public Optional<Category> findOneById(Integer id);
+    public Category findOneById(Integer id);
     public List<Category> findAll();
     public List<Category> findAllByName(String name);
     public List<Category> findAllByNameExceptId(Integer id, String name);
