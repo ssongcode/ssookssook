@@ -113,12 +113,12 @@ public class PlantInfoController {
     }
 
     @GetMapping("/plant")
-    public ResponseEntity<ResponseDto> searchPlants() {
+    public ResponseEntity<CommonResponseEntity> searchPlants() {
         List<PlantSearchResponseDto> collect = plantService.findPlants()
                 .stream()
                 .map(p -> new PlantSearchResponseDto(p))
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plants", collect), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, collect);
     }
 
     @PutMapping("/plant/admin")
