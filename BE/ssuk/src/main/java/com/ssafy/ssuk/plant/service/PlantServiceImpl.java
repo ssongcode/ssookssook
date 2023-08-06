@@ -45,11 +45,8 @@ public class PlantServiceImpl implements PlantService{
 
     @Override
     @Transactional
-    public boolean modifyPlant(PlantUpdateRequestDto plantUpdateRequestDto, Category category) {
+    public void modifyPlant(PlantUpdateRequestDto plantUpdateRequestDto, Category category) {
         Plant plant = plantRepository.findOneById(plantUpdateRequestDto.getPlantId());
-        if(plant == null)
-            return false;
         plant.updateInfo(plantUpdateRequestDto, category);
-        return true;
     }
 }

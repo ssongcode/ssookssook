@@ -122,22 +122,19 @@ public class PlantInfoController {
     }
 
     @PutMapping("/plant/admin")
-    public ResponseEntity<ResponseDto> updatePlant(
+    public ResponseEntity<CommonResponseEntity> updatePlant(
             @RequestBody @Validated PlantUpdateRequestDto plantUpdateRequestDto,
             BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+        }
 
         Category category = plantCategoryService.findOneById(plantUpdateRequestDto.getCategoryId());
 
-        if(category == null)
-            return new ResponseEntity<>(new ResponseDto("존재하지 않는 카테고리입니다."), HttpStatus.CONFLICT);
+        plantService.modifyPlant(plantUpdateRequestDto, category);
 
-        if(plantService.modifyPlant(plantUpdateRequestDto, category))
-            return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
-
-        return new ResponseEntity<>(new ResponseDto("존재하지 않는 식물입니다."), HttpStatus.NOT_FOUND);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @GetMapping("/info/{plantId}")
