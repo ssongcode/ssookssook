@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -57,8 +59,30 @@ public class S3Uploader {
      * @param multipartFile : 변경할 사진
      */
     public ImageInfo modifyFile(String originName, MultipartFile multipartFile) throws IOException{
-        removeOriginFile(originName);
+        if (!originName.equals("default")) {
+            removeOriginFile(originName);
+        }
         return upload(multipartFile);
+    }
+
+    public ImageInfo upload(String url) throws IOException {
+        File tempFile = extracted(url);
+        return upload(tempFile);
+    }
+
+    private static File extracted(String url) throws IOException {
+        File tempFile = new File("test.jpg");
+        if(tempFile.createNewFile()) {
+            try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new URL(url).openStream());
+                 FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+                byte dataBuffer[] = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = bufferedInputStream.read(dataBuffer, 0, 1024)) != -1) {
+                    fileOutputStream.write(dataBuffer, 0, bytesRead);
+                }
+            }
+        }
+        return tempFile;
     }
 
     private ImageInfo upload(File uploadFile) {

@@ -34,4 +34,9 @@ public class TestController {
         return new ResponseEntity<>(s3Uploader.modifyFile(origin, multipartFile), HttpStatus.OK);
     }
 
+    @PostMapping("/url")
+    public ResponseEntity<ImageInfo> update(@RequestParam String url) throws IOException {
+        s3Uploader.upload(url);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
