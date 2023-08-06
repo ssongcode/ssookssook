@@ -30,6 +30,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -173,7 +174,10 @@ public class PlantInfoController {
             throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }
 
-        infoService.saveInfo(infoRegisterRequestDto);
+        Plant plant = plantService.findOneById(infoRegisterRequestDto.getPlantId());
+        
+        infoService.saveInfo(infoRegisterRequestDto, plant);
+
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 

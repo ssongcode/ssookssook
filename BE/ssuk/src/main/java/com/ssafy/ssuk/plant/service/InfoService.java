@@ -10,7 +10,7 @@ import java.util.List;
 public interface InfoService {
     boolean isDuplicated(Integer plantId, Integer level);
 
-    void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto);
+    void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto, Plant plant);
 
     List<Info> findAll(Integer plantId);
 

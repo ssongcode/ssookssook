@@ -23,7 +23,6 @@ import java.util.Optional;
 public class InfoServiceImpl implements InfoService {
 
     private final InfoRepository infoRepository;
-    private final PlantRepository plantRepository;
 
     @Override
     public boolean isDuplicated(Integer plantId, Integer level) {
@@ -33,10 +32,7 @@ public class InfoServiceImpl implements InfoService {
 
     @Override
     @Transactional
-    public void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto) {
-
-        Plant plant = Optional.ofNullable(plantRepository.findOneById(infoRegisterRequestDto.getPlantId()))
-                .orElseThrow(() -> new CustomException(ErrorCode.PLANT_NOT_FOUND));
+    public void saveInfo(InfoRegisterRequestDto infoRegisterRequestDto, Plant plant) {
         infoRepository.save(new Info(infoRegisterRequestDto, plant));
     }
 
