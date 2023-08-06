@@ -138,19 +138,15 @@ public class PlantInfoController {
     }
 
     @GetMapping("/info/{plantId}")
-    public ResponseEntity<ResponseDto> searchInfos(@PathVariable(required = true) Integer plantId) {
-        // 필요없을듯?
-//        if(plantId == null)
-//            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+    public ResponseEntity<CommonResponseEntity> searchInfos(@PathVariable(required = true) Integer plantId) {
 
         Plant plant = plantService.findOneById(plantId);
-        if(plant == null)
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
         List<InfoSearchResponseDto> collect = infoService.findAll(plantId)
                 .stream()
                 .map(i -> new InfoSearchResponseDto(i))
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plantInfos", collect), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, collect);
     }
 
     @GetMapping("/info/{plantId}/{level}")
