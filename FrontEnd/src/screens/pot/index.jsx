@@ -34,20 +34,19 @@ const PotScreen = (props) => {
   }, []);
 
   const handleScannedData = (data) => {
-    const serialNumber = {
-      serialNumber: data,
-    };
-    console.log(serialNumber);
+    console.log(data);
 
-    // customAxios
-    //   .post("/pot", serialNumber)
-    //   .then(() => {
-    //     console.log("등록 성공");
-    //     getPotData();
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    customAxios
+      .post("/pot", {
+        serialNumber: data,
+      })
+      .then(() => {
+        console.log("등록 성공");
+        getPotData();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     toggleQRCodeScanner();
   };
 
@@ -55,13 +54,14 @@ const PotScreen = (props) => {
     setQRcodeVisible(!isQRcodeVisible);
   };
 
+  const toggleInputModal = () => {
+    setQRcodeVisible(!isQRcodeVisible);
+    setRegistModalVisible(!isRegistModalVisible);
+  };
+
   const toggleDeleteModal = (potId) => {
     setPotID(potId);
     setDeleteModalVisible(!isDeleteModalVisible);
-  };
-
-  const toggleRegistModal = () => {
-    setRegistModalVisible(!isRegistModalVisible);
   };
 
   const visibleIcon = () => {
@@ -180,7 +180,7 @@ const PotScreen = (props) => {
           <View key={`empty_pot_${endIndex}`} style={transparentPotStyle}>
             <TouchableOpacity
               style={styles.gardenCharacter}
-              onPress={toggleRegistModal}
+              onPress={toggleQRCodeScanner}
             >
               <Image
                 source={require("../../assets/img/pot.png")}
@@ -232,17 +232,12 @@ const PotScreen = (props) => {
         style={styles.container}
       >
         <ScrollView>
-          <TouchableOpacity onPress={toggleQRCodeScanner}>
-            <View style={styles.potWood}>
-              <View style={styles.potWoodGroup}>
-                <Image source={require("../../assets/img/potTag.png")} />
-                <CookieRunBold style={styles.PotWoodText}>
-                  내 화분{" "}
-                  <Image source={require("../../assets/img/QRcode.png")} />
-                </CookieRunBold>
-              </View>
+          <View style={styles.potWood}>
+            <View style={styles.potWoodGroup}>
+              <Image source={require("../../assets/img/potTag.png")} />
+              <CookieRunBold style={styles.PotWoodText}>내 화분</CookieRunBold>
             </View>
-          </TouchableOpacity>
+          </View>
           <View style={styles.alignCenterContainer}>
             <View style={styles.reContainer}>
               <View style={styles.gardenContainer}>
@@ -297,6 +292,7 @@ const PotScreen = (props) => {
         <QRCodeScanner
           onScannedData={handleScannedData}
           onCloseQRCodeScanner={toggleQRCodeScanner}
+          onOpenInputModal={toggleInputModal}
         />
       )}
     </View>
