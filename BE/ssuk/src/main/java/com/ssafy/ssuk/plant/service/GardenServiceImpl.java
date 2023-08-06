@@ -85,9 +85,9 @@ public class GardenServiceImpl implements GardenService {
 
     @Override
     @Transactional
-    public boolean deleteFromGarden(Integer gardenId) {
-        gardenRepository.removeFromGarden(gardenId);
-        return false;
+    public void deleteFromGarden(Integer userId, Integer gardenId) {
+        Garden garden = Optional.ofNullable(gardenRepository.findOneByIdAndUserId(gardenId, userId)).orElseThrow(() -> new CustomException(ErrorCode.GARDEN_NOT_FOUND));
+        garden.removeFromGarden();
     }
 
     @Override

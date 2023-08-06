@@ -28,7 +28,7 @@ public interface GardenService {
 
     List<Garden> findAllByUserId(Integer userId);
 
-    boolean deleteFromGarden(Integer gardenId);
+    void deleteFromGarden(Integer userId, Integer gardenId);
 
     void modifyOrders(Integer userId, List<Integer> gardenIdsOrderBy);
 

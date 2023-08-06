@@ -75,12 +75,6 @@ public class GardenRepositoryImpl implements GardenRepository {
     }
 
     @Override
-    public void removeFromGarden(Integer gardenId) {
-        Garden garden = em.find(Garden.class, gardenId);
-        garden.removeFromGarden();
-    }
-
-    @Override
     public List<Garden> findAllByUserIdAndIds(Integer userId, List<Integer> gardenIds) {
         return em.createQuery("select g from Garden g" +
                 " join fetch g.user u" +

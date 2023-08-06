@@ -142,11 +142,11 @@ public class GardenController {
     }
 
     @PutMapping("/delete/{gardenId}")
-    public ResponseEntity<ResponseDto> deleteFromGarden(
+    public ResponseEntity<CommonResponseEntity> deleteFromGarden(
             @RequestAttribute(required = true) Integer userId,
             @PathVariable Integer gardenId) {
-        gardenService.deleteFromGarden(gardenId);
-        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        gardenService.deleteFromGarden(userId, gardenId);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @PutMapping("/orders")

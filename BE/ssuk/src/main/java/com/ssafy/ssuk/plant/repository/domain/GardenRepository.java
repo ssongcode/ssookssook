@@ -19,7 +19,5 @@ public interface GardenRepository {
 
     List<Garden> findAllByUserId(Integer userId);
 
-    void removeFromGarden(Integer gardenId);
-
     List<Garden> findAllByUserIdAndIds(Integer userId, List<Integer> gardenIds);
 }
