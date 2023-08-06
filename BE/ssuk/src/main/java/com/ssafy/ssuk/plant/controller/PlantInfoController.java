@@ -56,18 +56,17 @@ public class PlantInfoController {
     }
 
     @PostMapping("/category/admin")
-    public ResponseEntity<ResponseDto> registerCategory(@RequestBody @Validated CategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {
+    public ResponseEntity<CommonResponseEntity> registerCategory(@RequestBody @Validated CategoryRegisterRequestDto plantCategoryRegisterRequestDto, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.CONFLICT);   // 수정해야함 코드
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
         }
 
         String name = plantCategoryRegisterRequestDto.getCategoryName();
-        log.debug("name={}", name);
         if(plantCategoryService.isDuplicateName(name)) {
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);   // 수정해야함 코드
+            throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }
         plantCategoryService.savePlantCategory(new Category(name));
-        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @PutMapping("/category/admin")
