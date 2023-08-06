@@ -15,6 +15,8 @@ import com.ssafy.ssuk.user.dto.response.InfoResponseDto;
 import com.ssafy.ssuk.user.service.UserService;
 import com.ssafy.ssuk.utils.email.EmailMessage;
 import com.ssafy.ssuk.utils.jwt.TokenInfo;
+import com.ssafy.ssuk.utils.response.CommonResponseEntity;
+import com.ssafy.ssuk.utils.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -121,16 +123,16 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<ResponseDto> searchUserInfo(@RequestAttribute Integer userId, @RequestAttribute String userNickname) {
-        // 닉네임이 토큰에 없다고 가정
-//        User user = userService.findById(userId);
-//        if(user == null){
-//            return new ResponseEntity<>(new ResponseDto("유저가 없어용"), HttpStatus.NOT_FOUND);
-//        }
+    public ResponseEntity<CommonResponseEntity> searchUserInfo(@RequestAttribute Integer userId, @RequestAttribute String userNickname) {
+        User user = userService.findById(userId);
+        if(user == null){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
 
         InfoResponseDto infoResponseDto = new InfoResponseDto();
 
-        infoResponseDto.setNickname(userNickname);
+        infoResponseDto.setNickname(user.getNickname());
+        infoResponseDto.setImageUrl("https://ssook.s3.ap-northeast-2.amazonaws.com/image/" + user.getProfileImage());
 
         gardenService.findAllByUserId(userId).forEach(g -> {
             if (g.getIsUse()) infoResponseDto.addMyPlantCount();
@@ -143,7 +145,7 @@ public class UserController {
         int collectionCount = collectionService.findAllByUserId(userId).size();
         infoResponseDto.setCollectionCount(collectionCount);
 
-        return new ResponseEntity<>(new ResponseDto("ok", "information", infoResponseDto), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.OK, infoResponseDto);
     }
 
     // 비밀번호 재설정시 이메일 인증코드 발송
