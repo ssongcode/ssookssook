@@ -92,18 +92,17 @@ public class PlantInfoController {
     }
 
     @PostMapping("/plant/admin")
-    public ResponseEntity<ResponseDto>  registerPlant(
+    public ResponseEntity<CommonResponseEntity>  registerPlant(
             @RequestBody @Validated PlantRegisterRequestDto plantRegisterRequestDto,
             BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+        }
 
         Category category = plantCategoryService.findOneById(plantRegisterRequestDto.getCategoryId());
-        if(category == null)
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
         // 이름 중복 검사를 안해도 되나..
         plantService.savePlant(category, plantRegisterRequestDto);
-        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @GetMapping("/plant/{plantId}")
