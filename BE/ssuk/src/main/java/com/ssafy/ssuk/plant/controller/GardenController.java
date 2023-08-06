@@ -124,11 +124,9 @@ public class GardenController {
     }
 
     @GetMapping("/{gardenId}")
-    public ResponseEntity<ResponseDto> searchOneNow(@PathVariable(required = true) Integer gardenId, @RequestAttribute Integer userId) {
+    public ResponseEntity<CommonResponseEntity> searchOneNow(@PathVariable(required = true) Integer gardenId, @RequestAttribute Integer userId) {
         Garden garden = gardenService.findOndByIdAndUserId(gardenId, userId);
-        if(garden == null)
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.OK);
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "garden", new GardenSearchOneResponseDto(garden)), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, new GardenSearchOneResponseDto(garden));
     }
 
     @GetMapping("")

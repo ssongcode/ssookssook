@@ -68,7 +68,7 @@ public class GardenServiceImpl implements GardenService {
 
     @Override
     public Garden findOndByIdAndUserId(Integer gardenId, Integer userId) {
-        return gardenRepository.findOneByIdAndUserId(gardenId, userId);
+        return Optional.ofNullable(gardenRepository.findOneByIdAndUserId(gardenId, userId)).orElseThrow(() -> new CustomException(ErrorCode.GARDEN_NOT_FOUND));
     }
 
     @Override
