@@ -30,7 +30,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void modifyPlantCategory(Integer categoryId, String updateName) {
-        Category plantCategory = categoryRepository.findOneById(categoryId);
+        Category plantCategory = Optional.ofNullable(categoryRepository.findOneById(categoryId))
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
         plantCategory.setName(updateName);
     }
 
@@ -41,7 +42,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findOneById(Integer categoryId) {
-        return categoryRepository.findOneById(categoryId);
+        return Optional.ofNullable(categoryRepository.findOneById(categoryId))
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Override

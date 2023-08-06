@@ -23,7 +23,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public Category findOneById(Integer id) {
-        return Optional.ofNullable(em.find(Category.class, id)).orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+        return em.find(Category.class, id);
     }
 
     @Override

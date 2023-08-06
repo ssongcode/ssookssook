@@ -19,7 +19,6 @@ import com.ssafy.ssuk.plant.dto.response.PlantSearchResponseDto;
 import com.ssafy.ssuk.plant.dto.request.PlantUpdateRequestDto;
 import com.ssafy.ssuk.plant.service.CategoryService;
 import com.ssafy.ssuk.plant.service.PlantService;
-//import com.ssafy.ssuk.utils.response.CommonResponseDto;
 import com.ssafy.ssuk.utils.response.CommonResponseEntity;
 import com.ssafy.ssuk.utils.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -160,42 +159,36 @@ public class PlantInfoController {
     }
 
     @PostMapping("/info/admin")
-    public ResponseEntity<ResponseDto>  registerPlantInfo(
+    public ResponseEntity<CommonResponseEntity>  registerPlantInfo(
             @RequestBody @Validated InfoRegisterRequestDto infoRegisterRequestDto,
             BindingResult bindingResult){
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
-
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+        }
 
         Integer plantId = infoRegisterRequestDto.getPlantId();
         Integer level = infoRegisterRequestDto.getLevel();
 
-
-        Plant plant = plantService.findOneById(plantId);
-        if(plant == null) {
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        if (infoService.isDuplicated(plantId, level)) {
+            throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }
 
-        if(infoService.isDuplicated(plantId, level)){
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.CONFLICT);
-        }
-
-        infoService.saveInfo(infoRegisterRequestDto, plant);
-        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        infoService.saveInfo(infoRegisterRequestDto);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @PutMapping("/info/admin")
-    public ResponseEntity<ResponseDto> updateInfo(
+    public ResponseEntity<CommonResponseEntity> updateInfo(
             @RequestBody @Validated InfoUpdateRequestDto infoUpdateRequestDto,
             BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+        }
 
-        if(infoService.modifyInfo(infoUpdateRequestDto))
-            return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        infoService.modifyInfo(infoUpdateRequestDto);
 
-        return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @GetMapping("")

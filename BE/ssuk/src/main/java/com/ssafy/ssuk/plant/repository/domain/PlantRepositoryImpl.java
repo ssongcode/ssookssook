@@ -44,7 +44,7 @@ public class PlantRepositoryImpl implements PlantRepository{
                         " where p.id = :id", Plant.class)
                 .setParameter("id", id).getResultList();
         if (result.isEmpty()) {
-            throw new CustomException(ErrorCode.PLANT_NOT_FOUND);
+            return null;
         }
         return result.get(0);
     }

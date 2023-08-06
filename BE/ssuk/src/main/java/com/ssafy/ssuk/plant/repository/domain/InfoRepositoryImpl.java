@@ -22,7 +22,7 @@ public class InfoRepositoryImpl implements InfoRepository {
                 .setParameter("level", level)
                 .getResultList();
         if(resultList.isEmpty())
-            throw new CustomException(ErrorCode.PLANT_INFO_NOT_FOUND);
+            return null;
         return resultList.get(0);
     }
 
