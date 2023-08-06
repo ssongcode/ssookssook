@@ -150,18 +150,13 @@ public class PlantInfoController {
     }
 
     @GetMapping("/info/{plantId}/{level}")
-    public ResponseEntity<ResponseDto> searchInfo(@PathVariable(required = true) Integer plantId, @PathVariable(required = true) Integer level) {
-        // 필요없을듯?
-//        if(plantId == null)
-//            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+    public ResponseEntity<CommonResponseEntity> searchInfo(@PathVariable(required = true) Integer plantId, @PathVariable(required = true) Integer level) {
 
         Plant plant = plantService.findOneById(plantId);
-        if(plant == null)
-            return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+
         Info info = infoService.findOne(plantId, level);
-        if(info == null)
-            return new ResponseEntity<>(new ResponseDto(SUCCESS, "plantInfo", null), HttpStatus.OK);
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "plantInfo", new InfoSearchResponseDto(info)), HttpStatus.OK);
+
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, new InfoSearchResponseDto(info));
     }
 
     @PostMapping("/info/admin")
