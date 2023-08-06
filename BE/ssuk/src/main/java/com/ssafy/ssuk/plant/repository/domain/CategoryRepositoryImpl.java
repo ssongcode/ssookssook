@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -19,8 +20,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Category findOneById(Integer id) {
-        return em.find(Category.class, id);
+    public Optional<Category> findOneById(Integer id) {
+        return Optional.ofNullable(em.find(Category.class, id));
     }
 
     @Override
