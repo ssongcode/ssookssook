@@ -65,6 +65,12 @@ public class S3Uploader {
         return upload(multipartFile);
     }
 
+    /**
+     * 카카오 회원가입할 때 사용하시면 됩니다.
+     * 반환값 중 imageName을 유저 db에 저장하고
+     * 프론트에는 imageUrl을 보내주면 될것 같습니다
+     * @param url 카카오 url 넣으시면 됩니다!!
+     */
     public ImageInfo upload(String url) throws IOException {
         File tempFile = extracted(url);
         return upload(tempFile);
