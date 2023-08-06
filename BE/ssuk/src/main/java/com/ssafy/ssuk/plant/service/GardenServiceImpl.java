@@ -58,14 +58,13 @@ public class GardenServiceImpl implements GardenService {
 
     @Override
     @Transactional
-    public boolean renameGarden(Integer gardenId, Integer userId, String nickname) {
+    public void renameGarden(Integer gardenId, Integer userId, String nickname) {
         // 정원 확인(해당 심은 식물의 소유자가 맞는지)
-        Garden garden = gardenRepository.findOneById(gardenId);
-        if(garden == null || garden.getUser().getId() != userId) {
-            return false;
+        Garden garden = Optional.ofNullable(gardenRepository.findOneById(gardenId)).orElseThrow(() -> new CustomException(ErrorCode.GARDEN_NOT_FOUND));
+        if (garden.getUser().getId() != userId) {
+           throw new CustomException(ErrorCode.GARDEN_NOT_MATCH_USER);
         }
         garden.rename(nickname);
-        return true;
     }
 
     @Override

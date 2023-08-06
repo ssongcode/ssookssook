@@ -20,7 +20,7 @@ public interface GardenService {
 
     boolean deleteGarden(Integer userId, Integer gardenId);
 
-    boolean renameGarden(Integer gardenId, Integer userId, String nickname);
+    void renameGarden(Integer gardenId, Integer userId, String nickname);
 
     Garden findOndByIdAndUserId(Integer gardenId, Integer userId);
 

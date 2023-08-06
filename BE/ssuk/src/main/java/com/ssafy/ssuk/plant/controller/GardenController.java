@@ -86,23 +86,23 @@ public class GardenController {
     }
 
     @PutMapping("")
-    public ResponseEntity<ResponseDto> renameGarden(
-            @RequestAttribute Integer userId,
+    public ResponseEntity<CommonResponseEntity> renameGarden(
+            @RequestAttribute(required = true) Integer userId,
             @RequestBody @Validated GardenRenameRequestDto gardenRenameRequestDto,
             BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+        }
 
 
         // 유저 확인(이건 믿고 가야하는거 같음, 수정도 자주 일어나지 않으니 확인해도 괜찮으려나)
+//        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         // 정원 확인(service에서 진행)
         Integer gardenId = gardenRenameRequestDto.getGardenId();
         String nickname = gardenRenameRequestDto.getNickname();
-        if(gardenService.renameGarden(gardenId, userId, nickname)) {
-            return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        gardenService.renameGarden(gardenId, userId, nickname);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @PutMapping("/kill")
