@@ -192,9 +192,9 @@ public class PlantInfoController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ResponseDto> searchTotalInfo(@RequestAttribute Integer userId) {
+    public ResponseEntity<CommonResponseEntity> searchTotalInfo(@RequestAttribute(required = true) Integer userId) {
         List<TotalCategoryResponseDto> result = plantCategoryService.findTotalInfo(userId);
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "categories", result), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, result);
     }
 
 //    @PostMapping("")
