@@ -18,7 +18,7 @@ public interface GardenService {
 
     Garden findOndById(Integer id);
 
-    boolean deleteGarden(Integer userId, Integer gardenId);
+    void deleteFromPot(Integer userId, Integer gardenId);
 
     void renameGarden(Integer gardenId, Integer userId, String nickname);
 

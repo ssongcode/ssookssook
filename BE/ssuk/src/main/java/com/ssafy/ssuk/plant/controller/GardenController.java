@@ -106,23 +106,21 @@ public class GardenController {
     }
 
     @PutMapping("/kill")
-    public ResponseEntity<ResponseDto> unUseGarden(
-            @RequestAttribute Integer userId,
+    public ResponseEntity<CommonResponseEntity> unUseGarden(
+            @RequestAttribute(required = true) Integer userId,
             @RequestBody @Validated GardenDeleteRequestDto gardenDeleteRequestDto,
             BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors())
-            return new ResponseEntity<>(new ResponseDto("입력 확인"), HttpStatus.NOT_FOUND);
-
+        if (bindingResult.hasErrors()) {
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+        }
 
         // 유저 확인(이건 믿고 가야하는거 같음, 삭제는 더더욱 자주 일어나지 않으니 확인해도 괜찮으려나)
         // 정원 확인(service에서 진행)
 
         Integer gardenId = gardenDeleteRequestDto.getGardenId();
-        if(gardenService.deleteGarden(userId, gardenId)) {
-            return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(new ResponseDto(FAIL), HttpStatus.NOT_FOUND);
+        gardenService.deleteFromPot(userId, gardenId);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
     @GetMapping("/{gardenId}")
