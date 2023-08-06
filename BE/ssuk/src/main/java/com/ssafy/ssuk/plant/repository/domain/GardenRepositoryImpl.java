@@ -42,7 +42,6 @@ public class GardenRepositoryImpl implements GardenRepository {
         List<Garden> resultList = em.createQuery("select g from Garden g" +
                         " join fetch g.plant plant" +
                         " join fetch plant.category pc" +
-                        " join fetch g.pot pot" +
                         " where g.id = :gardenId and g.user.id = :userId", Garden.class)
                 .setParameter("gardenId", gardenId)
                 .setParameter("userId", userId)
@@ -59,7 +58,6 @@ public class GardenRepositoryImpl implements GardenRepository {
         return em.createQuery("select g from Garden g" +
                         " join fetch g.plant plant" +
                         " join fetch plant.category pc" +
-                        " join fetch g.pot pot" +
                         " where g.user.id = :userId and g.isUse = :isUse", Garden.class)
                 .setParameter("userId", userId)
                 .setParameter("isUse", isUse)
@@ -71,7 +69,6 @@ public class GardenRepositoryImpl implements GardenRepository {
         return em.createQuery("select g from Garden g" +
                         " join fetch g.plant plant" +
                         " join fetch plant.category pc" +
-                        " join fetch g.pot pot" +
                         " where g.user.id = :userId and g.isDeleted = false", Garden.class)
                 .setParameter("userId", userId)
                 .getResultList();

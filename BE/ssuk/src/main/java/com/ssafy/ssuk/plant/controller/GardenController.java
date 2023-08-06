@@ -130,15 +130,15 @@ public class GardenController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ResponseDto> searchAllNow(@RequestAttribute(required = true) Integer userId) {
+    public ResponseEntity<CommonResponseEntity> searchAllNow(@RequestAttribute(required = true) Integer userId) {
         List<GardenSearchOneResponseDto> collect = gardenService.findAllByUserId(userId, true).stream().map(g -> new GardenSearchOneResponseDto(g)).collect(Collectors.toList());
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "gardens", collect), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, collect);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ResponseDto> searchAll(@RequestAttribute(required = true) Integer userId) {
+    public ResponseEntity<CommonResponseEntity> searchAll(@RequestAttribute(required = true) Integer userId) {
         List<GardenSearchOneResponseDto> collect = gardenService.findAllByUserId(userId).stream().map(g -> new GardenSearchOneResponseDto(g)).collect(Collectors.toList());
-        return new ResponseEntity<>(new ResponseDto(SUCCESS, "gardens", collect), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, collect);
     }
 
     @PutMapping("/delete/{gardenId}")
