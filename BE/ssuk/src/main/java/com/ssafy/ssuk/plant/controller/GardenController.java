@@ -150,11 +150,11 @@ public class GardenController {
     }
 
     @PutMapping("/orders")
-    public ResponseEntity<ResponseDto> ordersSave(
-            @RequestAttribute Integer userId,
+    public ResponseEntity<CommonResponseEntity> ordersSave(
+            @RequestAttribute(required = true) Integer userId,
             @RequestBody @Validated GardenOrdersRequestDto gardenOrdersRequestDto) {
         gardenService.modifyOrders(userId, gardenOrdersRequestDto.getGardenIdsOrderBy());
-        return new ResponseEntity<>(new ResponseDto(SUCCESS), HttpStatus.OK);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
 }

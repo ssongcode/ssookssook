@@ -100,16 +100,16 @@ public class GardenServiceImpl implements GardenService {
             map.put(gardenIdsOrderBy.get(i), i);
             log.debug("key, value={} / {}", gardenIdsOrderBy.get(i), i);
         }
-        List<Garden> gardenList = gardenRepository.findAllByUserIdAndIds(userId, gardenIdsOrderBy);
+        List<Garden> gardenList = gardenRepository.findAllByUserId(userId);
         gardenList.forEach(g -> {
                     Integer order = map.get(g.getId());
-                    if(order == null){
+                    if (order == null){
                         gardenList.forEach(errorGarden -> em.detach(errorGarden));
-                        throw new CustomException(ErrorCode.TEST_NOT_FOUND);
+                        throw new CustomException(ErrorCode.GARDEN_NOT_FOUND);
                     }
-                    log.debug("{} / {}", g.getId(), g.getOrders());
                     g.modifyOrders(order);
-                });
+                    log.debug("{} / {}", g.getId(), g.getOrders());
+        });
     }
 
     @Override
