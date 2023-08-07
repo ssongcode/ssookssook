@@ -18,6 +18,7 @@ public enum SuccessCode {
     //식물
 
     //기타
+    SUCCESS_CODE(HttpStatus.OK, "Success"),
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다."),
     INPUT_EXCEPTION(HttpStatus.BAD_REQUEST, "입력값을 확인하세요");
 
