@@ -82,19 +82,24 @@ public class NotificationController {
         fcmService.checkTokenByUser_Id(userId, tokenRequestDto);
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_FCM, null);
     }
+
     //알림 조회
     @GetMapping("")
-    public ResponseEntity<?> selectNotification(@RequestAttribute Integer userId)
-    {
-
+    public ResponseEntity<?> selectNotification(@RequestAttribute Integer userId) {
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_FCM, notificationService.findNotification(userId));
     }
 
     //알림 삭제
+    @PutMapping("/{notification_id}")
+    public ResponseEntity<?> updateNotification(@PathVariable Integer notification_id)
+    {
+        notificationService.updateNotification(notification_id);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_FCM, null);
+    }
 
     @PostMapping("/send") // 테스트용
     public ResponseEntity<?> sendPush(@RequestAttribute Integer userId, @RequestBody PushRequestDto pushRequestDto) {
-        //fcmService.sendPushTo(userId,pushRequestDto.getTitle(), pushRequestDto.getBody());
+        fcmService.sendPushTo(userId, pushRequestDto.getTitle(), pushRequestDto.getBody());
         Notification notification = Notification.builder().user(User.builder().id(userId).build()).
                 title(pushRequestDto.getTitle()).body(pushRequestDto.getBody()).build();
         notificationRepository.save(notification);

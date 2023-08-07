@@ -6,6 +6,7 @@ import com.ssafy.ssuk.notify.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,14 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void updateNotification(Notification notification) {
+    public void updateNotification(Integer notificationId) {
+        Optional<Notification> findNotification = notificationRepository.findById(notificationId);
 
+        findNotification.ifPresent(noti -> {
+            noti.setVisible(false);
+            noti.setCheck_date(LocalDateTime.now());
+            notificationRepository.save(noti);
+        });
+        //notificationRepository.updateNotification(notificationId);
     }
 }

@@ -18,6 +18,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
     List<NotificationResponseDto> findByUser_Id(@Param("userId") Integer userId);
 
     // 알림 확인 (visible 0으로 갱신)
-    @Query("update Notification n set n.visible = 0 where n.id = :notificationId")
+    @Query("update Notification n set n.visible = 0, n.check_date=now() where n.id = :notificationId")
     void updateNotification(@Param("notificationId") Integer notificationId);
 }
