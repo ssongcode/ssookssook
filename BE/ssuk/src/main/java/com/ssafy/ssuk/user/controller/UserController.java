@@ -11,12 +11,12 @@ import com.ssafy.ssuk.user.domain.User;
 import com.ssafy.ssuk.user.dto.request.*;
 import com.ssafy.ssuk.user.dto.response.InfoResponseDto;
 import com.ssafy.ssuk.user.service.UserService;
+import com.ssafy.ssuk.utils.auth.jwt.TokenInfo;
 import com.ssafy.ssuk.utils.auth.oauth.kakao.KakaoAuthService;
 import com.ssafy.ssuk.utils.email.EmailMessage;
 import com.ssafy.ssuk.utils.image.S3Uploader;
 import com.ssafy.ssuk.utils.response.CommonResponseEntity;
 import com.ssafy.ssuk.utils.response.SuccessCode;
-import com.ssafy.ssuk.utils.auth.jwt.TokenInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 import java.util.Optional;
 
 @RestController
@@ -43,26 +42,26 @@ public class UserController {
     private final KakaoAuthService kakaoAuthService;
 
     // 회원가입시 이메일 인증코드 발송
-        @PostMapping("/join/email")
-        public ResponseEntity<?> sendEmailCode
-        (@RequestBody @Validated CheckEmailRequestDto checkEmailRequestDto, BindingResult bindingResult) throws Exception {
-            if (bindingResult.hasErrors()) {
-                return new ResponseEntity<>("요청값 검증 실패", HttpStatus.FORBIDDEN);
-            }
-            Optional<User> findUser = userService.findByEmail(checkEmailRequestDto);
-            // 사용자 존재 => 중복 => 가입 안됨
-            if (findUser.isPresent()) {
-                throw new CustomException(ErrorCode.DUPLICATE_USER_EMAIL);
+    @PostMapping("/join/email")
+    public ResponseEntity<?> sendEmailCode
+    (@RequestBody @Validated CheckEmailRequestDto checkEmailRequestDto, BindingResult bindingResult) throws Exception {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>("요청값 검증 실패", HttpStatus.FORBIDDEN);
+        }
+        Optional<User> findUser = userService.findByEmail(checkEmailRequestDto);
+        // 사용자 존재 => 중복 => 가입 안됨
+        if (findUser.isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_USER_EMAIL);
 //            return new ResponseEntity<>("중복된 이메일", HttpStatus.CONFLICT);
-            }
-            // 사용자 존재X => 이메일로 인증코드 발송
-            String userEmail = checkEmailRequestDto.getEmail();
-            String authCode = emailMessage.sendMail(userEmail);
+        }
+        // 사용자 존재X => 이메일로 인증코드 발송
+        String userEmail = checkEmailRequestDto.getEmail();
+        String authCode = emailMessage.sendMail(userEmail);
 //        log.debug("userEmail={}",userEmail);
 //        log.debug("authCode={}",authCode);
-            // 인증코드 Redis 서버에 저장
-            redisService.setEmailCode(userEmail, authCode);
-            return new ResponseEntity<>("인증코드 발송 완료", HttpStatus.OK);
+        // 인증코드 Redis 서버에 저장
+        redisService.setEmailCode(userEmail, authCode);
+        return new ResponseEntity<>("인증코드 발송 완료", HttpStatus.OK);
     }
 
     // 회원가입시 이메일 인증코드 확인
@@ -190,7 +189,7 @@ public class UserController {
     }
 
     // 비밀번호 재설정
-    @PostMapping("/password")
+    @PutMapping("/password")
     public ResponseEntity<?> updatePassword
     (@RequestBody @Validated UpdatePasswordDto updatePasswordDto, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
