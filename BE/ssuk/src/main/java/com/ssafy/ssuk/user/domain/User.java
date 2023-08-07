@@ -1,6 +1,7 @@
 package com.ssafy.ssuk.user.domain;
 
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor // 기본 생성자
 @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자
 @Setter
+@DynamicInsert
 //@Builder
 public class User implements UserDetails {
 
@@ -37,23 +39,23 @@ public class User implements UserDetails {
     private String nickname;
 
     @Column(name = "PROFILE_IMAGE")
-    private String profileImage = "default";
+    private String profileImage;
 
     @Column(name = "CREATED_DATE")
 //    @Builder.Default
-    private LocalDateTime createdTime = LocalDateTime.now();
+    private LocalDateTime createdTime;
 
     @Column(name = "UPDATED_DATE")
 //    @Builder.Default
-    private LocalDateTime updatedTime = LocalDateTime.now();
+    private LocalDateTime updatedTime;
 
     @Column(name = "IS_VALIDATED")
 //    @Builder.Default
-    private Boolean isValidated = true;
+    private Boolean isValidated;
 
     @Column(name = "PLANT_COUNT")
 //    @Builder.Default
-    private Integer plantCount = 0;
+    private Integer plantCount;
 
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
@@ -97,6 +99,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User(Integer id) {
+        this.id = id;
     }
 
     public User(String email, String password, String nickname) {

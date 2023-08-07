@@ -1,5 +1,7 @@
 package com.ssafy.ssuk.plant.controller;
 
+import com.ssafy.ssuk.badge.domain.BadgeCode;
+import com.ssafy.ssuk.badge.service.BadgeService;
 import com.ssafy.ssuk.exception.dto.CustomException;
 import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.plant.domain.Garden;
@@ -42,6 +44,7 @@ public class GardenController {
     private final PlantService plantService;
     private final PotRepository potRepository;
     private final UserRepository userRepository;
+    private final BadgeService badgeService;
 
     private final String SUCCESS = "OK";
     private final String FAIL = "false";
@@ -146,6 +149,10 @@ public class GardenController {
             @RequestAttribute(required = true) Integer userId,
             @PathVariable Integer gardenId) {
         gardenService.deleteFromGarden(userId, gardenId);
+        // enum으로 바꾸자
+        if (badgeService.checkUserBadge(BadgeCode.쑥쑥을_위하여.getCode(), userId) == false) {
+            badgeService.saveUserBadge(BadgeCode.쑥쑥을_위하여.getCode(), userId);
+        }
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE);
     }
 
