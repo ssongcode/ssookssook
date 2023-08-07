@@ -1,21 +1,30 @@
 package com.ssafy.ssuk.notify.controller;
 
+import com.ssafy.ssuk.notify.dto.TokenRequestDto;
+import com.ssafy.ssuk.notify.service.FcmService;
 import com.ssafy.ssuk.pot.dto.requset.PotInsertDto;
+import com.ssafy.ssuk.utils.response.CommonResponseEntity;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/test")
 public class TestController {
+
+    private final FcmService fcmService;
+
+    @Autowired
+    public TestController(FcmService fcmService) {
+        this.fcmService = fcmService;
+    }
 
     private static final String EXPO_PUSH_API_URL = "https://exp.host/--/api/v2/push/send";
     //private static final String EXPO_PUSH_TOKEN = "ExponentPushToken[mwb75mLXxguCpfxMmtzy-2]";
@@ -56,5 +65,12 @@ public class TestController {
             e.printStackTrace();
             return "Error occurred while sending push notification!";
         }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> insertToken(@RequestAttribute Integer userId, @RequestBody TokenRequestDto tokenRequestDto)
+    {
+        fcmService.checkTokenByUser_Id(userId, tokenRequestDto);
+        return CommonResponseEntity.getResponseEntity();
     }
 }

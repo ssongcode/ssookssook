@@ -3,7 +3,11 @@ package com.ssafy.ssuk.notify.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.ssafy.ssuk.notify.domain.Fcm;
 import com.ssafy.ssuk.notify.dto.FCMMessageDto;
+import com.ssafy.ssuk.notify.dto.TokenRequestDto;
+import com.ssafy.ssuk.notify.mapper.FcmMapper;
+import com.ssafy.ssuk.notify.repository.FcmRepository;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +17,20 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class FcmService {
     private final ObjectMapper objectMapper;
+    private final FcmRepository fcmRepository;
+    private final FcmMapper fcmMapper;
 
     @Autowired
-    public FcmService(ObjectMapper objectMapper) {
+    public FcmService(ObjectMapper objectMapper, FcmRepository fcmRepository, FcmMapper fcmMapper) {
         this.objectMapper = objectMapper;
+        this.fcmRepository = fcmRepository;
+        this.fcmMapper = fcmMapper;
     }
 
     public String getAccessToken() throws IOException {
@@ -68,8 +77,9 @@ public class FcmService {
 
     /**
      * 알림 푸쉬를 보내는 역할을 하는 메서드
+     *
      * @param targetToken : 푸쉬 알림을 받을 클라이언트 앱의 식별 토큰
-     * */
+     */
     public void sendMessageTo(
             String targetToken, String title, String body, String id, String isEnd
     ) throws IOException {
@@ -93,6 +103,20 @@ public class FcmService {
         log.info(response.body().string());
 
         return;
+    }
+
+
+    //유저가 토큰을 가지고 있는지 체크
+    public void checkTokenByUser_Id(Integer userId, TokenRequestDto tokenRequestDto) {
+        Optional<Fcm> findFcm = fcmRepository.findByUser_Id(userId);
+        //save
+        if (!findFcm.isPresent()) {
+            Fcm fcm = fcmMapper.requestDtoToFcm(tokenRequestDto, userId);
+            fcmRepository.save(fcm);
+        } else {
+            findFcm.get().setFcm_token(tokenRequestDto.getFcm_token());
+        }
+
     }
 
 }

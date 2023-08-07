@@ -10,6 +10,7 @@ public enum SuccessCode {
     /* 예시 */
     SUCCESS_EXAMPLE(HttpStatus.OK, "대충 성공했단 메시지"),
 
+
     //user 관련 예외
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 정보의 사용자를 찾을 수 없습니다."),
     DUPLICATE_USER_ID(HttpStatus.CONFLICT, "중복된 아이디입니다."), // 409 : CONFLICT
