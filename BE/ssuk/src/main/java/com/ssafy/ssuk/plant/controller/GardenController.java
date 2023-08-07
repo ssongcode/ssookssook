@@ -66,10 +66,8 @@ public class GardenController {
         // 화분 확인(존재하는지, 소유자가 유저인지)
         Integer potId = gardenRegisterRequestDto.getPotId();
         Pot pot = potRepository.findById(potId).orElseThrow(() -> new CustomException(ErrorCode.POT_NOT_FOUND));
-        /** 이부분 쿼리 또 발생함
-         * lazy에 대해 하나 잘못 이해하고 있었네!!
-         */
-        if (pot.getIsRegisted() && (pot.getUser() == null || user.getId() != pot.getUser().getId())) {
+
+        if (!pot.getIsRegisted() && (pot.getUser() == null || user.getId() != pot.getUser().getId())) {
             throw new CustomException(ErrorCode.POT_NOT_MATCH_USER);
         }
 
