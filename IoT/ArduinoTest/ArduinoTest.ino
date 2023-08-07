@@ -45,7 +45,7 @@ void loop(){
     Serial.print(humidity);
     Serial.print(" ");
     Serial.print(moisturePercentage);
-    Serial.print("% ");
+    Serial.print(" ");
     Serial.print(waterTank);
     Serial.print(" ");
     if(sensorTimeCount >= 10) {

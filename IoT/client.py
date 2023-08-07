@@ -93,8 +93,8 @@ async def read():
 		line = ARD.readline()
 		temperature, humidity, groundMoisture, waterTank, param = line.decode().split()
 		print("line :",line)
-		temperature, humidity = float(temperature), float(humidity)
-		groundMoisture, waterTank, param = int(groundMoisture), int(waterTank), int(param)
+		temperature, humidity, groundMoisture = float(temperature), float(humidity) ,float(groundMoisture),
+		waterTank, param =  int(waterTank), int(param)
 		# print("humidity :", humidity)
 		# print("groundMoisture :",groundMoisture)
 		# print("waterTank :",waterTank)
