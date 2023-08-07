@@ -23,6 +23,10 @@ public enum ErrorCode {
     INVALID_SERIAL_NUMBER(HttpStatus.BAD_REQUEST, "유효하지 않은 시리얼 넘버입니다."),
     POT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 화분이 유효하지 않습니다."),
 
+    //FCM 관련 예외
+    FCM_INVALID_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 FCM 토큰입니다."),
+    FCM_PUSH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "푸쉬 알림 발송 중 에러가 발생하였습니다"),
+
     //기타
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다."),
     INPUT_EXCEPTION(HttpStatus.BAD_REQUEST, "입력값을 확인하세요")
