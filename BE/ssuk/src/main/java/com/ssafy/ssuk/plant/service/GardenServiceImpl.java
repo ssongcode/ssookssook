@@ -88,6 +88,8 @@ public class GardenServiceImpl implements GardenService {
     @Transactional
     public void deleteFromGarden(Integer userId, Integer gardenId) {
         Garden garden = Optional.ofNullable(gardenRepository.findOneByIdAndUserId(gardenId, userId)).orElseThrow(() -> new CustomException(ErrorCode.GARDEN_NOT_FOUND));
+        Integer orders = garden.getOrders();
+        gardenRepository.minusOrders(userId, orders);
         garden.removeFromGarden();
     }
 

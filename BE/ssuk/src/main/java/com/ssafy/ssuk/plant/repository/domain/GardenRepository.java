@@ -21,4 +21,6 @@ public interface GardenRepository {
     List<Garden> findAllByUserId(Integer userId);
 
     List<Garden> findOnlyAllByUserId(int userId);
+
+    void minusOrders(int userId, int orders);
 }

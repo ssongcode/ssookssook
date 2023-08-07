@@ -81,4 +81,15 @@ public class GardenRepositoryImpl implements GardenRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+
+    @Override
+    public void minusOrders(int userId, int orders) {
+        em.createNativeQuery("update GARDEN" +
+                " set ORDERS = ORDERS - 1" +
+                " where USER_ID = :userId" +
+                " and ORDERS > :orders")
+                .setParameter("userId", userId)
+                .setParameter("orders", orders)
+                .executeUpdate();
+    }
 }
