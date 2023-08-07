@@ -1,15 +1,15 @@
 package com.ssafy.ssuk.notify.service;
 
 import com.ssafy.ssuk.notify.domain.Notification;
+import com.ssafy.ssuk.notify.dto.response.NotificationResponseDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
-@Service
 public interface NotificationService {
-    void save(Notification notification);
 
-    Optional<Notification> findNotification();
+    List<NotificationResponseDto> findNotification(Integer userId);
 
     void updateNotification(Notification notification);
 }

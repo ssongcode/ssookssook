@@ -3,10 +3,8 @@ package com.ssafy.ssuk.notify.domain;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.pot.domain.Pot;
 import com.ssafy.ssuk.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
@@ -20,6 +18,8 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor // 기본 생성자
 @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자
 @Setter
+@Builder
+@DynamicInsert
 public class Notification {
     @Id @GeneratedValue
     @Column(name = "NOTIFICATION_ID")
@@ -37,8 +37,11 @@ public class Notification {
     @JoinColumn(name = "POT_ID")
     private Pot pot;
 
-    @Column(name = "TEXT")
-    private String text;
+    @Column(name = "TITLE")
+    private String title;
+
+    @Column(name = "BODY")
+    private String body;
 
     @Column(name = "VISIBLE")
     private Boolean visible;

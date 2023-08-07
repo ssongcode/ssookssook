@@ -1,9 +1,13 @@
 package com.ssafy.ssuk.notify.controller;
 
+import com.ssafy.ssuk.notify.domain.Notification;
 import com.ssafy.ssuk.notify.dto.PushRequestDto;
 import com.ssafy.ssuk.notify.dto.TokenRequestDto;
+import com.ssafy.ssuk.notify.repository.NotificationRepository;
 import com.ssafy.ssuk.notify.service.FcmService;
+import com.ssafy.ssuk.notify.service.NotificationService;
 import com.ssafy.ssuk.pot.dto.requset.PotInsertDto;
+import com.ssafy.ssuk.user.domain.User;
 import com.ssafy.ssuk.utils.response.CommonResponseEntity;
 import com.ssafy.ssuk.utils.response.SuccessCode;
 import org.apache.http.HttpEntity;
@@ -13,20 +17,22 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/test")
-public class TestController {
+public class NotificationController {
 
     private final FcmService fcmService;
+    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    public TestController(FcmService fcmService) {
+    public NotificationController(FcmService fcmService, NotificationRepository notificationRepository, NotificationService notificationService) {
         this.fcmService = fcmService;
+        this.notificationRepository = notificationRepository;
+        this.notificationService = notificationService;
     }
 
     private static final String EXPO_PUSH_API_URL = "https://exp.host/--/api/v2/push/send";
@@ -72,16 +78,28 @@ public class TestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> insertToken(@RequestAttribute Integer userId, @RequestBody TokenRequestDto tokenRequestDto)
-    {
+    public ResponseEntity<?> insertToken(@RequestAttribute Integer userId, @RequestBody TokenRequestDto tokenRequestDto) {
         fcmService.checkTokenByUser_Id(userId, tokenRequestDto);
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_FCM, null);
     }
-
-    @PostMapping("/send")
-    public ResponseEntity<?> sendPush(@RequestAttribute Integer userId, @RequestBody PushRequestDto pushRequestDto)
+    //알림 조회
+    @GetMapping("")
+    public ResponseEntity<?> selectNotification(@RequestAttribute Integer userId)
     {
-        fcmService.sendPushTo(userId,pushRequestDto.getTitle(), pushRequestDto.getBody());
+
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_FCM, notificationService.findNotification(userId));
+    }
+
+    //알림 삭제
+
+    @PostMapping("/send") // 테스트용
+    public ResponseEntity<?> sendPush(@RequestAttribute Integer userId, @RequestBody PushRequestDto pushRequestDto) {
+        //fcmService.sendPushTo(userId,pushRequestDto.getTitle(), pushRequestDto.getBody());
+        Notification notification = Notification.builder().user(User.builder().id(userId).build()).
+                title(pushRequestDto.getTitle()).body(pushRequestDto.getBody()).build();
+        notificationRepository.save(notification);
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_FCM, null);
     }
+
+
 }
