@@ -91,8 +91,10 @@ async def connect():
 async def read():
 	if ARD.readable():
 		line = ARD.readline()
-		temperature, humidity, groundMoisture, waterTank, param = map(int,line.decode().split())
+		temperature, humidity, groundMoisture, waterTank, param = line.decode().split()
 		print("line :",line)
+		temperature, humidity = float(temperature), float(humidity)
+		groundMoisture, waterTank, param = int(groundMoisture), int(waterTank), int(param)
 		# print("humidity :", humidity)
 		# print("groundMoisture :",groundMoisture)
 		# print("waterTank :",waterTank)
