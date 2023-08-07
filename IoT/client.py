@@ -93,7 +93,7 @@ async def read():
 		line = ARD.readline()
 		temperature, humidity, groundMoisture, waterTank, param = line.decode().split()
 		print("line :",line)
-		temperature, humidity, groundMoisture = float(temperature), float(humidity) ,float(groundMoisture),
+		temperature, humidity, groundMoisture = float(temperature), float(humidity) ,float(groundMoisture)
 		waterTank, param =  int(waterTank), int(param)
 		# print("humidity :", humidity)
 		# print("groundMoisture :",groundMoisture)
@@ -105,7 +105,7 @@ async def read():
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
 	# Load your model onto the TF Lite Interpreter
-	interpreter = tf.lite.Interpreter(model_path=modelPath)
+	interpreter = tf.lite.Interpreter(model_path=model_path)
 	interpreter.allocate_tensors()
 	# 정보 얻기
 	input_details = interpreter.get_input_details()
