@@ -84,15 +84,15 @@ public class UserController {
     }
 
     // 닉네임 중복 확인
-    @GetMapping("/nickname/{nickname}")
-    public ResponseEntity<?> verifyNickname(@PathVariable String nickname) {
-        log.debug("nickname={}", nickname);
-        Optional<User> findUser = userService.findByNickname(nickname);
-        if (findUser.isPresent())
-            throw new CustomException(ErrorCode.DUPLICATE_USER_NICKNAME);
-//            return new ResponseEntity<>("중복된 닉네임", HttpStatus.CONFLICT);
-        return new ResponseEntity<>("OK", HttpStatus.OK);
-    }
+//    @GetMapping("/nickname/{nickname}")
+//    public ResponseEntity<?> verifyNickname(@PathVariable String nickname) {
+//        log.debug("nickname={}", nickname);
+//        Optional<User> findUser = userService.findByNickname(nickname);
+//        if (findUser.isPresent())
+//            throw new CustomException(ErrorCode.DUPLICATE_USER_NICKNAME);
+////            return new ResponseEntity<>("중복된 닉네임", HttpStatus.CONFLICT);
+//        return new ResponseEntity<>("OK", HttpStatus.OK);
+//    }
 
     // 회원가입
     @PostMapping("/join")

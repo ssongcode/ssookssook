@@ -112,10 +112,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateNickname(Integer userId, String newNickname) {
         log.debug("newNickname={}",newNickname);
-        Optional<User> findUser = userRepository.findByNickname(newNickname);
-        if (findUser.isPresent() && userId!=findUser.get().getId()) {
-            throw new CustomException(ErrorCode.DUPLICATE_USER_NICKNAME);
-        }
+//        Optional<User> findUser = userRepository.findByNickname(newNickname);
+//        if (findUser.isPresent() && userId!=findUser.get().getId()) {
+//            throw new CustomException(ErrorCode.DUPLICATE_USER_NICKNAME);
+//        }
         userRepository.updateNickname(userId, newNickname);
     }
 
