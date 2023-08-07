@@ -201,7 +201,7 @@ def send_image_to_server():
 		return
 	# 이미지 저장
 	img_path = os.path.join(os.path.dirname(__file__),"img/"+filename)
-    cv2.imwrite(img_path,frame)
+	cv2.imwrite(img_path,frame)
 	# 카메라 종료
 	cam.release()
 	print("Capture request Complete!")
