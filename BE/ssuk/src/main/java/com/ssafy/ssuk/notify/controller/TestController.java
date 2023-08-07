@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     private static final String EXPO_PUSH_API_URL = "https://exp.host/--/api/v2/push/send";
-    private static final String EXPO_PUSH_TOKEN = "ExponentPushToken[mwb75mLXxguCpfxMmtzy-2]";
+    //private static final String EXPO_PUSH_TOKEN = "ExponentPushToken[mwb75mLXxguCpfxMmtzy-2]";
+
+    private static final String EXPO_PUSH_TOKEN = "ExponentPushToken[7psLXVD6U22E9wNznpIlOZ]";
 
     @PostMapping("/send-push")
     public String sendPushNotification(@RequestBody PotInsertDto potInsertDto) {
@@ -34,7 +36,7 @@ public class TestController {
             // Create the JSON payload for the push notification
             String payload = "{\n" +
                     "  \"to\": \"" + EXPO_PUSH_TOKEN + "\",\n" +
-                    "  \"title\": \"" + "i want to chage a car" + "\",\n" +
+                    "  \"title\": \"" + "hi " + "\",\n" +
                     "  \"body\": \"" + "TT" + "\"\n" +
                     "}";
 
