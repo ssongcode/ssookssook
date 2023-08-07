@@ -85,6 +85,14 @@ public class GardenController {
          * user의 plantcount 늘리는 메소드 추가해야함
          * user.plusPlantCount()
          */
+        int plantCount = user.getPlantCount();
+        if (plantCount >= 10 && badgeService.checkUserBadge(BadgeCode.정신차리고보니.getCode(), userId) == false) {
+            badgeService.saveUserBadge(BadgeCode.정신차리고보니.getCode(), userId);
+        } else if (plantCount >= 5 && badgeService.checkUserBadge(BadgeCode.가만히_있어도_절반은_간다.getCode(), userId) == false) {
+            badgeService.saveUserBadge(BadgeCode.가만히_있어도_절반은_간다.getCode(), userId);
+        } else if (plantCount >= 1 && badgeService.checkUserBadge(BadgeCode.시작이반.getCode(), userId) == false) {
+            badgeService.saveUserBadge(BadgeCode.시작이반.getCode(), userId);
+        }
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, new GardenRegisterResponseDto(newGarden.getId()));
     }
 
@@ -149,7 +157,7 @@ public class GardenController {
             @RequestAttribute(required = true) Integer userId,
             @PathVariable Integer gardenId) {
         gardenService.deleteFromGarden(userId, gardenId);
-        // enum으로 바꾸자
+
         if (badgeService.checkUserBadge(BadgeCode.쑥쑥을_위하여.getCode(), userId) == false) {
             badgeService.saveUserBadge(BadgeCode.쑥쑥을_위하여.getCode(), userId);
         }

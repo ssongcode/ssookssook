@@ -36,6 +36,7 @@ public class GardenServiceImpl implements GardenService {
         int orders = findAllByUserId(user.getId()).size();
         Garden garden = new Garden(user, plant, pot, nickname, orders);
         gardenRepository.save(garden);
+        user.plusPlantCount();
         return garden;
     }
 

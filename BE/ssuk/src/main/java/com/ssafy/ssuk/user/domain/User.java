@@ -117,4 +117,8 @@ public class User implements UserDetails {
         this.nickname = nickname;
         this.profileImage = profileImage;
     }
+
+    public int plusPlantCount() {
+        return ++this.plantCount;
+    }
 }
