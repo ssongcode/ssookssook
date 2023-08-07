@@ -20,10 +20,10 @@ BAUD_RATE = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
 # ARD = serial.Serial(PORT, BAUD_RATE) # 아두이노 통신 설정 - PC
 ARD = serial.Serial("/dev/ttyACM0",BAUD_RATE) # 아두이노 통신 설정 - 라즈베리파이4
 # the TFLite converted to be used with edgetpu
-modelPath = 'model_unquant.tflite'
-
+model_path = os.path.join(os.path.dirname(__file__),'model_unquant.tflite')
+serial_number_path = os.path.join(os.path.dirname(__file__), "serial_number.txt")
 # The path to labels.txt that was downloaded with your model
-labelPath = 'labels.txt'
+label_path = os.path.join(os.path.dirname(__file__),'labels.txt')
 
 async def connect():
 	# uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
@@ -34,7 +34,7 @@ async def connect():
 	serial_number = ""
 	recv_destination = "" # The destination to receive message.
 	send_destination = "/pub/socket/sensor"  # The destination to send the JSON message
-	with open("serial_number.txt","r") as file:
+	with open(serial_number_path,"r") as file:
 		serial_number = file.readline()
 		if serial_number == "":
 			print("시리얼 넘버가 없습니다.")
@@ -119,7 +119,7 @@ def TM(frame):
 	output_details = interpreter.get_output_details()
 	output_data = interpreter.get_tensor(output_details[0]['index'])
 	result = ""
-	with open("labels.txt","r") as label:
+	with open(label_path,"r") as label:
 		max_data = 0
 		for per in output_data[0]:
 			line = label.readline()
@@ -188,7 +188,7 @@ def send_image_to_server():
 	# 파일명 : 시리얼 넘버 + 현재시간.jpg
 
 	serial_number = ""
-	with open("serial_number.txt","r") as file:
+	with open(serial_number_path,"r") as file:
 		serial_number = file.readline()
 		if serial_number == "":
 			print("시리얼 넘버가 없습니다.")
@@ -200,7 +200,8 @@ def send_image_to_server():
 		print("프레임을 읽어올 수 없습니다.")
 		return
 	# 이미지 저장
-	cv2.imwrite("img/"+filename,frame)
+	img_path = os.path.join(os.path.dirname(__file__),"img/"+filename)
+    cv2.imwrite(img_path,frame)
 	# 카메라 종료
 	cam.release()
 	print("Capture request Complete!")
