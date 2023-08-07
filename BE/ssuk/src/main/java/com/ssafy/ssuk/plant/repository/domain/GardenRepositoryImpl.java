@@ -73,4 +73,12 @@ public class GardenRepositoryImpl implements GardenRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
+
+    @Override
+    public List<Garden> findOnlyAllByUserId(int userId) {
+        return em.createQuery("select g from Garden g" +
+                        " where g.user.id = :userId and g.isDeleted = false", Garden.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 }

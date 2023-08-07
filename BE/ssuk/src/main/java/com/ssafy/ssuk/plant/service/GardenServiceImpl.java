@@ -33,7 +33,7 @@ public class GardenServiceImpl implements GardenService {
     @Override
     @Transactional
     public Garden save(User user, Plant plant, Pot pot, String nickname) {
-        int orders = findAllByUserId(user.getId()).size();
+        int orders = gardenRepository.findOnlyAllByUserId(user.getId()).size();
         Garden garden = new Garden(user, plant, pot, nickname, orders);
         gardenRepository.save(garden);
         user.plusPlantCount();

@@ -67,7 +67,7 @@ public class GardenController {
         Integer potId = gardenRegisterRequestDto.getPotId();
         Pot pot = potRepository.findById(potId).orElseThrow(() -> new CustomException(ErrorCode.POT_NOT_FOUND));
 
-        if (!pot.getIsRegisted() && (pot.getUser() == null || user.getId() != pot.getUser().getId())) {
+        if (!pot.getIsRegisted() || (pot.getUser() == null || user.getId() != pot.getUser().getId())) {
             throw new CustomException(ErrorCode.POT_NOT_MATCH_USER);
         }
 
