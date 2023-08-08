@@ -225,6 +225,7 @@ public class UserController {
         String kakaoAccessToken = kakaoAuthService.getAccessToken(code).getAccessToken();
         // 사용자 정보 가져오거나 회원가입
         User user = kakaoAuthService.saveOrGetUser(kakaoAccessToken);
+        log.debug("회원가입 또는 사용자 정보 가져오기");
         TokenInfo tokenInfo = kakaoAuthService.kakaoLogin(user.getEmail());
         log.debug("loginTokenInfo={}", tokenInfo);
         return new ResponseEntity<>(tokenInfo, HttpStatus.OK);
