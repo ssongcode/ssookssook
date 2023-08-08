@@ -4,10 +4,13 @@ import com.ssafy.ssuk.measurement.domain.Measurement;
 import com.ssafy.ssuk.measurement.domain.SensorType;
 import com.ssafy.ssuk.measurement.dto.socket.SensorMessageDto;
 import com.ssafy.ssuk.measurement.repository.MeasurementRepository;
+import com.ssafy.ssuk.notify.domain.Notification;
+import com.ssafy.ssuk.notify.domain.NotificationType;
 import com.ssafy.ssuk.notify.repository.NotificationRepository;
 import com.ssafy.ssuk.notify.service.FcmService;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
+import com.ssafy.ssuk.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +72,13 @@ public class MeasurementServiceImpl implements MeasurementService {
                 fcmService.sendPushTo(userId, "물 부족", nickName + "이(가) 물이 부족해요");
 
                 //알림 테이블 저장
+                Notification notification = Notification.builder().user(gardens.get(0).getUser())
+                        .garden(gardens.get(0))
+                        .pot(gardens.get(0).getPot())
+                        .title("test")
+                        .body("hi")
+                        .notificationType(NotificationType.W).build();
+                notificationRepository.save(notification);
 
 
             }
