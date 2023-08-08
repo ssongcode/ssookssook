@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor // 모든 필드 값을 파라미터로 받는 생성자
 @Setter
 @DynamicInsert
-//@Builder
+@Builder
 public class User implements UserDetails {
 
     @Id @GeneratedValue
@@ -42,19 +42,15 @@ public class User implements UserDetails {
     private String profileImage;
 
     @Column(name = "CREATED_DATE")
-//    @Builder.Default
     private LocalDateTime createdTime;
 
     @Column(name = "UPDATED_DATE")
-//    @Builder.Default
     private LocalDateTime updatedTime;
 
     @Column(name = "IS_VALIDATED")
-//    @Builder.Default
     private Boolean isValidated;
 
     @Column(name = "PLANT_COUNT")
-//    @Builder.Default
     private Integer plantCount;
 
     @ManyToMany(cascade = CascadeType.MERGE)
@@ -99,10 +95,6 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User(Integer id) {
-        this.id = id;
     }
 
     public User(String email, String password, String nickname) {
