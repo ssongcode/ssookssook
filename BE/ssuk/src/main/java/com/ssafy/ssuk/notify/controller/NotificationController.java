@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/notification")
 public class NotificationController {
 
     private final FcmService fcmService;
@@ -77,7 +77,7 @@ public class NotificationController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<?> insertToken(@RequestAttribute Integer userId, @RequestBody TokenRequestDto tokenRequestDto) {
         fcmService.checkTokenByUser_Id(userId, tokenRequestDto);
         return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_FCM, null);
