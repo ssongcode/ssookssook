@@ -97,6 +97,7 @@ public class GardenRepositoryImpl implements GardenRepository {
     public List<Garden> findGardenByPotId(Integer potId) {
         return em.createQuery("select g from Garden g " +
                         " join fetch g.plant" +
+                        " join fetch g.user" +
                         " where g.pot.id = :potId and g.isDeleted = false", Garden.class)
                 .setParameter("potId", potId).getResultList();
     }

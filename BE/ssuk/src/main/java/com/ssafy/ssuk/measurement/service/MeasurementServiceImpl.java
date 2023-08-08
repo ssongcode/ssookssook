@@ -4,6 +4,7 @@ import com.ssafy.ssuk.measurement.domain.Measurement;
 import com.ssafy.ssuk.measurement.domain.SensorType;
 import com.ssafy.ssuk.measurement.dto.socket.SensorMessageDto;
 import com.ssafy.ssuk.measurement.repository.MeasurementRepository;
+import com.ssafy.ssuk.notify.repository.NotificationRepository;
 import com.ssafy.ssuk.notify.service.FcmService;
 import com.ssafy.ssuk.plant.domain.Garden;
 import com.ssafy.ssuk.plant.repository.domain.GardenRepository;
@@ -19,11 +20,14 @@ public class MeasurementServiceImpl implements MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final GardenRepository gardenRepository;
     private final FcmService fcmService;
+    private final NotificationRepository notificationRepository;
 
-    public MeasurementServiceImpl(MeasurementRepository measurementRepository, GardenRepository gardenRepository, FcmService fcmService) {
+    @Autowired
+    public MeasurementServiceImpl(MeasurementRepository measurementRepository, GardenRepository gardenRepository, FcmService fcmService, NotificationRepository notificationRepository) {
         this.measurementRepository = measurementRepository;
         this.gardenRepository = gardenRepository;
         this.fcmService = fcmService;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -65,6 +69,7 @@ public class MeasurementServiceImpl implements MeasurementService {
                 fcmService.sendPushTo(userId, "물 부족", nickName + "이(가) 물이 부족해요");
 
                 //알림 테이블 저장
+
 
             }
         }
