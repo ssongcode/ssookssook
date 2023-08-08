@@ -40,15 +40,19 @@ public class User implements UserDetails {
     private String profileImage = "default";
 
     @Column(name = "CREATED_DATE")
+//    @Builder.Default
     private LocalDateTime createdTime = LocalDateTime.now();
 
     @Column(name = "UPDATED_DATE")
+//    @Builder.Default
     private LocalDateTime updatedTime = LocalDateTime.now();
 
     @Column(name = "IS_VALIDATED")
+//    @Builder.Default
     private Boolean isValidated = true;
 
     @Column(name = "PLANT_COUNT")
+//    @Builder.Default
     private Integer plantCount = 0;
 
     @ManyToMany(cascade = CascadeType.MERGE)
@@ -101,4 +105,10 @@ public class User implements UserDetails {
         this.nickname = nickname;
     }
 
+    public User(String email, String password, String nickname, String profileImage) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+    }
 }
