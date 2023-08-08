@@ -245,11 +245,16 @@ public class UserController {
 
     @PostMapping("/token")
     public ResponseEntity<?> recreateToken
-            (@RequestHeader(value = "Authorization", required = false) String refreshToken, HttpServletRequest request) {
+            (@RequestHeader(value = "Authorization", required = false) String bearerToken, HttpServletRequest request) {
+        String refreshToken = null;
+        if (bearerToken.startsWith("Bearer"))
+            refreshToken = bearerToken.substring(7);
         // 헤더에 리프레시토큰 => 토큰 검증 => 토큰 재발급 => 레디스 서버 저장
         TokenInfo tokenInfo = userService.recreateToken(refreshToken, request);
     return new ResponseEntity<>(tokenInfo, HttpStatus.OK);
     }
+
+
 
 
 

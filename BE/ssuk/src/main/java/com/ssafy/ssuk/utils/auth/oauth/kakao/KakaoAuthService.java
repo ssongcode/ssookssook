@@ -140,6 +140,7 @@ public class KakaoAuthService {
                 profileImage);
 
         Role userRole = roleRepository.findByRolename("USER");
+        log.debug("userRole={}", userRole);
         newUser.addRole(userRole);
         userRepository.save(newUser);
         return newUser;
