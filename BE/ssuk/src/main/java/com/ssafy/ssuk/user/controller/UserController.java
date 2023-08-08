@@ -263,6 +263,9 @@ public class UserController {
 
 
 
-
+    @GetMapping("/logout/test")
+    public ResponseEntity<CommonResponseEntity> testLogout() {
+        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, "please!!");
+    }
 
 }
