@@ -31,12 +31,6 @@ public class UserBadge {
     @Column(name = "CREATED_DATE")
     private LocalDateTime createdDate;
 
-    public UserBadge(int badgeId, int userId) {
-        this.user = new User(userId);
-        this.badge = new Badge(badgeId);
-        this.createdDate = LocalDateTime.now();
-    }
-
     public UserBadge(Badge badge, User user) {
         this.user = user;
         this.badge = badge;
