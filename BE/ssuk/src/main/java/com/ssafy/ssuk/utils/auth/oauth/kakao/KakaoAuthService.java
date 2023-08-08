@@ -130,8 +130,9 @@ public class KakaoAuthService {
             profileImage = profile.getKakaoAccount().getProfile().getProfileImageUrl();
             if (profileImage.equals("http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg")) {
                 profileImage = "default";
+            } else {
+                profileImage = s3UploadService.upload(profileImage).getImageName();
             }
-            profileImage = s3UploadService.upload(profileImage).getImageName();
         }
         User newUser = new User(
                 profile.getKakaoAccount().getEmail()+".kakao",
