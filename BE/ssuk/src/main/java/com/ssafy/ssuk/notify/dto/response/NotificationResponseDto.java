@@ -27,7 +27,9 @@ public class NotificationResponseDto {
 
     private LocalDateTime notification_date;
 
-    public NotificationResponseDto(Integer notificationId, Integer userId, Integer gardenId, Integer potId, String title, NotificationType notificationType, String body, Boolean visible, LocalDateTime notification_date) {
+    private String ninckName;
+
+    public NotificationResponseDto(Integer notificationId, Integer userId, Integer gardenId, Integer potId, String title, NotificationType notificationType, String body, Boolean visible, LocalDateTime notification_date, String ninckName) {
         this.notificationId = notificationId;
         this.userId = userId;
         this.gardenId = gardenId;
@@ -37,5 +39,6 @@ public class NotificationResponseDto {
         this.body = body;
         this.visible = visible;
         this.notification_date = notification_date;
+        this.ninckName = ninckName;
     }
 }
