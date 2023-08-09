@@ -41,6 +41,7 @@ public class AuthenticationConfig {
                 // 권한이 필요하지 않은 넓은 범위의 규칙
                 .antMatchers("/").permitAll() // 모든 사용자 접근 허용
                 .antMatchers("/user/**").permitAll() // 모든 사용자 접근 허용
+                .antMatchers("/stomp/**").permitAll() // 모든 센서값 요청에 대해 접근 허용
                 // 그 외의 모든 요청에 대해 인증 필요
                 .anyRequest().authenticated()
                 .and()
