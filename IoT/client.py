@@ -218,7 +218,10 @@ def send_image_to_server():
 		'pot_id' : 1,
 		'level' : result
 	}
-    response = requests.post(url, files=json.dumps(dto), headers={'Content-Type': 'application/json'})
+    response = requests.post(url, 
+    	files=json.dumps(dto), 
+    	headers={'Content-Type': 'application/json; charset=UTF-8'}
+    )
 	if response.status_code == 200:
 		print("TM 데이터 전달 성공")
 	else:
