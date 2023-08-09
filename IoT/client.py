@@ -218,8 +218,9 @@ def send_image_to_server():
 		'pot_id' : 1,
 		'level' : result
 	}
+	dto = json.dumps(dto)
 	response = requests.post(url, 
-		files=json.dumps(dto), 
+		files=dto, 
 		headers={'Content-Type': 'application/json; charset=UTF-8'}
 	)
 	if response.status_code == 200:
