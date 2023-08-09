@@ -59,10 +59,11 @@ public class MeasurementServiceImpl implements MeasurementService {
     @Override
     public void checkMeasurement(SensorMessageDto sensorMessageDto) {
         List<Garden> gardens = gardenRepository.findGardenByPotId(sensorMessageDto.getPotId());
+        Integer userId = gardens.get(0).getUser().getId();
 
         if (sensorMessageDto.getSensorType().equals(SensorType.M)) {
             if (gardens.get(0).getPlant().getMoistureMin() > sensorMessageDto.getMeasurementValue()) {
-                Integer userId = gardens.get(0).getUser().getId();
+
                 String nickName = gardens.get(0).getNickname();
 
                 log.info("물이 없네요 선생님");
@@ -78,9 +79,24 @@ public class MeasurementServiceImpl implements MeasurementService {
                         .body("hi")
                         .notificationType(NotificationType.W).build();
                 notificationRepository.save(notification);
-
-
             }
+        }
+
+        //물탱크 이슈
+        if (sensorMessageDto.getSensorType().equals(SensorType.W) && sensorMessageDto.getMeasurementValue() == 0) {
+            log.info("물탱크에 물이 부족합니다");
+
+            fcmService.sendPushTo(userId, "물탱크 물 부족", "응애 물 채워줘");
+
+            Notification notification = Notification.builder().user(gardens.get(0).getUser())
+                    .garden(gardens.get(0))
+                    .pot(gardens.get(0).getPot())
+                    .title("물 탱크 부족")
+                    .body("응애 물 채워줘")
+                    .notificationType(NotificationType.T).build();
+            notificationRepository.save(notification);
+
+
         }
     }
 
