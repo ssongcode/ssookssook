@@ -222,7 +222,7 @@ def send_image_to_server():
 	}
 	dto = json.dumps(dto)
 	response = requests.post(url, 
-		files=dto, 
+		data=dto, 
 		headers={'Content-Type': 'application/json; charset=UTF-8'}
 	)
 	if response.status_code == 200:
