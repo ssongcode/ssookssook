@@ -105,7 +105,7 @@ async def read():
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
 	# Load your model onto the TF Lite Interpreter
-	interpreter = tf.lite.Interpreter(model_path=modelPath)
+	interpreter = tf.lite.Interpreter(model_path=model_path)
 	interpreter.allocate_tensors()
 	# 정보 얻기
 	input_details = interpreter.get_input_details()
@@ -212,13 +212,13 @@ def send_image_to_server():
 	result = TM(frame) # Raspberry PI 버전
 	print("tflite result : ", result)
 	# 이미지 전송 할 uri
-	url = "https://i9b102.p.ssafy.io:8080/sensor/upload"
+	url = "http://192.168.125.231:8080/sensor/upload"
 	
 	dto = {
 		'pot_id' : 1,
 		'level' : result
 	}
-	response = request.post(url, files=dto)
+    response = requests.post(url, files=json.dumps(dto), headers={'Content-Type': 'application/json'})
 	if response.status_code == 200:
 		print("TM 데이터 전달 성공")
 	else:
