@@ -93,7 +93,7 @@ async def read():
 		line = ARD.readline()
 		temperature, humidity, groundMoisture, waterTank, param = line.decode().split()
 		print("line :",line)
-		temperature, humidity, groundMoisture = float(temperature), float(humidity) ,float(groundMoisture)
+		temperature, humidity, groundMoisture = float(temperature), float(humidity) ,float(groundMoisture),
 		waterTank, param =  int(waterTank), int(param)
 		# print("humidity :", humidity)
 		# print("groundMoisture :",groundMoisture)
@@ -105,7 +105,7 @@ async def read():
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
 	# Load your model onto the TF Lite Interpreter
-	interpreter = tf.lite.Interpreter(model_path=model_path)
+	interpreter = tf.lite.Interpreter(model_path=modelPath)
 	interpreter.allocate_tensors()
 	# 정보 얻기
 	input_details = interpreter.get_input_details()
@@ -212,17 +212,17 @@ def send_image_to_server():
 	result = TM(frame) # Raspberry PI 버전
 	print("tflite result : ", result)
 	# 이미지 전송 할 uri
-	# url = "https://i9b102.p.ssafy.io:8080/upload"
+	url = "https://i9b102.p.ssafy.io:8080/sensor/upload"
 	
-	# dto = {
-	# 	'pot_id' : 1,
-	# 	'level' : 
-	# }
-	# response = request.post(url, files=dto)
-	# if response.status_code == 200:
-	# 	print("이미지 업로드 성공")
-	# else:
-	# 	print("이미지 업로드 실패")
+	dto = {
+		'pot_id' : 1,
+		'level' : result
+	}
+	response = request.post(url, files=dto)
+	if response.status_code == 200:
+		print("TM 데이터 전달 성공")
+	else:
+		print("TM 데이터 전달 실패")
 
 if __name__ == "__main__":
 	asyncio.get_event_loop().run_until_complete(connect())
