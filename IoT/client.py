@@ -55,8 +55,9 @@ async def connect():
 			# Server -> Raspberry PI Request
 			try:
 				response = await asyncio.wait_for(websocket.recv(), timeout=1.0)
-				print(response)
+				# print(response)
 				if response:
+					# command : "A" -> 물 주기
 					command = "A"
 					print("ARD WRITE : ", response)
 					ARD.write(command.encode())
@@ -66,7 +67,6 @@ async def connect():
 			try:
 				# Raspberry PI -> Server Request
 				sensor_data = await read()
-				print("Arduino Data : ", sensor_data)
 				if sensor_data[4] == 1:
 					for data, s_type in zip(sensor_data[:4], ["T", "H", "M", "W"]):
 						json_message = {
@@ -78,6 +78,9 @@ async def connect():
 						#T,H,M,W
 						# Convert the JSON message to a string and send it as the STOMP SEND frame
 						send_frame = f"SEND\ndestination:{send_destination}\ncontent-type:application/json\n\n{json.dumps(json_message)}\x00"
+						now = datetime.now()
+						formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+						log_message = f'[{formatted_time}] 센서 데이터 전송\n'
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
@@ -206,13 +209,12 @@ def send_image_to_server():
 	cv2.imwrite(img_path,frame)
 	# 카메라 종료
 	cam.release()
-	print("Capture request Complete!")
 	# TM 체크
 	# TM() # PC 버전
 	result = TM(frame) # Raspberry PI 버전
-	print("tflite result : ", result)
+	print("Camera tflite result : ", result)
 	# 이미지 전송 할 uri
-	url = "http://192.168.125.231:8080/sensor/upload"
+	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
 	
 	dto = {
 		'pot_id' : 1,
@@ -229,4 +231,11 @@ def send_image_to_server():
 		print("TM 데이터 전달 실패")
 
 if __name__ == "__main__":
-	asyncio.get_event_loop().run_until_complete(connect())
+	isExit = False
+	while not isExit:
+		try:
+			asyncio.get_event_loop().run_until_complete(connect())
+		except KeyboardInterrupt as interrupt:
+			isExit = True
+		except Exception as e:
+			print("Error :",e)
