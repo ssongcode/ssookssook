@@ -56,6 +56,7 @@ public class MeasurementController {
     ResponseEntity<?> updateLevel(@RequestBody UploadRequestDto uploadRequestDto)
     {
         log.info(String.valueOf(uploadRequestDto.getPotId()) + " upload 컨트롤러");
+        mesurementService.updateLevel(uploadRequestDto);
 
         return ResponseEntity.ok().build();
     }

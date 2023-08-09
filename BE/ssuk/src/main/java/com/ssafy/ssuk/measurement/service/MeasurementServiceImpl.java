@@ -15,6 +15,7 @@ import com.ssafy.ssuk.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -88,18 +89,31 @@ public class MeasurementServiceImpl implements MeasurementService {
     - 이미지 변경 요청시 레벨업이 아니라면? -? 식물 사진 저장
      */
     @Override
+    @Transactional
     public void updateLevel(UploadRequestDto uploadRequestDto) {
-        Garden findGarden = gardenRepository.findUsingByPotId(uploadRequestDto.getPotId());
+        Garden findGarden = gardenRepository.findGardenByPotId(uploadRequestDto.getPotId()).get(0);
 
         if (findGarden.getLevel() < uploadRequestDto.getLevel()) { // 레벨업
+            //푸시알림
+            fcmService.sendPushTo(findGarden.getUser().getId(), "레벨 업", findGarden.getNickname() + "이(가) 레벨업했어요 !");
+
+            //알림 갱신
+            Notification notification = Notification.builder()
+                    .user(findGarden.getUser())
+                    .garden(findGarden)
+                    .pot(findGarden.getPot())
+                    .title("레벨업")
+                    .body(findGarden.getNickname() + "이(가) 레벨업했어요 !")
+                    .notificationType(NotificationType.L)
+                    .build();
+            notificationRepository.save(notification);
+
+            //테이블 갱신
             findGarden.updateLevel(uploadRequestDto.getLevel());
             gardenRepository.save(findGarden); // 갱신
 
-            //푸시알림
-
             //식물 사진 테이블 insert
-        }
-        else {
+        } else {
             //식물 사진 테이블 insert
 
         }
