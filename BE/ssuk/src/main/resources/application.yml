@@ -1,15 +1,36 @@
 spring:
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          kakao:
+#            client-id: ENC(lqouFcXjn9u4UJfNsWv/pDiEAN6MnK0vNQ2qXLnImojqXZEpxNeB1+213wRr99Pa)
+#            client-name: Kakao
+#            client-secret: vKsnBevawpU8o8PXbRaBcQAkH7W3wCQT
+#            redirect-uri: http://i9b102.p.ssafy.io:8080/user/kakao/callback
+##            redirect-uri: http://localhost:8080/user/kakao/callback
+##            logout-redirect-uri: http://localhost:8080
+#            scope: profile_nickname, profile_image, account_email
+#            authorization-grant-type: authorization_code
+#            client-authentication-method: POST
+#          provider:
+#            kakao:
+#              authorization-uri: https://kauth.kakao.com/oauth/authorize
+#              token-uri: https://kauth.kakao.com/oauth/token
+#              user-info-uri: https://kapi.kakao.com/v2/user/me
+#              user-name-attribute: id
+#              logout-uri: https://kapi.kakao.com/v1/user/logout
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: ENC(lqouFcXjn9u4UJfNsWv/pDiEAN6MnK0vNQ2qXLnImojqXZEpxNeB1+213wRr99Pa)
+            client-id: ENC(qQuUiUoEhNMT4uM5Gfba/fNWH2ExP70AY2knlMQgSo6VK2ZkDostDcCsE0oEjBxT)
             client-name: Kakao
-            client-secret: vKsnBevawpU8o8PXbRaBcQAkH7W3wCQT
-            redirect-uri: http://i9b102.p.ssafy.io:8080/user/kakao/callback
-#            redirect-uri: http://localhost:8080/user/kakao/callback
-#            logout-redirect-uri: http://localhost:8080
+            client-secret: ENC(zd8BDWRN5YcrfDQL8Yeyj0hn601mctWVTFEl3/dif2UYftKRxIstwGvwy/xkU4Iv)
+            redirect-uri: http://i9b102.p.ssafy.io:8082/kakao
+            #            redirect-uri: http://localhost:8080/user/kakao/callback
+            #            logout-redirect-uri: http://localhost:8080
             scope: profile_nickname, profile_image, account_email
             authorization-grant-type: authorization_code
             client-authentication-method: POST
