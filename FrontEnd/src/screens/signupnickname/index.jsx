@@ -31,34 +31,34 @@ const SignUpNicknameScreen = ({ navigation, route }) => {
   //   ],
   // };
 
-  const checkNickname = async () => {
-    try {
-      // console.log(nickname);
-      const response = await axios.get(
-        `http://i9b102.p.ssafy.io:8080/user/nickname/${nickname}`
-      );
-      // 서버에서 받은 응답 데이터를 기반으로 중복 여부 확인
-      // console.log(response.status);
-      // console.log(response.data);
-      // 닉네임이 중복되지 않은 경우
-      setErrorOpacity(0);
-      setShowCheckcircle(100);
-      // setNicknameVerify(true);
-      setNextButtonColor("#2DD0AF");
-      console.log(response.data);
-    } catch (error) {
-      // if (error.response.status === 409) {
-      //   console.log("중복된 닉네임:", error.response.data);
-      //   setErrorOpacity(100);
-      setShowCheckcircle(0);
-      //   setNicknameVerify(false);
-      //   setNextButtonColor("#CACACA");
-      // } else
-      {
-        console.log("알 수 없는 오류:", error);
-      }
-    }
-  };
+  // const checkNickname = async () => {
+  //   try {
+  //     // console.log(nickname);
+  //     const response = await axios.get(
+  //       `http://i9b102.p.ssafy.io:8080/user/nickname/${nickname}`
+  //     );
+  //     // 서버에서 받은 응답 데이터를 기반으로 중복 여부 확인
+  //     // console.log(response.status);
+  //     // console.log(response.data);
+  //     // 닉네임이 중복되지 않은 경우
+  //     setErrorOpacity(0);
+  //     setShowCheckcircle(100);
+  //     // setNicknameVerify(true);
+  //     setNextButtonColor("#2DD0AF");
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     // if (error.response.status === 409) {
+  //     //   console.log("중복된 닉네임:", error.response.data);
+  //     //   setErrorOpacity(100);
+  //     setShowCheckcircle(0);
+  //     //   setNicknameVerify(false);
+  //     //   setNextButtonColor("#CACACA");
+  //     // } else
+  //     {
+  //       console.log("알 수 없는 오류:", error);
+  //     }
+  //   }
+  // };
 
   const signUpSuccess = async () => {
     try {
