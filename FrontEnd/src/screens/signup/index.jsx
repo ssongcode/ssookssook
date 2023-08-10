@@ -140,6 +140,23 @@ const SignUpScreen = ({ navigation }) => {
     setIsCodeVerified(false);
   }, [email]);
 
+  useEffect(() => {
+    // verifyNumber의 길이가 7일 때 버튼 색상을 변경
+    if (verifyNumber.length === 7) {
+      setNextButtonColor("#2DD0AF");
+      setVerifyError("");
+      setErrorOpacity(0);
+    } else if (verifyNumber.length > 7) {
+      setNextButtonColor("#CACACA");
+      setErrorOpacity(100);
+      setVerifyError("인증번호가 일치하지 않습니다.");
+    } else {
+      setNextButtonColor("#CACACA");
+      setErrorOpacity(100);
+      setVerifyError("인증번호가 일치하지 않습니다.");
+    }
+  }, [verifyNumber]);
+
   return (
     // 배경
     <ImageBackground
@@ -175,7 +192,6 @@ const SignUpScreen = ({ navigation }) => {
           {/* 인증 버튼 보내기 */}
           <TouchableOpacity
             onPress={() => {
-              setNextButtonColor("#2DD0AF");
               sendVerificationCode();
             }}
             style={styles.verifyButton}
