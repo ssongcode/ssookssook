@@ -50,10 +50,22 @@ const SignUpScreen = ({ navigation }) => {
       setIsCodeVerified(true);
       setErrorOpacity(0);
     } catch (error) {
-      console.error("인증번호 전송 실패", error);
-      setIsCodeVerified(false);
-      setErrorOpacity(100);
-      setVerifyError("이미 존재하는 이메일입니다.");
+      if (error.response) {
+        console.log(error.response.status);
+        if (error.response.status === 409) {
+          console.error("인증번호 전송 실패 - 이미 존재하는 이메일", error);
+          setErrorOpacity(100);
+          setVerifyError("이미 존재하는 이메일입니다.");
+          // } else if (error.response.status === 409) {
+          //   console.error("인증번호 전송 실패 - 잘못된 이메일 형식", error);
+          //   setErrorOpacity(100);
+          //   setVerifyError("올바르지 않은 이메일 형식입니다.");
+        } else {
+          console.error("인증번호 전송 실패 - 기타 오류", error);
+          setErrorOpacity(100);
+          setVerifyError("올바르지 않은 이메일 형식입니다.");
+        }
+      }
     }
   };
 
@@ -107,9 +119,18 @@ const SignUpScreen = ({ navigation }) => {
       });
       // console.log(SignUpData);
     } catch (error) {
-      console.error("인증번호 확인 실패", error);
-      setErrorOpacity(100);
-      setVerifyError("인증번호가 일치하지 않습니다.");
+      if (error.response) {
+        // if (error.response.status === 403) {
+        //   console.error("인증번호 전송 실패 - 잘못된 이메일 형식", error);
+        //   setErrorOpacity(100);
+        //   setErrorMessage("올바르지 않은 이메일 형식입니다.");
+      } else if (error.response.status === "409") {
+        console.error("인증번호 전송 실패 - 이미 존재하는 이메일", error);
+        setErrorOpacity(100);
+        setVerifyError("이미 존재하는 이메일입니다.");
+      } else {
+        console.error("인증번호 전송 실패 - 기타 오류", error);
+      }
     }
   };
 
