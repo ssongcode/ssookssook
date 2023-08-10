@@ -142,11 +142,11 @@ const SignUpScreen = ({ navigation }) => {
 
   useEffect(() => {
     // verifyNumber의 길이가 7일 때 버튼 색상을 변경
-    if (verifyNumber.length === 7) {
+    if (verifyNumber.length === 8) {
       setNextButtonColor("#2DD0AF");
       setVerifyError("");
       setErrorOpacity(0);
-    } else if (verifyNumber.length > 7) {
+    } else if (verifyNumber.length > 8) {
       setNextButtonColor("#CACACA");
       setErrorOpacity(100);
       setVerifyError("인증번호가 일치하지 않습니다.");
