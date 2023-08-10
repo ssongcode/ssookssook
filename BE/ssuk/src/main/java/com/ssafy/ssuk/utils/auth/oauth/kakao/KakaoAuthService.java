@@ -29,7 +29,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -49,7 +48,7 @@ public class KakaoAuthService {
 
     private final static String RAW_PASSWORD = "ssukssuk_fighting";
     // 카카오로부터 accessToken 받는 함수
-    public Map<String, String> getAccessToken(String code) {
+    public KakaoToken getAccessToken(String code) {
         // 요청 파라미터
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
         parameters.add("grant_type", kakaoProperties.getAuthorizationGrantType());
@@ -67,19 +66,16 @@ public class KakaoAuthService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        response = "{\"access_token\":\"uZZuxyC5KDzjen0FuTK33cgZGM32kRlzDYmuEn2vCj11GQAAAYndU1WF\",\"token_type\":\"bearer\",\"refresh_token\":\"FFOE1CAyGhKdF1Anwz38AoSzhYQYpmQln1ATbDuzCj11GQAAAYndU1WE\",\"id_token\":\"eyJraWQiOiI5ZjI1MmRhZGQ1ZjIzM2Y5M2QyZmE1MjhkMTJmZWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwYWQ1ZDE3ZDQ0NDQyYzdkMTMzMDMzYjY3YmRhZDFmNSIsInN1YiI6IjI5MjgyNDE0ODEiLCJhdXRoX3RpbWUiOjE2OTE2MzUzNzMsImlzcyI6Imh0dHBzOi8va2F1dGgua2FrYW8uY29tIiwibmlja25hbWUiOiLsnbTrjZXsmqkiLCJleHAiOjE2OTE2NTY5NzMsImlhdCI6MTY5MTYzNTM3MywicGljdHVyZSI6Imh0dHA6Ly9rLmtha2FvY2RuLm5ldC9kbi9kcGs5bDEvYnRxbUdoQTJsS0wvT3owd0R1Sm4xWVYyREluOTJmNkRWSy9pbWdfMTEweDExMC5qcGciLCJlbWFpbCI6ImR5ZDEyNTRzcEBuYXZlci5jb20ifQ.NfrR96tNpglOnRvWQfmrLfb7c1_p4s-tL5INQq-g-59ckYh-bD4G4jNn4hFJ7VeWZ3hSi1ZR_EpErHjCwHLqRka6GD3E6Erp1sXlNUrhYdVvhVOH4RwZ6AIQVZv9fI_NmjXZkdvqL27VP6f6NEqXfzNBfzqO4Q_gj1onNuXyHTixnMKsqfDR8kwlbuDcV7udEiFkR6Ow3mkPGoWyW2vdOTERQ8aWxvkEEhGlPv4bl9EAuWOkiJaCWKAkQrN4iTNG9YQi_YXq7NkB6qGRjJKt2U-Kth0_ZsE6NqtMlOAvhjWAt_PRFCQlAgh9O3GTkYwwPqdYi_ooSPwx8g5vuMktIA\",\"expires_in\":21599,\"scope\":\"account_email profile_image openid profile_nickname\",\"refresh_token_expires_in\":5183999}";
         log.debug("kakaoToken={}", response);
         // 응답 파싱해서 토큰 반환
         ObjectMapper objectMapper = new ObjectMapper();
-
         KakaoToken kakaoToken = null;
-        Map<String, String> map = null;
         try {
-            map = objectMapper.readValue(response, Map.class);
+            kakaoToken = objectMapper.readValue(response, KakaoToken.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return map;
+        return kakaoToken;
     }
 
     public KakaoToken getAccessToken(String code, String redirectURL) {
@@ -225,4 +221,36 @@ public class KakaoAuthService {
         log.debug("logoutId={}", response);
     }
 
+    public Map<String, String> getAccessToken2(String code) {
+        // 요청 파라미터
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.add("grant_type", kakaoProperties.getAuthorizationGrantType());
+        parameters.add("client_id", kakaoProperties.getClientId());
+        parameters.add("redirect_uri", kakaoProperties.getRedirectUri());
+        parameters.add("code", code);
+        parameters.add("client_secret", kakaoProperties.getClientSecret());
+        // 요청보내고 응답 받기
+        String accessTokenUri = kakaoProviderProperties.getTokenUri();
+        WebClient webClient = WebClient.create(accessTokenUri);
+        String response = webClient.post()
+                .uri(accessTokenUri)
+                .bodyValue(parameters)
+                .header("Contnt-type", "application/x-www-form-urlencoded;charset=utf-8")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        response = "{\"access_token\":\"uZZuxyC5KDzjen0FuTK33cgZGM32kRlzDYmuEn2vCj11GQAAAYndU1WF\",\"token_type\":\"bearer\",\"refresh_token\":\"FFOE1CAyGhKdF1Anwz38AoSzhYQYpmQln1ATbDuzCj11GQAAAYndU1WE\",\"id_token\":\"eyJraWQiOiI5ZjI1MmRhZGQ1ZjIzM2Y5M2QyZmE1MjhkMTJmZWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIwYWQ1ZDE3ZDQ0NDQyYzdkMTMzMDMzYjY3YmRhZDFmNSIsInN1YiI6IjI5MjgyNDE0ODEiLCJhdXRoX3RpbWUiOjE2OTE2MzUzNzMsImlzcyI6Imh0dHBzOi8va2F1dGgua2FrYW8uY29tIiwibmlja25hbWUiOiLsnbTrjZXsmqkiLCJleHAiOjE2OTE2NTY5NzMsImlhdCI6MTY5MTYzNTM3MywicGljdHVyZSI6Imh0dHA6Ly9rLmtha2FvY2RuLm5ldC9kbi9kcGs5bDEvYnRxbUdoQTJsS0wvT3owd0R1Sm4xWVYyREluOTJmNkRWSy9pbWdfMTEweDExMC5qcGciLCJlbWFpbCI6ImR5ZDEyNTRzcEBuYXZlci5jb20ifQ.NfrR96tNpglOnRvWQfmrLfb7c1_p4s-tL5INQq-g-59ckYh-bD4G4jNn4hFJ7VeWZ3hSi1ZR_EpErHjCwHLqRka6GD3E6Erp1sXlNUrhYdVvhVOH4RwZ6AIQVZv9fI_NmjXZkdvqL27VP6f6NEqXfzNBfzqO4Q_gj1onNuXyHTixnMKsqfDR8kwlbuDcV7udEiFkR6Ow3mkPGoWyW2vdOTERQ8aWxvkEEhGlPv4bl9EAuWOkiJaCWKAkQrN4iTNG9YQi_YXq7NkB6qGRjJKt2U-Kth0_ZsE6NqtMlOAvhjWAt_PRFCQlAgh9O3GTkYwwPqdYi_ooSPwx8g5vuMktIA\",\"expires_in\":21599,\"scope\":\"account_email profile_image openid profile_nickname\",\"refresh_token_expires_in\":5183999}";
+        log.debug("kakaoToken={}", response);
+        // 응답 파싱해서 토큰 반환
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        KakaoToken kakaoToken = null;
+        Map<String, String> map = null;
+        try {
+            map = objectMapper.readValue(response, Map.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
 }

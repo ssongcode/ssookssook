@@ -39,7 +39,7 @@ public class KakaoController {
     public ResponseEntity<TokenInfo> kakaoLogin(@RequestBody @Validated KakaoCodeRequsetDto kakaoCodeRequsetDto) throws Exception {
         String code = kakaoCodeRequsetDto.getCode();
         log.debug("code={}", code);
-        String kakaoAccessToken = kakaoAuthService.getAccessToken(code).get("access_token");
+        String kakaoAccessToken = kakaoAuthService.getAccessToken2(code).get("access_token");
         // 사용자 정보 가져오거나 회원가입
         User user = kakaoAuthService.saveOrGetUser(kakaoAccessToken);
 //        redisService.
