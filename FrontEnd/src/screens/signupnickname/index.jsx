@@ -18,7 +18,7 @@ const SignUpNicknameScreen = ({ navigation, route }) => {
   const [showCheckcircle, setShowCheckcircle] = useState(0);
   const [nextButtonColor, setNextButtonColor] = useState("#CACACA");
   const [nicknameVerify, setNicknameVerify] = useState(false);
-
+  const [nicknameError] = useState("닉네임은 최대 5글자입니다.");
   const { SignUpData } = route.params;
 
   // const response = {
@@ -43,17 +43,18 @@ const SignUpNicknameScreen = ({ navigation, route }) => {
       // 닉네임이 중복되지 않은 경우
       setErrorOpacity(0);
       setShowCheckcircle(100);
-      setNicknameVerify(true);
+      // setNicknameVerify(true);
       setNextButtonColor("#2DD0AF");
       console.log(response.data);
     } catch (error) {
-      if (error.response.status === 409) {
-        console.log("중복된 닉네임:", error.response.data);
-        setErrorOpacity(100);
-        setShowCheckcircle(0);
-        setNicknameVerify(false);
-        setNextButtonColor("#CACACA");
-      } else {
+      // if (error.response.status === 409) {
+      //   console.log("중복된 닉네임:", error.response.data);
+      //   setErrorOpacity(100);
+      setShowCheckcircle(0);
+      //   setNicknameVerify(false);
+      //   setNextButtonColor("#CACACA");
+      // } else
+      {
         console.log("알 수 없는 오류:", error);
       }
     }
@@ -85,10 +86,22 @@ const SignUpNicknameScreen = ({ navigation, route }) => {
     if (nickname === "") {
       setNextButtonColor("#CACACA");
       setShowCheckcircle(0);
+      setNicknameVerify(false);
+    } else if (nickname.length > 5) {
+      setNextButtonColor("#CACACA");
+      setErrorOpacity(100);
+      setShowCheckcircle(0);
+      setNicknameVerify(false);
+    } else if (nickname.length <= 5 && nickname !== "") {
+      setNicknameVerify(true);
+      setErrorOpacity(0);
+      setShowCheckcircle(100);
+      setNextButtonColor("#CACACA");
     } else {
       setNextButtonColor("#2DD0AF");
-      setShowCheckcircle(100);
+      setShowCheckcircle(0);
       setErrorOpacity(0);
+      setNicknameVerify(false);
     }
   }, [nickname]);
 
@@ -126,12 +139,12 @@ const SignUpNicknameScreen = ({ navigation, route }) => {
               style={[styles.checkcircle, { opacity: showCheckcircle }]}
             />
           </View>
-          <TouchableOpacity onPress={checkNickname} style={styles.verifyButton}>
+          {/* <TouchableOpacity onPress={checkNickname} style={styles.verifyButton}>
             <Text style={styles.verifyText}>중복체크</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <Text style={[styles.verifyErrorMessage, { opacity: errorOpacity }]}>
-          이미 가입한 사용자입니다.
+          {nicknameError}
         </Text>
         <TouchableOpacity
           style={[styles.emailNextButton, { backgroundColor: nextButtonColor }]}
