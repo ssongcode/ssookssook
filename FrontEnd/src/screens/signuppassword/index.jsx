@@ -17,7 +17,7 @@ const SignUpPasswordScreen = ({ route, navigation }) => {
   const [PasswordRe, setPasswordRe] = useState("");
   const [errorOpacity, setErrorOpacity] = useState(100);
   const [verifyError, setVerifyError] = useState(
-    "최소 8글자 대소문자, 특수문자 혹은 숫자 혼합 작성"
+    "최소 8글자 대소문자, 특수문자, 숫자 포함"
   );
   const [nextButtonColor, setNextButtonColor] = useState("#CACACA");
   const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -29,6 +29,7 @@ const SignUpPasswordScreen = ({ route, navigation }) => {
   const checkPassword = () => {
     if (password === PasswordRe && password !== "" && isPasswordValid) {
       setErrorOpacity(0);
+      setNextButtonColor("#2DD0AF");
       const updatedSignUpData = {
         ...SignUpData,
         password: password,
@@ -39,12 +40,15 @@ const SignUpPasswordScreen = ({ route, navigation }) => {
       console.log(SignUpData);
     } else if (password === PasswordRe && password !== "" && !isPasswordValid) {
       setErrorOpacity(100);
-      setVerifyError("최소 8글자 대소문자, 특수문자 혹은 숫자 혼합 작성");
+      setNextButtonColor("#CACACA");
+      setVerifyError("최소 8글자 대소문자, 특수문자, 숫자 포함");
     } else if (password !== PasswordRe && password !== "" && isPasswordValid) {
       setErrorOpacity(100);
+      setNextButtonColor("#CACACA");
       setVerifyError("비밀번호가 일치하지 않습니다.");
     } else {
       setErrorOpacity(100);
+      setNextButtonColor("#CACACA");
       console.log(SignUpData);
     }
   };
@@ -53,36 +57,48 @@ const SignUpPasswordScreen = ({ route, navigation }) => {
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
-    const hasNumberOrSpecial = /[0-9!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password); // 추가된 부분
 
     const isComplexEnough =
       password.length >= minLength &&
-      (hasUpperCase || hasLowerCase) &&
-      hasNumberOrSpecial;
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumber &&
+      hasSpecial; // 모든 조건을 충족해야 true가 됩니다
 
     setIsPasswordValid(isComplexEnough);
 
     if (isComplexEnough) {
       setErrorOpacity(0);
       setVerifyError("");
+      setIsPasswordValid(true);
     } else {
       setErrorOpacity(100);
+      setIsPasswordValid(false);
     }
   };
 
   useEffect(() => {
     if (password === "" && PasswordRe === "") {
-      setNextButtonColor("#2DD0AF");
-    } else if (!(password === "" && PasswordRe === "")) {
+      setNextButtonColor("#CACACA");
+      setErrorOpacity(100);
+      setVerifyError("최소 8글자 대소문자, 특수문자, 숫자 포함");
+    } else if (password === PasswordRe && password !== "" && isPasswordValid) {
       setNextButtonColor("#CACACA");
       setErrorOpacity(100);
       setVerifyError("비밀번호가 일치하지 않습니다.");
+    } else if (password === PasswordRe && password !== "" && !isPasswordValid) {
+      setErrorOpacity(100);
+      setNextButtonColor("#CACACA");
+      setVerifyError("최소 8글자 대소문자, 특수문자, 숫자 포함");
     } else {
       setNextButtonColor("#CACACA");
-      setErrorOpacity(0);
+      setErrorOpacity(100);
+      setVerifyError("비밀번호가 일치하지 않습니다.");
     }
     validatePasswordComplexity();
-  }, [password, PasswordRe]);
+  }, [password, PasswordRe, isPasswordValid]);
 
   return (
     <ImageBackground

@@ -147,6 +147,8 @@ const SignUpScreen = ({ navigation }) => {
       setNextButtonColor("#CACACA");
       setErrorOpacity(100);
       setVerifyError("인증번호가 일치하지 않습니다.");
+    } else if (verifyNumber === "") {
+      setErrorOpacity(0);
     } else {
       setNextButtonColor("#CACACA");
       setErrorOpacity(100);
