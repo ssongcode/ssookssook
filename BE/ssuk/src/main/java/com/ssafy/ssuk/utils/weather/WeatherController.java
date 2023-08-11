@@ -5,7 +5,6 @@ import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.utils.response.CommonResponseEntity;
 import com.ssafy.ssuk.utils.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,8 +50,6 @@ public class WeatherController {
         try {
             result = weather.getWeather(date, time, nx, ny);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (JSONException e) {
             throw new RuntimeException(e);
         }
 
