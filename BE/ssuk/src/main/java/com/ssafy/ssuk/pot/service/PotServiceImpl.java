@@ -41,7 +41,7 @@ public class PotServiceImpl implements PotService {
     public void save(Pot pot) throws CustomException {
         Pot findPot = potRepository.findBySerialNumber(pot.getSerialNumber());
 
-        if(findPot == null)
+        if (findPot == null)
             throw new CustomException(ErrorCode.INVALID_SERIAL_NUMBER);
 
         //개선의 여지, user안에 내부적으로 클래스 만들까?
@@ -55,8 +55,7 @@ public class PotServiceImpl implements PotService {
             findPot.setRegistedDate(LocalDateTime.now());
             findPot.setIsRegisted(true);
             potRepository.save(findPot);
-        }
-        else {// 조회 후, 등록여부가 true면 등록이 불가능
+        } else {// 조회 후, 등록여부가 true면 등록이 불가능
             throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         }
 
@@ -69,13 +68,13 @@ public class PotServiceImpl implements PotService {
 
         Pot updatePot = potRepository.findPotByUser_IdAndPotId(potId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POT_NOT_FOUND));
-            updatePot.setUser(null);
-            updatePot.setRegistedDate(null);
-            updatePot.setIsRegisted(false);
-            if (updatePot.getGarden().get(0) != null)
-                updatePot.getGarden().get(0).removeFromGarden();
+        updatePot.setUser(null);
+        updatePot.setRegistedDate(null);
+        updatePot.setIsRegisted(false);
+        if (updatePot.getGarden().get(0) != null)
+            updatePot.getGarden().get(0).removeFromGarden();
 
-            potRepository.save(updatePot);
+        potRepository.save(updatePot);
     }
 
 }
