@@ -122,6 +122,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     public void updateLevel(UploadRequestDto uploadRequestDto) {
         Garden findGarden = gardenRepository.findGardenByPotId(uploadRequestDto.getPotId()).get(0);
 
+        log.info("레벨업 서비스");
         if (findGarden.getLevel() < uploadRequestDto.getLevel()) { // 레벨업
             //푸시알림
             fcmService.sendPushTo(findGarden.getUser().getId(), "레벨 업", findGarden.getNickname() + "이(가) 레벨업했어요 !");
