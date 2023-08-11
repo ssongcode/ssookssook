@@ -55,7 +55,7 @@ async def connect():
 			# Server -> Raspberry PI Request
 			try:
 				response = await asyncio.wait_for(websocket.recv(), timeout=1.0)
-				if "code" in response:
+				if "물" in response:
 					# command : "A" -> 물 주기
 					command = "A"
 					print("ARD WRITE : ", response)
