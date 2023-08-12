@@ -74,6 +74,7 @@ public class Garden {
     // 비즈니스 로직
     public void unUsePot() {
         this.isUse = false;
+        this.unusedDate = LocalDateTime.now();
     }
 
     public void rename(String nickname) {
