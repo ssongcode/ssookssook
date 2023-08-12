@@ -9,6 +9,7 @@ import com.ssafy.ssuk.measurement.dto.request.RaspberryRequestDto;
 import com.ssafy.ssuk.measurement.dto.request.UploadRequestDto;
 import com.ssafy.ssuk.measurement.dto.socket.SensorMessageDto;
 import com.ssafy.ssuk.measurement.service.MeasurementService;
+import com.ssafy.ssuk.utils.response.CommonResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -64,7 +65,7 @@ public class MeasurementController {
     @PostMapping("/upload")
     ResponseEntity<?> updateLevel(@RequestBody @Validated UploadRequestDto uploadRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-           throw new CustomException(ErrorCode.INPUT_EXCEPTION);
+            throw new CustomException(ErrorCode.INPUT_EXCEPTION);
         }
         log.debug(String.valueOf(uploadRequestDto.getPotId()) + " upload 컨트롤러");
 
@@ -81,5 +82,17 @@ public class MeasurementController {
 
         return ResponseEntity.ok().build();
     }
+
+    // 온도
+    @GetMapping("/temperature/{potId}")
+    ResponseEntity<?> selectTemp(@RequestAttribute Integer userId, @PathVariable Integer potId) {
+        log.info("온도 그래프 요청");
+        return null;
+    }
+
+    // 습도
+
+    // 토양 수분
+
 
 }
