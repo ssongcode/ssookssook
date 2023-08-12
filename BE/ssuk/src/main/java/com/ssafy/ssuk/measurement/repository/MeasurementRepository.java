@@ -25,8 +25,9 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Intege
     //물 급수
 
     // 온도
-    @Query("select new com.ssafy.ssuk.measurement.dto.response.MeasurementResponseDto(m.measurementTime, max(m.measurementValue), min(m.measurementValue), avg(m.measurementValue))" +
+    @Query("select new com.ssafy.ssuk.measurement.dto.response.MeasurementResponseDto(date_format(m.measurementTime, '%m-%d'), max(m.measurementValue), min(m.measurementValue), avg(m.measurementValue) )" +
             " from Measurement m" +
-            " group by date(m.measurementTime)")
-    Optional<MeasurementResponseDto> selectValuebyPot_id(@Param("potId") Integer potId);
+            " where m.pot.id = :potId" +
+            " group by date_format(m.measurementTime, '%m-%d')")
+    List<MeasurementResponseDto> selectValueByPot_id(@Param("potId") Integer potId);
 }

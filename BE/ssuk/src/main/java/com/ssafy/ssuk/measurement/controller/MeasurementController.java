@@ -7,9 +7,11 @@ import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.measurement.domain.Measurement;
 import com.ssafy.ssuk.measurement.dto.request.RaspberryRequestDto;
 import com.ssafy.ssuk.measurement.dto.request.UploadRequestDto;
+import com.ssafy.ssuk.measurement.dto.response.MeasurementResponseDto;
 import com.ssafy.ssuk.measurement.dto.socket.SensorMessageDto;
 import com.ssafy.ssuk.measurement.service.MeasurementService;
 import com.ssafy.ssuk.utils.response.CommonResponseEntity;
+import com.ssafy.ssuk.utils.response.SuccessCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -87,7 +89,9 @@ public class MeasurementController {
     @GetMapping("/temperature/{potId}")
     ResponseEntity<?> selectTemp(@RequestAttribute Integer userId, @PathVariable Integer potId) {
         log.info("온도 그래프 요청");
-        return null;
+        List<MeasurementResponseDto> result = mesurementService.selectValueByPot_id(potId);
+
+        return CommonResponseEntity.getResponseEntity(SuccessCode.OK, result);
     }
 
     // 습도
