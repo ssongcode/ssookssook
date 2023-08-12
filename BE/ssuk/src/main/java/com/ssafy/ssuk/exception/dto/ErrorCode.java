@@ -17,6 +17,7 @@ public enum ErrorCode {
     DUPLICATE_USER_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다."), // 409 : CONFLICT
     INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 토큰입니다."),
     EXPIRED_AUTH_TOKEN(HttpStatus.CONFLICT, "토큰이 만료되었습니다."),
+    NOT_FOUND_AUTH_TOKEN(HttpStatus.BAD_REQUEST, "토큰 정보가 없습니다."),
 
     //추가할 것들은 여기에 작성해주세요.
     //화분
@@ -27,6 +28,7 @@ public enum ErrorCode {
     //정원
     GARDEN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 심은 식물이 유효하지 않습니다."),
     GARDEN_NOT_MATCH_USER(HttpStatus.FORBIDDEN, "해당 식물을 소유하지 않습니다."),
+    GARDEN_LEVEL_ERROR(HttpStatus.BAD_REQUEST, "현재 식물 단계에 유효하지 않은 요청입니다."),
 
     //식물 정보
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 카테고리가 유효하지 않습니다."),
