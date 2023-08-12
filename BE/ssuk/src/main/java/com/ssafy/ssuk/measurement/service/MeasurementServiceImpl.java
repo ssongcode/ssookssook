@@ -161,8 +161,8 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     //온도 그래프
     @Override
-    public List<MeasurementResponseDto> selectValueByPot_id(Integer potId) {
-        List<MeasurementResponseDto> result = measurementRepository.selectValueByPot_id(potId);
+    public List<MeasurementResponseDto> selectValueByPot_id(Integer potId, SensorType sensorType) {
+        List<MeasurementResponseDto> result = measurementRepository.selectValueByPot_id(potId, sensorType);
         return result;
     }
 }

@@ -5,6 +5,7 @@ import com.ssafy.ssuk.badge.service.BadgeService;
 import com.ssafy.ssuk.exception.dto.CustomException;
 import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.measurement.domain.Measurement;
+import com.ssafy.ssuk.measurement.domain.SensorType;
 import com.ssafy.ssuk.measurement.dto.request.RaspberryRequestDto;
 import com.ssafy.ssuk.measurement.dto.request.UploadRequestDto;
 import com.ssafy.ssuk.measurement.dto.response.MeasurementResponseDto;
@@ -89,14 +90,26 @@ public class MeasurementController {
     @GetMapping("/temperature/{potId}")
     ResponseEntity<?> selectTemp(@RequestAttribute Integer userId, @PathVariable Integer potId) {
         log.info("온도 그래프 요청");
-        List<MeasurementResponseDto> result = mesurementService.selectValueByPot_id(potId);
+        List<MeasurementResponseDto> result = mesurementService.selectValueByPot_id(potId, SensorType.T);
 
         return CommonResponseEntity.getResponseEntity(SuccessCode.OK, result);
     }
 
     // 습도
+    @GetMapping("/humidity/{potId}")
+    ResponseEntity<?> selectHumidity(@RequestAttribute Integer userId, @PathVariable Integer potId) {
+        log.info("습도 그래프 요청");
+        List<MeasurementResponseDto> result = mesurementService.selectValueByPot_id(potId, SensorType.H);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.OK, result);
+    }
 
     // 토양 수분
+    @GetMapping("/ground/{potId}")
+    ResponseEntity<?> selectGround(@RequestAttribute Integer userId, @PathVariable Integer potId) {
+        log.info("토양 수분");
+        List<MeasurementResponseDto> result = mesurementService.selectValueByPot_id(potId, SensorType.W);
+        return CommonResponseEntity.getResponseEntity(SuccessCode.OK, result);
+    }
 
 
 }
