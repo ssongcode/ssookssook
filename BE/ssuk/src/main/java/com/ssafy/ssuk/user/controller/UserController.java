@@ -1,5 +1,6 @@
 package com.ssafy.ssuk.user.controller;
 
+import com.ssafy.ssuk.badge.domain.BadgeCode;
 import com.ssafy.ssuk.badge.dto.response.UserBadgeResponseDto;
 import com.ssafy.ssuk.badge.service.BadgeService;
 import com.ssafy.ssuk.collection.service.CollectionService;
@@ -137,7 +138,7 @@ public class UserController {
     @GetMapping("/info")
     public ResponseEntity<CommonResponseEntity> searchUserInfo(@RequestAttribute Integer userId) {
         User user = userService.findById(userId);
-        if(user == null){
+        if (user == null) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
@@ -148,7 +149,7 @@ public class UserController {
 
         gardenService.findAllByUserId(userId).forEach(g -> {
             if (g.getIsUse()) infoResponseDto.addMyPlantCount();
-            else infoResponseDto.addGardenCount();
+            infoResponseDto.addGardenCount();
         });
 
         List<UserBadgeResponseDto> badges = badgeService.findAllWithUserId(userId);
@@ -201,11 +202,11 @@ public class UserController {
 
     // 비밀번호 재설정
     @PutMapping("/password")
-    public ResponseEntity<?> updatePassword
-    (@RequestBody @Validated UpdatePasswordDto updatePasswordDto, BindingResult bindingResult) throws Exception {
+    public ResponseEntity<?> resetPassword
+    (@RequestBody @Validated ResetPasswordDto resetPasswordDto, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors())
             throw new CustomException(ErrorCode.INPUT_EXCEPTION);
-        userService.updatePassword(updatePasswordDto);
+        userService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getPassword());
         return CommonResponseEntity.getResponseEntity(SuccessCode.OK);
     }
 
@@ -215,7 +216,7 @@ public class UserController {
     (@RequestAttribute Integer userId, @RequestBody @Validated UpdateNicknameDto updateNicknameDto, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors())
             throw new CustomException(ErrorCode.INPUT_EXCEPTION);
-        log.debug("userId={}",userId);
+        log.debug("userId={}", userId);
         userService.updateNickname(userId, updateNicknameDto.getNickname());
         return CommonResponseEntity.getResponseEntity(SuccessCode.OK);
     }
@@ -223,37 +224,42 @@ public class UserController {
     // 카카오로그인
     // 카카오 인가코드 받아서 카카오서버 accesstoken 발급
     // accesstoken으로 사용자 정보 확인 후 쑥쑥 로그인 accesstoken 발급
-    @GetMapping("/kakao/callback")
-    public ResponseEntity<?> kakaoLogin(@RequestParam String code) throws Exception {
-        log.debug("code={}", code);
-        String kakaoAccessToken = kakaoAuthService.getAccessToken(code).getAccessToken();
-        // 사용자 정보 가져오거나 회원가입
-        User user = kakaoAuthService.saveOrGetUser(kakaoAccessToken);
-//        redisService.
-        log.debug("회원가입 또는 사용자 정보 가져오기");
-        TokenInfo tokenInfo = kakaoAuthService.kakaoLogin(user.getEmail());
-        log.debug("loginTokenInfo={}", tokenInfo);
-
-        return CommonResponseEntity.getResponseEntity(SuccessCode.OK, tokenInfo);
-    }
+//    @GetMapping("/kakao/callback")
+//    public ResponseEntity<?> kakaoLogin(@RequestParam String code) throws Exception {
+//        log.debug("code={}", code);
+//        String kakaoAccessToken = kakaoAuthService.getAccessToken(code).getAccessToken();
+//        // 사용자 정보 가져오거나 회원가입
+//        User user = kakaoAuthService.saveOrGetUser(kakaoAccessToken);
+////        redisService.
+//        log.debug("회원가입 또는 사용자 정보 가져오기");
+//        TokenInfo tokenInfo = kakaoAuthService.kakaoLogin(user.getEmail());
+//        log.debug("loginTokenInfo={}", tokenInfo);
+//
+//        return CommonResponseEntity.getResponseEntity(SuccessCode.OK, tokenInfo);
+//    }
 
     // 프로필 사진 변경
     @PutMapping("/image")
     public ResponseEntity<?> updateProfileImage
-    (@RequestAttribute Integer userId ,@RequestPart(name = "image") MultipartFile multipartFile) throws Exception {
+    (@RequestAttribute Integer userId, @RequestPart(name = "image") MultipartFile multipartFile) throws Exception {
         String originImageName = userService.findById(userId).getProfileImage();
         log.debug("originImage={}", originImageName);
         log.debug("multipart={}", multipartFile);
         String newImageName = s3UploadService.modifyFile(originImageName, multipartFile).getImageName();
         log.debug("newImage={}", newImageName);
         userService.updateProfileImage(userId, newImageName);
+
+        if (badgeService.checkUserBadge(BadgeCode.치즈.getCode(), userId) == false) {
+            badgeService.saveUserBadge(BadgeCode.치즈.getCode(), userId);
+        }
+
         return CommonResponseEntity.getResponseEntity(SuccessCode.OK, newImageName);
     }
 
     // 리프레시 토큰 재발급
     @PostMapping("/token")
     public ResponseEntity<?> recreateToken
-            (@RequestHeader(value = "Authorization", required = false) String bearerToken, HttpServletRequest request) {
+    (@RequestHeader(value = "Authorization", required = false) String bearerToken, HttpServletRequest request) {
         String refreshToken = null;
         if (bearerToken.startsWith("Bearer"))
             refreshToken = bearerToken.substring(7);
@@ -266,7 +272,7 @@ public class UserController {
     public ResponseEntity<?> logout(@RequestAttribute Integer userId) {
         User loginUser = userService.findById(userId);
         String email = loginUser.getEmail();
-        if ((email.substring(email.length()-6, email.length())).equals(".kakao")) {
+        if ((email.substring(email.length() - 6, email.length())).equals(".kakao")) {
             log.debug("카카오 로그아웃할거야");
             /*
                 1. redis에서 userId로 카카오 accessToken 꺼내오기
@@ -276,14 +282,13 @@ public class UserController {
              */
 //            kakaoAuthService.kakaoLogout(카카오 에세스토큰);
         }
-        log.debug("로컬 로그아웃할거야");
         userService.logout(userId);
         return CommonResponseEntity.getResponseEntity(SuccessCode.OK);
     }
 
-    @GetMapping("/logout/test")
-    public ResponseEntity<CommonResponseEntity> testLogout() {
-        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, "please!!");
-    }
-
+//    @GetMapping("/logout/test")
+//    public ResponseEntity<CommonResponseEntity> testLogout() {
+//        return CommonResponseEntity.getResponseEntity(SuccessCode.SUCCESS_CODE, "please!!");
+//    }
+    
 }

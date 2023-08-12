@@ -29,6 +29,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -46,6 +47,7 @@ public class KakaoAuthService {
     private final S3UploadService s3UploadService;
 
     private final static String RAW_PASSWORD = "ssukssuk_fighting";
+
     // 카카오로부터 accessToken 받는 함수
     public KakaoToken getAccessToken(String code) {
         // 요청 파라미터
@@ -61,7 +63,7 @@ public class KakaoAuthService {
         String response = webClient.post()
                 .uri(accessTokenUri)
                 .bodyValue(parameters)
-                .header("Contnt-type", "application/x-www-form-urlencoded;charset=utf-8")
+                .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -77,35 +79,35 @@ public class KakaoAuthService {
         return kakaoToken;
     }
 
-    public KakaoToken getAccessToken(String code, String redirectURL) {
-        // 요청 파라미터
-        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        parameters.add("grant_type", kakaoProperties.getAuthorizationGrantType());
-        parameters.add("client_id", kakaoProperties.getClientId());
-        parameters.add("redirect_uri", redirectURL);
-        parameters.add("code", code);
-        parameters.add("client_secret", kakaoProperties.getClientSecret());
-        // 요청보내고 응답 받기
-        String accessTokenUri = kakaoProviderProperties.getTokenUri();
-        WebClient webClient = WebClient.create(accessTokenUri);
-        String response = webClient.post()
-                .uri(accessTokenUri)
-                .bodyValue(parameters)
-                .header("Contnt-type", "application/x-www-form-urlencoded;charset=utf-8")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        log.debug("kakaoToken={}", response);
-        // 응답 파싱해서 토큰 반환
-        ObjectMapper objectMapper = new ObjectMapper();
-        KakaoToken kakaoToken = null;
-        try {
-            kakaoToken = objectMapper.readValue(response, KakaoToken.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return kakaoToken;
-    }
+//    public KakaoToken getAccessToken(String code, String redirectURL) {
+//        // 요청 파라미터
+//        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+//        parameters.add("grant_type", kakaoProperties.getAuthorizationGrantType());
+//        parameters.add("client_id", kakaoProperties.getClientId());
+//        parameters.add("redirect_uri", redirectURL);
+//        parameters.add("code", code);
+//        parameters.add("client_secret", kakaoProperties.getClientSecret());
+//        // 요청보내고 응답 받기
+//        String accessTokenUri = kakaoProviderProperties.getTokenUri();
+//        WebClient webClient = WebClient.create(accessTokenUri);
+//        String response = webClient.post()
+//                .uri(accessTokenUri)
+//                .bodyValue(parameters)
+//                .header("Contnt-type", "application/x-www-form-urlencoded;charset=utf-8")
+//                .retrieve()
+//                .bodyToMono(String.class)
+//                .block();
+//        log.debug("kakaoToken={}", response);
+//        // 응답 파싱해서 토큰 반환
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        KakaoToken kakaoToken = null;
+//        try {
+//            kakaoToken = objectMapper.readValue(response, KakaoToken.class);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
+//        return kakaoToken;
+//    }
 
     // 카카오로부터 사용자 정보 받아오기
     public KakaoProfile getUserInfo(String accessToken) {
@@ -134,7 +136,9 @@ public class KakaoAuthService {
     @Transactional
     public User saveOrGetUser(String accessToken) throws IOException {
         KakaoProfile profile = getUserInfo(accessToken);
+        log.debug("profile={}", profile);
         Optional<User> findUser = userRepository.findByEmail(profile.getKakaoAccount().email+".kakao");
+        log.debug("is findUser exist ??? {}", findUser.isPresent());
         if (findUser.isPresent()) return findUser.get();
         // 사용자가 프로필 사진, 닉네임 동의했는지 체크
         // 동의 안했으면 임시 닉네임 지어주기
@@ -167,6 +171,8 @@ public class KakaoAuthService {
             }
         }
 
+        log.debug("여기까지와야 저장을 시작할거고");
+
         User newUser = new User(
                 profile.getKakaoAccount().getEmail()+".kakao",
                 passwordEncoder.encode(RAW_PASSWORD),
@@ -177,6 +183,53 @@ public class KakaoAuthService {
         log.debug("userRole={}", userRole);
         newUser.addRole(userRole);
         userRepository.save(newUser);
+        return newUser;
+    }
+
+    @Transactional
+    public User makeNewUser(KakaoProfile profile) throws IOException {
+        // 사용자가 프로필 사진, 닉네임 동의했는지 체크
+        // 동의 안했으면 임시 닉네임 지어주기
+        String nickname = null;
+        String profileImage = null;
+
+        // 1. 둘 다 동의안했을 때
+        if (profile.properties == null) {
+            nickname = "쑥쑥";
+            profileImage = "default";
+        }
+        // 2. 닉네임만 동의
+        else if (profile.kakaoAccount.profile.profileImageUrl == null) {
+            nickname = profile.getKakaoAccount().getProfile().getNickname();
+            profileImage = "default";
+        }
+        // 3. 프로필 사진만 동의
+        else if (profile.kakaoAccount.profile.nickname == null) {
+            nickname = "쑥쑥";
+            profileImage = s3UploadService.upload(profile.getKakaoAccount().getProfile().getProfileImageUrl()).getImageName();
+        }
+        // 4. 전체 동의
+        else {
+            nickname = profile.getKakaoAccount().getProfile().getNickname();
+            profileImage = profile.getKakaoAccount().getProfile().getProfileImageUrl();
+            if (profileImage.equals("http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg")) {
+                profileImage = "default";
+            } else {
+                profileImage = s3UploadService.upload(profileImage).getImageName();
+            }
+        }
+
+        log.debug("여기까지와야 저장을 시작할거고");
+
+        User newUser = new User(
+                profile.getKakaoAccount().getEmail()+".kakao",
+                passwordEncoder.encode(RAW_PASSWORD),
+                nickname,
+                profileImage);
+
+        Role userRole = roleRepository.findByRolename("USER");
+        log.debug("userRole={}", userRole);
+        newUser.addRole(userRole);
         return newUser;
     }
 
@@ -220,4 +273,34 @@ public class KakaoAuthService {
         log.debug("logoutId={}", response);
     }
 
+    public Map<String, String> getAccessToken2(String code) {
+        // 요청 파라미터
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.add("grant_type", kakaoProperties.getAuthorizationGrantType());
+        parameters.add("client_id", kakaoProperties.getClientId());
+        parameters.add("redirect_uri", kakaoProperties.getRedirectUri());
+        parameters.add("code", code);
+        parameters.add("client_secret", kakaoProperties.getClientSecret());
+        // 요청보내고 응답 받기
+        String accessTokenUri = kakaoProviderProperties.getTokenUri();
+        WebClient webClient = WebClient.create(accessTokenUri);
+        String response = webClient.post()
+                .uri(accessTokenUri)
+                .bodyValue(parameters)
+                .header("Content-type", "application/x-www-form-urlencoded;charset=utf-8")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        log.debug("kakaoToken={}", response);
+        // 응답 파싱해서 토큰 반환
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Map<String, String> map = null;
+        try {
+            map = objectMapper.readValue(response, Map.class);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(ErrorCode.KAKAO_ERROR);
+        }
+        return map;
+    }
 }
