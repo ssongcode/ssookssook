@@ -29,6 +29,7 @@ public enum ErrorCode {
     GARDEN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 심은 식물이 유효하지 않습니다."),
     GARDEN_NOT_MATCH_USER(HttpStatus.FORBIDDEN, "해당 식물을 소유하지 않습니다."),
     GARDEN_LEVEL_ERROR(HttpStatus.BAD_REQUEST, "현재 식물 단계에 유효하지 않은 요청입니다."),
+    GARDEN_ALREADY_UNUSED(HttpStatus.BAD_REQUEST, "이미 화분에서 삭제된 식물입니다."),
 
     //식물 정보
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 카테고리가 유효하지 않습니다."),

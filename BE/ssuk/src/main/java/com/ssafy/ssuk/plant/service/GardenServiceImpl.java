@@ -54,6 +54,9 @@ public class GardenServiceImpl implements GardenService {
         if (garden.getUser().getId() != userId) {
             throw new CustomException(ErrorCode.GARDEN_NOT_MATCH_USER);
         }
+        if (!garden.getIsUse()) {
+            throw new CustomException(ErrorCode.GARDEN_ALREADY_UNUSED);
+        }
         garden.unUsePot();
     }
 
