@@ -3,6 +3,7 @@ package com.ssafy.ssuk.notify.repository;
 import com.ssafy.ssuk.notify.domain.Notification;
 import com.ssafy.ssuk.notify.dto.response.NotificationResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,10 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
     List<NotificationResponseDto> findByUser_Id(@Param("userId") Integer userId);
 
     // 알림 확인 (visible 0으로 갱신)
-    @Query("update Notification n set n.visible = 0, n.check_date=now() where n.id = :notificationId")
+    @Query("update Notification n set n.visible = 0, n.check_date=now() where n.id = :notificationId and n.user.id = :userId")
     void updateNotification(@Param("notificationId") Integer notificationId);
+
+    @Query("update Notification n set n.visible = 0, n.check_date=now() where n.user.id = :userId")
+    @Modifying
+    void updateAllNotification(@Param("userId") Integer userId);
 }
