@@ -227,6 +227,7 @@ def send_image_to_server():
 	}
 	print(dto)
 	dto = json.dumps(dto)
+	print(dto)
 	response = requests.post(url,
 		data=dto, 
 		headers={'Content-Type': 'application/json; charset=UTF-8'}
