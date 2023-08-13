@@ -88,7 +88,7 @@ async def connect():
 					image_cnt+=1
 					if image_cnt == 1: # 사진 30분 간격으로 전송
 						send_image_to_server()
-						cnt = 0
+						image_cnt = 0
 			except Exception as e:
 				print(e)
 				break
