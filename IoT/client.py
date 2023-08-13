@@ -215,6 +215,8 @@ def send_image_to_server():
 	# TM() # PC 버전
 	result = TM(frame) # Raspberry PI 버전
 	print("Camera tflite result : ", result)
+	if result == 4:
+		return
 	# 이미지 전송 할 uri
 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
 	image_string = ""
