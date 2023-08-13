@@ -86,7 +86,7 @@ async def connect():
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
-					if image_cnt == 1: # 사진 30분 간격으로 전송
+					if image_cnt == 12: # 사진 30분 간격으로 전송
 						send_image_to_server()
 						image_cnt = 0
 			except Exception as e:
