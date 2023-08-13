@@ -62,7 +62,7 @@ async def connect():
 				elif "사진" in response:
 					# ommand : "B" -> 사진 찍기
 					print("ARD WRITE : ", response)
-					send_image_to_server(1)
+					send_image_to_server()
 			except Exception as e:
 				print(e)
 				
@@ -184,7 +184,7 @@ def TM(frame):
 # 	print("Confidence Score:", confidence_score)
 #	result = int(class_name[0])
 
-def send_image_to_server(isCommand):
+def send_image_to_server():
 	# 서버로 전송_image_to_server():
 	# 카메라 세팅
 	cam = cv2.VideoCapture(0)
@@ -213,39 +213,27 @@ def send_image_to_server(isCommand):
 	cam.release()
 	# TM 체크
 	# TM() # PC 버전
-	if isCommand == 0:
-		result = TM(frame) # Raspberry PI 버전
-		print("Camera tflite result : ", result)
-		# 이미지 전송 할 uri
-		url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
-		
-		dto = {
-			'pot_id' : 1,
-			'level' : result
-		}
-		dto = json.dumps(dto)
-		response = requests.post(url,
-			data=dto, 
-			headers={'Content-Type': 'application/json; charset=UTF-8'}
-		)
-		if response.status_code == 200:
-			print("TM 데이터 전달 성공")
-		else:
-			print("TM 데이터 전달 실패")
-	# else:
-	# 	image = Image.open(img_path)
-	# 	byte_image = io.BytesIO()
-	# 	image_binary = byte_image.getvalue()
-	# 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
-	# 	dto = {
-	# 		'pot_id' : 1,
-	# 		'blob' : image_binary
-	# 	}
-	# 	response = requests.post(url,
-	# 		data=dto,
-	# 		headers={'Content-Type': 'application/json; charset=UTF-8'}
-	# 	)
-
+	result = TM(frame) # Raspberry PI 버전
+	print("Camera tflite result : ", result)
+	# 이미지 전송 할 uri
+	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
+	image = Image.open(img_path)
+	byte_image = io.BytesIO()
+	image_binary = byte_image.getvalue()
+	dto = {
+		'potId' : 1,
+		'level' : result,
+		'file' : image_binary
+	}
+	dto = json.dumps(dto)
+	response = requests.post(url,
+		data=dto, 
+		headers={'Content-Type': 'application/json; charset=UTF-8'}
+	)
+	if response.status_code == 200:
+		print("TM 데이터 전달 성공")
+	else:
+		print("TM 데이터 전달 실패")
 
 if __name__ == "__main__":
 	isExit = False
