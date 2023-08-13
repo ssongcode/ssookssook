@@ -19,6 +19,8 @@ const PasswordMakeScreen = ({ navigation, route }) => {
 
   const { SignUpData } = route.params;
 
+  // const isNextButtonDisabled = PasswordRe.length < 8 && password.length < 8;
+
   const makeNewPassword = async () => {
     try {
       if (password === PasswordRe && password !== "") {

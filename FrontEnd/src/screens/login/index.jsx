@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
       };
 
       const response = await axios.post(
-        "http://i9b102.p.ssafy.io:8080/user",
+        "http://i9b102.p.ssafy.io:8080/auth",
         requestData
       );
 
