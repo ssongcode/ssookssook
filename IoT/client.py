@@ -219,8 +219,9 @@ def send_image_to_server():
 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
 	image = Image.open(img_path)
 	byte_image = io.BytesIO()
-	image_binary = byte_image.getvalue()
-	image_string = image_binary.decode('utf-8')
+	image_string = ""
+	with open(img_path, "rb") as img_file:
+		image_string = img_file.read().encode("base64").decode("utf-8")
 	dto = {
 		'potId' : 1,
 		'level' : result,
