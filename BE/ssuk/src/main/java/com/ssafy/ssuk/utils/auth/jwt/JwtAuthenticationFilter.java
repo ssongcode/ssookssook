@@ -12,18 +12,29 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final static String whiteList = "/auth";
+    private final static String main = "/";
+    private final static List<String> whiteList = new ArrayList<>();
+    static {
+        whiteList.add("/auth");
+        whiteList.add("/stomp");
+        whiteList.add("/sensor/upload");
+    }
+
 
     @Override
     protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.debug("uri={}", request.getRequestURI());
-        if (request.getRequestURI().startsWith(whiteList) || request.getRequestURI().equals("/")) {
+        String requestURI = request.getRequestURI();
+        log.debug("uri={}", requestURI);
+
+        if (requestURI.equals(main) || checkWhiteList(requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -54,6 +65,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    private boolean checkWhiteList(String requestURI) {
+        for (String white : whiteList) {
+            if(requestURI.startsWith(white)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
