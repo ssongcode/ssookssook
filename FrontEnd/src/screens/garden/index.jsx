@@ -113,7 +113,7 @@ const GardenScreen = () => {
       >
         <View style={styles.userInfoSection}>
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.push("Main")}>
+            <TouchableOpacity onPress={() => navigation.push("Slider")}>
               <Icon name="arrow-back-ios" size={28} color="#fff" />
             </TouchableOpacity>
           </View>

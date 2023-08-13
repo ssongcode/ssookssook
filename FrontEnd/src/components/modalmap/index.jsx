@@ -11,7 +11,7 @@ const ModalMap = ({ isVisible, onClose, navigation }) => {
     onClose(false);
 
     const delayNavigation = setTimeout(() => {
-      navigation.navigate("Pot"); // 네비게이션을 이용하여 "Pot" 화면으로 이동
+      navigation.navigate("SliderPot"); // 네비게이션을 이용하여 "Pot" 화면으로 이동
     }, 300);
 
     return () => clearTimeout(delayNavigation);
@@ -32,7 +32,7 @@ const ModalMap = ({ isVisible, onClose, navigation }) => {
     onClose(false);
 
     const delayNavigation = setTimeout(() => {
-      navigation.navigate("Garden");
+      navigation.navigate("SliderGarden");
     }, 300);
 
     return () => clearTimeout(delayNavigation);
