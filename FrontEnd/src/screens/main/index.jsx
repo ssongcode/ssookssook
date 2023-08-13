@@ -16,6 +16,7 @@ import axios from "axios";
 import plantImages from "../../assets/img/plantImages";
 import CookieRunBold from "../../components/common/CookieRunBold";
 import { setGardenID } from "../../redux/action";
+import ModalSensor from "../../components/SensorModal";
 
 const MainScreen = (props) => {
   const navigation = useNavigation();
@@ -37,6 +38,9 @@ const MainScreen = (props) => {
   const [isCharacterData, setCharacterData] = useState({
     plantNickname: null,
   });
+  const [isHeartVisible, setHeartVisible] = useState(false);
+  const [selectedSensorType, setSelectedSensorType] = useState(null);
+  const [isOpenSensorModalVisible, setOpenSensorModalVisible] = useState(false);
 
   const getPlantImageSource = (plantId, level) => {
     const imageName = `${plantId}_${level}.gif`;
@@ -44,6 +48,11 @@ const MainScreen = (props) => {
     const resolvedImage = Image.resolveAssetSource(image);
 
     return resolvedImage;
+  };
+
+  const handleSensorPress = (sensorType) => {
+    setSelectedSensorType(sensorType);
+    toggleOpenSensorModal();
   };
 
   const changeBackgroundImage = () => {
@@ -183,6 +192,10 @@ const MainScreen = (props) => {
     setIsDictionaryModalVisible(!isDictionaryModalVisible);
   };
 
+  const toggleOpenSensorModal = () => {
+    setOpenSensorModalVisible(!isOpenSensorModalVisible);
+  };
+
   const handleSeedPlant = (plantId, plantName, nickname) => {
     // 씨앗 심기 관련 로직
     // customr
@@ -212,6 +225,11 @@ const MainScreen = (props) => {
       .get(`/sensor/water/${props.potID}`)
       .then(() => {
         console.log("성공");
+        setHeartVisible(true);
+
+        setTimeout(() => {
+          setHeartVisible(false);
+        }, 3000);
       })
       .catch(() => {
         console.log("물 급수 관련 오류");
@@ -228,36 +246,48 @@ const MainScreen = (props) => {
       <ImageBackground source={backgroundImage} style={styles.container}>
         <View style={styles.userInfoSection}>
           <View style={styles.SensorContainer}>
-            <View style={styles.tmp}>
+            <TouchableOpacity
+              onPress={() => handleSensorPress("온도 센서")}
+              style={styles.tmp}
+            >
               <Image
                 source={require("../../assets/img/tmpSensor.png")}
                 resizeMode="contain"
                 style={styles.sensorSize}
               />
+
               <CookieRunRegular style={styles.tmpText}>
                 {temperature} C°
               </CookieRunRegular>
-            </View>
-            <View style={styles.tmp}>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleSensorPress("습도 센서")}
+              style={styles.tmp}
+            >
               <Image
                 source={require("../../assets/img/humiditySensor.png")}
                 resizeMode="contain"
                 style={styles.sensorSize}
               />
+
               <CookieRunRegular style={styles.tmpText}>
                 {humidity} %
               </CookieRunRegular>
-            </View>
-            <View style={styles.tmp}>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleSensorPress("토양 수분 센서")}
+              style={styles.tmp}
+            >
               <Image
                 source={require("../../assets/img/moistureSensor.png")}
                 resizeMode="contain"
                 style={styles.sensorSize}
               />
+
               <CookieRunRegular style={styles.tmpText}>
                 {moisture} %
               </CookieRunRegular>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={toggleOpenMap}>
               <Image
                 source={require("../../assets/img/map.png")}
@@ -269,11 +299,7 @@ const MainScreen = (props) => {
           <View style={styles.IconContainer}>
             <TouchableOpacity
               style={styles.iconBackground}
-              onPress={() =>
-                navigation.navigate("Alarm", {
-                  NotificationData: isNotificationData,
-                })
-              }
+              onPress={() => navigation.navigate("Alarm")}
             >
               <Image
                 source={require("../../assets/img/alarmIcon.png")}
@@ -329,7 +355,6 @@ const MainScreen = (props) => {
         ) : (
           <View style={styles.nameTagSection}></View>
         )}
-
         {isCharacterTrue ? (
           <View style={styles.characterSection}>
             <Image
@@ -340,6 +365,13 @@ const MainScreen = (props) => {
               resizeMode="contain"
               style={styles.characterSize}
             />
+            {isHeartVisible && (
+              <Image
+                source={require("../../assets/img/Heart.gif")}
+                resizeMode="contain"
+                style={styles.Heart}
+              ></Image>
+            )}
           </View>
         ) : (
           <TouchableOpacity
@@ -381,6 +413,12 @@ const MainScreen = (props) => {
         isVisible={isDictionaryModalVisible}
         onClose={toggleOpenDictionary}
         navigation={navigation}
+      />
+      <ModalSensor
+        isVisible={isOpenSensorModalVisible}
+        onClose={() => setOpenSensorModalVisible(false)}
+        navigation={navigation}
+        selectedSensorType={selectedSensorType} // 선택한 센서 종류 전달
       />
     </View>
   );

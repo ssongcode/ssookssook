@@ -94,6 +94,10 @@ const styles = StyleSheet.create({
     width: 93,
     height: 84,
   },
+  Heart: {
+    position: "absolute",
+    top: -15,
+  },
   characterName: {
     position: "absolute",
     color: COLORS.lightYellow,
