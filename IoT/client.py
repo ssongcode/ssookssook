@@ -87,7 +87,7 @@ async def connect():
 						# print("Send data")
 					image_cnt+=1
 					if image_cnt == 60: # 사진 30분 간격으로 전송
-						send_image_to_server(0)
+						send_image_to_server()
 						cnt = 0
 			except Exception as e:
 				print(e)
@@ -225,6 +225,7 @@ def send_image_to_server():
 		'level' : result,
 		'file' : image_binary
 	}
+	print(dto)
 	dto = json.dumps(dto)
 	response = requests.post(url,
 		data=dto, 
