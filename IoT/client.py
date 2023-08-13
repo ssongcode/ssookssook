@@ -8,7 +8,7 @@ import os
 import io
 import cv2
 from time import sleep
-from PIL import Image  # Install pillow instead of PIL
+import base64
 from datetime import datetime
 import tflite_runtime.interpreter as tflite
 import numpy as np
@@ -217,11 +217,10 @@ def send_image_to_server():
 	print("Camera tflite result : ", result)
 	# 이미지 전송 할 uri
 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
-	image = Image.open(img_path)
-	byte_image = io.BytesIO()
 	image_string = ""
 	with open(img_path, "rb") as img_file:
-		image_string = img_file.read().encode("base64").decode("utf-8")
+		image_string = img_file.read()
+	image_string = base64.b64encode(image_string).decode("utf-8")
 	dto = {
 		'potId' : 1,
 		'level' : result,
