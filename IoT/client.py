@@ -49,7 +49,7 @@ async def connect():
 		# Send STOMP SUBSCRIBE frame to subscribe to the destination
 		subscribe_frame = f"SUBSCRIBE\ndestination:{recv_destination}\nid:sub-1\nack:auto\n\n\x00"
 		await websocket.send(subscribe_frame.encode())
-		image_cnt = 59;
+		image_cnt = 0
 		while True: # 통신
 			# Server -> Raspberry PI Request
 			try:
@@ -86,7 +86,7 @@ async def connect():
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
-					if image_cnt == 60: # 사진 30분 간격으로 전송
+					if image_cnt == 1: # 사진 30분 간격으로 전송
 						send_image_to_server()
 						cnt = 0
 			except Exception as e:
