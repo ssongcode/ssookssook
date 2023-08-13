@@ -5,11 +5,10 @@ import serial
 import requests
 import re
 import os
+import io
 import cv2
 from time import sleep
-# from keras.models import load_model  # TensorFlow is required for Keras to work
-# from PIL import Image, ImageOps  # Install pillow instead of PIL
-# import numpy as np
+from PIL import Image  # Install pillow instead of PIL
 from datetime import datetime
 import tflite_runtime.interpreter as tflite
 import numpy as np
@@ -60,6 +59,10 @@ async def connect():
 					command = "A"
 					print("ARD WRITE : ", response)
 					ARD.write(command.encode())
+				elif "사진" in response:
+					# ommand : "B" -> 사진 찍기
+					print("ARD WRITE : ", response)
+					send_image_to_server(1)
 			except Exception as e:
 				print(e)
 				
@@ -84,7 +87,7 @@ async def connect():
 						# print("Send data")
 					image_cnt+=1
 					if image_cnt == 60: # 사진 30분 간격으로 전송
-						send_image_to_server()
+						send_image_to_server(0)
 						cnt = 0
 			except Exception as e:
 				print(e)
@@ -181,7 +184,7 @@ def TM(frame):
 # 	print("Confidence Score:", confidence_score)
 #	result = int(class_name[0])
 
-def send_image_to_server():
+def send_image_to_server(isCommand):
 	# 서버로 전송_image_to_server():
 	# 카메라 세팅
 	cam = cv2.VideoCapture(0)
@@ -210,24 +213,39 @@ def send_image_to_server():
 	cam.release()
 	# TM 체크
 	# TM() # PC 버전
-	result = TM(frame) # Raspberry PI 버전
-	print("Camera tflite result : ", result)
-	# 이미지 전송 할 uri
-	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
-	
-	dto = {
-		'pot_id' : 1,
-		'level' : result
-	}
-	dto = json.dumps(dto)
-	response = requests.post(url, 
-		data=dto, 
-		headers={'Content-Type': 'application/json; charset=UTF-8'}
-	)
-	if response.status_code == 200:
-		print("TM 데이터 전달 성공")
-	else:
-		print("TM 데이터 전달 실패")
+	if isCommand == 0:
+		result = TM(frame) # Raspberry PI 버전
+		print("Camera tflite result : ", result)
+		# 이미지 전송 할 uri
+		url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
+		
+		dto = {
+			'pot_id' : 1,
+			'level' : result
+		}
+		dto = json.dumps(dto)
+		response = requests.post(url,
+			data=dto, 
+			headers={'Content-Type': 'application/json; charset=UTF-8'}
+		)
+		if response.status_code == 200:
+			print("TM 데이터 전달 성공")
+		else:
+			print("TM 데이터 전달 실패")
+	# else:
+	# 	image = Image.open(img_path)
+	# 	byte_image = io.BytesIO()
+	# 	image_binary = byte_image.getvalue()
+	# 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
+	# 	dto = {
+	# 		'pot_id' : 1,
+	# 		'blob' : image_binary
+	# 	}
+	# 	response = requests.post(url,
+	# 		data=dto,
+	# 		headers={'Content-Type': 'application/json; charset=UTF-8'}
+	# 	)
+
 
 if __name__ == "__main__":
 	isExit = False
