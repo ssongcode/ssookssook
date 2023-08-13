@@ -220,10 +220,11 @@ def send_image_to_server():
 	image = Image.open(img_path)
 	byte_image = io.BytesIO()
 	image_binary = byte_image.getvalue()
+	image_string = image_binary.decode('utf-8')
 	dto = {
 		'potId' : 1,
 		'level' : result,
-		'file' : image_binary
+		'file' : image_string
 	}
 	print(dto)
 	dto = json.dumps(dto)
