@@ -131,11 +131,12 @@ def TM(frame):
 	with open(label_path,"r") as label:
 		max_data = 0
 		for per in output_data[0]:
+			print(per)
 			line = label.readline()
 			if per > max_data:
 				result = line
 				max_data = per
-		
+
 	print(result)
 	return int(result[0])+1
 
