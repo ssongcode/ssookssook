@@ -23,6 +23,7 @@ model_path = os.path.join(os.path.dirname(__file__),'model_unquant.tflite')
 serial_number_path = os.path.join(os.path.dirname(__file__), "serial_number.txt")
 # The path to labels.txt that was downloaded with your model
 label_path = os.path.join(os.path.dirname(__file__),'labels.txt')
+img_path = os.path.join(os.path.dirname(__file__),"img/")
 
 async def connect():
 	# uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
@@ -116,7 +117,7 @@ def TM(frame):
 	input_details = interpreter.get_input_details()
 	# 사진 resize
 	image_resized = cv2.resize(frame, (224, 224))
-	cv2.imwrite(img_path+"img/test.jpg",image_resized)
+	cv2.imwrite(img_path+"test.jpg",image_resized)
 	image = tf.expand_dims(image_resized, axis=0)
 	image = tf.cast(image,tf.float32)
 	# 모델의 입력 텐서에 이미지 데이터 넣기
@@ -209,8 +210,7 @@ def send_image_to_server():
 		print("프레임을 읽어올 수 없습니다.")
 		return
 	# 이미지 저장
-	img_path = os.path.join(os.path.dirname(__file__),"img/"+filename)
-	cv2.imwrite(img_path,frame)
+	cv2.imwrite(img_path+filename,frame)
 	# 카메라 종료
 	cam.release()
 	# TM 체크
