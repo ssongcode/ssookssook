@@ -161,7 +161,8 @@ const PotScreen = (props) => {
     // Store the potID in Redux using the action
     props.storePotID(potId);
     props.setGardenID(gardenId);
-    navigation.push("Slider");
+    // navigation.push("Slider");
+    navigation.push("Main");
   };
 
   const renderPotsOnShelve = (startIndex, endIndex) => {

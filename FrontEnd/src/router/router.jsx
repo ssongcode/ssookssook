@@ -15,39 +15,39 @@ import ProfileScreen from "../screens/profile";
 import ErrorScreen from "../screens/error";
 
 import KakaoLoginScreen from "../screens/kakaologin";
-import Swiper from "react-native-swiper";
+// import Swiper from "react-native-swiper";
 
 const Stack = createStackNavigator();
 
-const SliderMainScreen = () => {
-  return (
-    <Swiper loop={false} showsPagination={false} index={1}>
-      <PotScreen />
-      <MainScreen />
-      <GardenScreen />
-    </Swiper>
-  );
-};
+// const SliderMainScreen = () => {
+//   return (
+//     <Swiper loop={false} showsPagination={false} index={1}>
+//       <PotScreen />
+//       <MainScreen />
+//       <GardenScreen />
+//     </Swiper>
+//   );
+// };
 
-const SliderGardenScreen = () => {
-  return (
-    <Swiper loop={false} showsPagination={false} index={2}>
-      <PotScreen />
-      <MainScreen />
-      <GardenScreen />
-    </Swiper>
-  );
-};
+// const SliderGardenScreen = () => {
+//   return (
+//     <Swiper loop={false} showsPagination={false} index={2}>
+//       <PotScreen />
+//       <MainScreen />
+//       <GardenScreen />
+//     </Swiper>
+//   );
+// };
 
-const SliderPotScreen = () => {
-  return (
-    <Swiper loop={false} showsPagination={false} index={0}>
-      <PotScreen />
-      <MainScreen />
-      <GardenScreen />
-    </Swiper>
-  );
-};
+// const SliderPotScreen = () => {
+//   return (
+//     <Swiper loop={false} showsPagination={false} index={0}>
+//       <PotScreen />
+//       <MainScreen />
+//       <GardenScreen />
+//     </Swiper>
+//   );
+// };
 
 const Router = () => {
   return (
@@ -124,7 +124,7 @@ const Router = () => {
           name="Error"
           component={ErrorScreen}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{ headerShown: false }}
           name="Slider"
           component={SliderMainScreen}
@@ -138,7 +138,7 @@ const Router = () => {
           options={{ headerShown: false }}
           name="SliderPot"
           component={SliderPotScreen}
-        />
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
