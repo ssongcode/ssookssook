@@ -128,8 +128,6 @@ def TM(frame):
 	# 출력 정보
 	output_details = interpreter.get_output_details()
 	output_data = interpreter.get_tensor(output_details[0]['index'])
-	result = ""
-	print(result)
 	with open(label_path,"r") as label:
 		max_data = 0
 		for per in output_data[0]:
