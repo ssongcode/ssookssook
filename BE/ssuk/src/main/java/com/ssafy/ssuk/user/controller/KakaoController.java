@@ -33,7 +33,7 @@ public class KakaoController {
     private final UserService userService;
     private final NotificationService notificationService;
 
-    private final String REDIRECT_URL = "http://i9b102.p.ssafy.io:8080/auth/kakao";
+    private final String REDIRECT_URL = "http://i9b102.p.ssafy.io:8080";
 
     @GetMapping("")
     public String kakao(@RequestParam String code) throws Exception {

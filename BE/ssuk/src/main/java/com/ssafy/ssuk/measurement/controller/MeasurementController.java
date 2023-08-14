@@ -70,7 +70,7 @@ public class MeasurementController {
 
     //나중에 시큐리티 필터 빼달라고 하기
     @PostMapping("/upload")
-    ResponseEntity<?> updateLevel(@RequestBody @Validated UploadRequestDto uploadRequestDto, BindingResult bindingResult) throws IOException {
+    ResponseEntity<?> updateLevel(@RequestBody @Validated UploadRequestDto uploadRequestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new CustomException(ErrorCode.INPUT_EXCEPTION);
         }
