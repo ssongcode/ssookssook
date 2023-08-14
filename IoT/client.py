@@ -126,6 +126,7 @@ def TM(frame):
 	output_details = interpreter.get_output_details()
 	output_data = interpreter.get_tensor(output_details[0]['index'])
 	result = ""
+	print(result)
 	with open(label_path,"r") as label:
 		max_data = 0
 		for per in output_data[0]:
@@ -228,9 +229,7 @@ def send_image_to_server():
 		'level' : result,
 		'file' : image_string
 	}
-	print(dto)
 	dto = json.dumps(dto)
-	print(dto)
 	response = requests.post(url,
 		data=dto, 
 		headers={'Content-Type': 'application/json; charset=UTF-8'}
