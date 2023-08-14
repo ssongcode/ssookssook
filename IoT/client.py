@@ -252,4 +252,5 @@ if __name__ == "__main__":
 	# 		isExit = True
 	# 	except Exception as e:
 	# 		print("Error :",e)
+	ARD.reset_input_buffer()
 	asyncio.get_event_loop().run_until_complete(connect())
