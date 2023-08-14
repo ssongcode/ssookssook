@@ -240,11 +240,12 @@ def send_image_to_server():
 		print("TM 데이터 전달 실패")
 
 if __name__ == "__main__":
-	isExit = False
-	while not isExit:
-		try:
-			asyncio.get_event_loop().run_until_complete(connect())
-		except KeyboardInterrupt as interrupt:
-			isExit = True
-		except Exception as e:
-			print("Error :",e)
+	# isExit = False
+	# while not isExit:
+	# 	try:
+	# 		asyncio.get_event_loop().run_until_complete(connect())
+	# 	except KeyboardInterrupt as interrupt:
+	# 		isExit = True
+	# 	except Exception as e:
+	# 		print("Error :",e)
+	asyncio.get_event_loop().run_until_complete(connect())
