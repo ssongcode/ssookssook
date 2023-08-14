@@ -109,35 +109,35 @@ async def read():
 		print("Read Failed!!")
 		return [ 0, 0, 0, 0, 0]
 # Teachable Machine 작동 로직 = Raspberry PI
-# def TM(frame):
-# 	# Load your model onto the TF Lite Interpreter
-# 	interpreter = tf.lite.Interpreter(model_path=model_path)
-# 	interpreter.allocate_tensors()
-# 	# 정보 얻기
-# 	input_details = interpreter.get_input_details()
-# 	# 사진 resize
-# 	image_resized = cv2.resize(frame, (224, 224))
-# 	img_path = os.path.join(os.path.dirname(__file__),"img/test.jpg")
-# 	cv2.imwrite(img_path,image_resized)
-# 	image = tf.expand_dims(image_resized, axis=0)
-# 	image = tf.cast(image,tf.float32)
-# 	# 모델의 입력 텐서에 이미지 데이터 넣기
-# 	interpreter.set_tensor(input_details[0]['index'], image)
-# 	# 판정
-# 	interpreter.invoke()
-# 	# 출력 정보
-# 	output_details = interpreter.get_output_details()
-# 	output_data = interpreter.get_tensor(output_details[0]['index'])
-# 	print(output_data)
-# 	with open(label_path,"r") as label:
-# 		max_data = 0
-# 		for per in output_data[0]:
-# 			print(per)
-# 			line = label.readline()
-# 			if per > max_data:
-# 				result = line
-# 				max_data = per
-# 	return int(result[0])+1
+def TM(frame):
+	# Load your model onto the TF Lite Interpreter
+	interpreter = tf.lite.Interpreter(model_path=model_path)
+	interpreter.allocate_tensors()
+	# 정보 얻기
+	input_details = interpreter.get_input_details()
+	# 사진 resize
+	image_resized = cv2.resize(frame, (224, 224))
+	img_path = os.path.join(os.path.dirname(__file__),"img/test.jpg")
+	cv2.imwrite(img_path,image_resized)
+	image = tf.expand_dims(image_resized, axis=0)
+	image = tf.cast(image,tf.float32)
+	# 모델의 입력 텐서에 이미지 데이터 넣기
+	interpreter.set_tensor(input_details[0]['index'], image)
+	# 판정
+	interpreter.invoke()
+	# 출력 정보
+	output_details = interpreter.get_output_details()
+	output_data = interpreter.get_tensor(output_details[0]['index'])
+	print(output_data)
+	with open(label_path,"r") as label:
+		max_data = 0
+		for per in output_data[0]:
+			print(per)
+			line = label.readline()
+			if per > max_data:
+				result = line
+				max_data = per
+	return int(result[0])+1
 
 # Teachable Machine 작동 로직 = PC
 # def TM():
@@ -217,35 +217,19 @@ def send_image_to_server():
 	cam.release()
 	# TM 체크
 	# TM() # PC 버전
-	# result = TM(frame) # Raspberry PI 버전
-	# Load your model onto the TF Lite Interpreter
-	interpreter = tf.lite.Interpreter(model_path=model_path)
-	interpreter.allocate_tensors()
-	# 정보 얻기
-	input_details = interpreter.get_input_details()
-	# 사진 resize
-	image_resized = cv2.resize(frame, (224, 224))
-	img_path = os.path.join(os.path.dirname(__file__),"img/test.jpg")
-	cv2.imwrite(img_path,image_resized)
-	image = tf.expand_dims(image_resized, axis=0)
-	image = tf.cast(image,tf.float32)
-	# 모델의 입력 텐서에 이미지 데이터 넣기
-	interpreter.set_tensor(input_details[0]['index'], image)
-	# 판정
-	interpreter.invoke()
-	# 출력 정보
-	output_details = interpreter.get_output_details()
-	output_data = interpreter.get_tensor(output_details[0]['index'])
-	print(output_data)
-	with open(label_path,"r") as label:
-		max_data = 0
-		for per in output_data[0]:
-			print(per)
-			line = label.readline()
-			if per > max_data:
-				result = int(line[0])+1
-				max_data = per
+	result = TM(frame) # Raspberry PI 버전
 	print("Camera tflite result : ", result)
+	# seed test
+	seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
+	sprout_path = os.path.join(os.path.dirname(__file__),"img/"+"sprout_test.jpg")
+	flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
+
+	seed_test = cv2.imread(seed_path)
+	print("seed_test : ",TM(seed_test))
+	sprout_test = cv2.imread(sprout_path)
+	print("sprout_test : ",TM(sprout_test))
+	flower_test = cv2.imread(flower_path)
+	print("flower_test : ",TM(flower_test))
 	if result == 4:
 		return
 	# 이미지 전송 할 uri
