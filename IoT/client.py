@@ -117,7 +117,8 @@ def TM(frame):
 	input_details = interpreter.get_input_details()
 	# 사진 resize
 	image_resized = cv2.resize(frame, (224, 224))
-	cv2.imwrite(img_path+"test.jpg",image_resized)
+	img_path = os.path.join(os.path.dirname(__file__),"img/test.jpg")
+	cv2.imwrite(img_path,image_resized)
 	image = tf.expand_dims(image_resized, axis=0)
 	image = tf.cast(image,tf.float32)
 	# 모델의 입력 텐서에 이미지 데이터 넣기
@@ -128,6 +129,7 @@ def TM(frame):
 	output_details = interpreter.get_output_details()
 	output_data = interpreter.get_tensor(output_details[0]['index'])
 	result = ""
+	print(result)
 	with open(label_path,"r") as label:
 		max_data = 0
 		for per in output_data[0]:
@@ -136,8 +138,6 @@ def TM(frame):
 			if per > max_data:
 				result = line
 				max_data = per
-
-	print(result)
 	return int(result[0])+1
 
 # Teachable Machine 작동 로직 = PC
@@ -212,7 +212,8 @@ def send_image_to_server():
 		print("프레임을 읽어올 수 없습니다.")
 		return
 	# 이미지 저장
-	cv2.imwrite(img_path+filename,frame)
+	img_path = os.path.join(os.path.dirname(__file__),"img/"+filename)
+	cv2.imwrite(img_path,frame)
 	# 카메라 종료
 	cam.release()
 	# TM 체크
