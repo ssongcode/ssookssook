@@ -27,6 +27,7 @@ const ModalDictionary = ({ isVisible, onClose }) => {
     customAxios
       .get("/plantinfo")
       .then((res) => {
+        console.log(res.data.data[0]);
         setDictionaryData(res.data.data);
       })
       .catch(() => {

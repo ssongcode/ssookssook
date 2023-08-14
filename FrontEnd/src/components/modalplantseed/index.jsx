@@ -68,7 +68,7 @@ const ModalPlantSeed = ({ isVisible, onClose, onSeedPlant }) => {
       name: "선인장",
       subcategories: [
         {
-          plantId: 17,
+          plantId: 3,
           plantName: "백도선",
         },
         {

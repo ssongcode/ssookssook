@@ -17,9 +17,12 @@ import plantImages from "../../assets/img/plantImages";
 import CookieRunBold from "../../components/common/CookieRunBold";
 import { setGardenID } from "../../redux/action";
 import ModalSensor from "../../components/SensorModal";
+import { useIsFocused } from "@react-navigation/native";
+import ModalPlantRegist from "../../components/modalplantregist";
 
 const MainScreen = (props) => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [isSettingModalVisible, setSettingModalVisible] = useState(false);
   const [isCharacterModalVisible, setCharacterModalVisible] = useState(false);
   const [isOpenMapModalVisible, setIsOpenMapModalVisible] = useState(false);
@@ -33,6 +36,7 @@ const MainScreen = (props) => {
   const [backgroundImage, setBackgroundImage] = useState(
     require("../../assets/img/ProfileBackground.png")
   );
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isNotificationData, setNotificationData] = useState([]);
 
   const [isCharacterData, setCharacterData] = useState({
@@ -48,6 +52,10 @@ const MainScreen = (props) => {
     const resolvedImage = Image.resolveAssetSource(image);
 
     return resolvedImage;
+  };
+
+  const toggleEditModal = () => {
+    setEditModalVisible(!isEditModalVisible);
   };
 
   const handleSensorPress = (sensorType) => {
@@ -149,32 +157,60 @@ const MainScreen = (props) => {
   };
 
   useEffect(() => {
-    // 컴포넌트가 마운트될 때 getUserData 함수 호출
-    getUserData();
-    getPlantData(999);
-    changeBackgroundImage();
-    registNotification();
-    getNotificationData();
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-
-    // 30초마다 getUserData 함수 호출하는 interval 설정
-    const sensorInterval = setInterval(() => {
+    if (isFocused) {
+      console.log("정원ID : " + props.gardenID);
+      getNotificationData();
       getUserData();
-    }, 30000); // 30초를 밀리초로 변환
-
-    const interval = setInterval(() => {
+      getPlantData(999);
       changeBackgroundImage();
-    }, 3600000); // 매 시간마다 호출 (밀리초 단위)
+      registNotification();
 
-    // 컴포넌트가 언마운트될 때 interval 정리
-    return () => {
-      clearInterval(sensorInterval);
-      clearInterval(interval);
-    };
-  }, []);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+
+      // 30초마다 getUserData 함수 호출하는 interval 설정
+      const sensorInterval = setInterval(() => {
+        getUserData();
+      }, 30000); // 30초를 밀리초로 변환
+
+      const interval = setInterval(() => {
+        changeBackgroundImage();
+      }, 3600000); // 매 시간마다 호출 (밀리초 단위)
+
+      return () => {
+        clearInterval(sensorInterval);
+        clearInterval(interval);
+      };
+    }
+  }, [isFocused]);
+
+  // useEffect(() => {
+  //   // 컴포넌트가 마운트될 때 getUserData 함수 호출
+  //   getUserData();
+  //   getPlantData(999);
+  //   changeBackgroundImage();
+  //   registNotification();
+
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 500);
+
+  //   // 30초마다 getUserData 함수 호출하는 interval 설정
+  //   const sensorInterval = setInterval(() => {
+  //     getUserData();
+  //   }, 30000); // 30초를 밀리초로 변환
+
+  //   const interval = setInterval(() => {
+  //     changeBackgroundImage();
+  //   }, 3600000); // 매 시간마다 호출 (밀리초 단위)
+
+  //   // 컴포넌트가 언마운트될 때 interval 정리
+  //   return () => {
+  //     clearInterval(sensorInterval);
+  //     clearInterval(interval);
+  //   };
+  // }, []);
 
   const toggleSettingModal = () => {
     setSettingModalVisible(!isSettingModalVisible);
@@ -220,6 +256,19 @@ const MainScreen = (props) => {
     console.log("Selected plantName: " + plantName);
   };
 
+  const handleEdit = (inputValue) => {
+    customAxios
+      .put("/plant", {
+        gardenId: props.gardenID,
+        nickname: inputValue,
+      })
+      .then((res) => {
+        console.log(res.data);
+        getPlantData(999);
+      });
+    setEditModalVisible(false);
+  };
+
   const handleWateringPlant = () => {
     customAxios
       .get(`/sensor/water/${props.potID}`)
@@ -247,7 +296,7 @@ const MainScreen = (props) => {
         <View style={styles.userInfoSection}>
           <View style={styles.SensorContainer}>
             <TouchableOpacity
-              onPress={() => handleSensorPress("온도 센서")}
+              onPress={() => handleSensorPress("temperature")}
               style={styles.tmp}
             >
               <Image
@@ -261,7 +310,7 @@ const MainScreen = (props) => {
               </CookieRunRegular>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleSensorPress("습도 센서")}
+              onPress={() => handleSensorPress("humidity")}
               style={styles.tmp}
             >
               <Image
@@ -275,7 +324,7 @@ const MainScreen = (props) => {
               </CookieRunRegular>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => handleSensorPress("토양 수분 센서")}
+              onPress={() => handleSensorPress("ground")}
               style={styles.tmp}
             >
               <Image
@@ -342,7 +391,10 @@ const MainScreen = (props) => {
           </View>
         </View>
         {isCharacterData.plantNickname != null ? (
-          <View style={styles.nameTagSection}>
+          <TouchableOpacity
+            style={styles.nameTagSection}
+            onPress={toggleEditModal}
+          >
             <Image
               source={require("../../assets/img/nameTag.png")}
               resizeMode="contain"
@@ -351,7 +403,7 @@ const MainScreen = (props) => {
             <CookieRunBold style={styles.characterName}>
               {isCharacterData.plantNickname}
             </CookieRunBold>
-          </View>
+          </TouchableOpacity>
         ) : (
           <View style={styles.nameTagSection}></View>
         )}
@@ -419,6 +471,14 @@ const MainScreen = (props) => {
         onClose={() => setOpenSensorModalVisible(false)}
         navigation={navigation}
         selectedSensorType={selectedSensorType} // 선택한 센서 종류 전달
+        selectedPotId={props.potID}
+      />
+      <ModalPlantRegist
+        isVisible={isEditModalVisible}
+        onClose={() => setEditModalVisible(false)}
+        onRegist={handleEdit}
+        title="애칭 수정"
+        placeholder="변경하시려는 애칭을 말씀해주세요"
       />
     </View>
   );

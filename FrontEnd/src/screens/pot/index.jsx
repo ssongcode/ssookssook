@@ -114,6 +114,7 @@ const PotScreen = (props) => {
   useEffect(() => {
     if (isFocused) {
       getPotData(); // Fetch data only when the screen is focused
+      setDeleteIconVisible(false);
     }
   }, [isFocused]); // The effect depends on the isFocused value
 
@@ -159,6 +160,7 @@ const PotScreen = (props) => {
       setQRcodeVisible(!isQRcodeVisible);
     } else {
       setRegistModalVisible(true);
+      setTrashcanVisible(true);
     }
   };
 
@@ -354,8 +356,9 @@ const PotScreen = (props) => {
           "성공적으로 화분이 등록되었습니다.",
           "checkmark-circle-sharp"
         );
+        setRegistMessage(null);
         getPotData();
-        showTrashcan(true);
+        setTrashcanVisible(true);
       })
       .catch((err) => {
         if (err.response.status === 409) {
@@ -444,7 +447,8 @@ const PotScreen = (props) => {
         isVisible={isRegistModalVisible}
         onClose={() => {
           setRegistModalVisible(false);
-          showTrashcan(true);
+          setTrashcanVisible(true);
+          setRegistMessage(null);
         }}
         onRegist={handleRegist}
         title="화분 등록"
