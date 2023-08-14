@@ -8,7 +8,7 @@ import ModalPlantDelete from "../../components/modalplantdelete";
 import ModalPlantRegist from "../../components/modalplantregist";
 import * as Animatable from "react-native-animatable";
 import { useNavigation } from "@react-navigation/native";
-import customAxios from "../../utils/axios";
+import customAxios, { setTokenExpiredCallback } from "../../utils/axios";
 import { connect } from "react-redux";
 import { storePotID, setGardenID } from "../../redux/action";
 import QRCodeScanner from "../../components/qrCode";
@@ -57,6 +57,13 @@ const PotScreen = (props) => {
 
   useEffect(() => {
     registerForPushNotificationsAsync();
+  }, []);
+
+  useEffect(() => {
+    setTokenExpiredCallback(() => {
+      console.log("토큰 만료 혹은 충돌");
+      navigation.navigate("Login");
+    });
   }, []);
 
   const registerForPushNotificationsAsync = async () => {
@@ -178,6 +185,7 @@ const PotScreen = (props) => {
     // Store the potID in Redux using the action
     props.storePotID(potId);
     props.setGardenID(gardenId);
+    // navigation.push("Slider");
     navigation.push("Main");
   };
 
