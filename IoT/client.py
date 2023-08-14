@@ -128,7 +128,7 @@ def TM(frame):
 	# 판정
 	interpreter.invoke()
 	# 출력 정보
-    output_details = interpreter.get_output_details()
+	output_details = interpreter.get_output_details()
 	output_data = interpreter.get_tensor(output_details[0]['index'])
 	print(output_data)
 	with open(label_path,"r") as label:
