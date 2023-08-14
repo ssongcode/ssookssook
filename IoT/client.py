@@ -10,7 +10,9 @@ import cv2
 from time import sleep
 import base64
 from datetime import datetime
-import tflite_runtime.interpreter as tflite
+#import tflite_runtime.interpreter as tflite
+from tflite_runtime.interpreter as Interpreter
+from tflite_runtime.edgetpu as make_interpreter
 import numpy as np
 import tensorflow as tf
 
@@ -111,7 +113,9 @@ async def read():
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
 	# Load your model onto the TF Lite Interpreter
-	interpreter = tf.lite.Interpreter(model_path=model_path)
+	# interpreter = tf.lite.Interpreter(model_path=model_path)
+	# interpreter.allocate_tensors()
+	interpreter = make_interpreter(model_path)
 	interpreter.allocate_tensors()
 	# 정보 얻기
 	input_details = interpreter.get_input_details()
