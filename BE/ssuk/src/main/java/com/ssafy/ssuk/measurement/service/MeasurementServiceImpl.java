@@ -144,10 +144,8 @@ public class MeasurementServiceImpl implements MeasurementService {
             notificationRepository.save(notification);
 
             //테이블 갱신
-
             if (findGarden.getLevel() == 1) {
                 findGarden.updateLevel2(uploadRequestDto.getLevel());
-
             }
             else if (findGarden.getLevel() == 2) {
                 findGarden.updateLevel3(uploadRequestDto.getLevel());

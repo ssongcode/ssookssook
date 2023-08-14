@@ -15,6 +15,4 @@ public class UploadRequestDto {
     private Integer potId;
     @NotNull
     private Integer level;
-    @NotNull
-    private MultipartFile file;
 }
