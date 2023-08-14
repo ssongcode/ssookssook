@@ -10,9 +10,7 @@ import cv2
 from time import sleep
 import base64
 from datetime import datetime
-#import tflite_runtime.interpreter as tflite
-from tflite_runtime.interpreter as Interpreter
-from tflite_runtime.edgetpu as make_interpreter
+import tflite_runtime.interpreter as tflite
 import numpy as np
 import tensorflow as tf
 
@@ -115,7 +113,7 @@ def TM(frame):
 	# Load your model onto the TF Lite Interpreter
 	# interpreter = tf.lite.Interpreter(model_path=model_path)
 	# interpreter.allocate_tensors()
-	interpreter = make_interpreter(model_path)
+	interpreter = tflite.Interpreter(model_path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
 	interpreter.allocate_tensors()
 	# 정보 얻기
 	input_details = interpreter.get_input_details()
@@ -130,7 +128,7 @@ def TM(frame):
 	# 판정
 	interpreter.invoke()
 	# 출력 정보
-	output_details = interpreter.get_output_details()
+    output_details = interpreter.get_output_details()
 	output_data = interpreter.get_tensor(output_details[0]['index'])
 	print(output_data)
 	with open(label_path,"r") as label:
