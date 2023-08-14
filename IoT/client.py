@@ -50,7 +50,7 @@ async def connect():
 		subscribe_frame = f"SUBSCRIBE\ndestination:{recv_destination}\nid:sub-1\nack:auto\n\n\x00"
 		await websocket.send(subscribe_frame.encode())
 		image_cnt = 0
-		while True: # 통신
+		while True: # 통신 
 			# Server -> Raspberry PI Request
 			try:
 				response = await asyncio.wait_for(websocket.recv(), timeout=1.0)
@@ -116,6 +116,7 @@ def TM(frame):
 	input_details = interpreter.get_input_details()
 	# 사진 resize
 	image_resized = cv2.resize(frame, (224, 224))
+	cv2.imwrite(img_path+"img/test.jpg",image_resized)
 	image = tf.expand_dims(image_resized, axis=0)
 	image = tf.cast(image,tf.float32)
 	# 모델의 입력 텐서에 이미지 데이터 넣기
