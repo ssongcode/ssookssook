@@ -87,9 +87,11 @@ async def connect():
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
-					if image_cnt == 1: # 사진 30분 간격으로 전송
+					if image_cnt == 10: # 사진 30분 간격으로 전송
 						send_image_to_server()
 						image_cnt = 0
+					elif image_cnt == 1:
+						send_image_to_server(1)
 			except Exception as e:
 				print(e)
 				break
@@ -179,7 +181,7 @@ def preprocess_image(image):
 # 	print("Confidence Score:", confidence_score)
 #	result = int(class_name[0])
 
-def send_image_to_server():
+def send_image_to_server(cmd):
 	# 서버로 전송_image_to_server():
 	# 카메라 세팅
 	cam = cv2.VideoCapture(0)
@@ -208,14 +210,11 @@ def send_image_to_server():
 	cam.release()
 	# TM 체크
 	# TM() # PC 버전
-	result = TM(frame) # Raspberry PI 버전
-	print("Camera tflite result : ", result)
+
 	# test code
-	# seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
-	# sprout_path = os.path.join(os.path.dirname(__file__),"img/"+"sprout_test.jpg")
 	# flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
 
-	# seed_test = cv2.imread(seed_path)
+	
 	# print("seed_test : ",TM(seed_test))
 	# sprout_test = cv2.imread(sprout_path)
 	# print("sprout_test : ",TM(sprout_test))
@@ -225,6 +224,24 @@ def send_image_to_server():
 		return
 	# 이미지 전송 할 uri
 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
+	if cmd == 1:
+		seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
+		seed_test = cv2.imread(seed_path)
+		result = TM(seed_test) # Raspberry PI 버전
+		print("Camera tflite result : ", result)
+		img_path = seed_path
+	if cmd == 2:
+		sprout_path = os.path.join(os.path.dirname(__file__),"img/"+"sprout_test.jpg")
+		sprout_test = cv2.imread(sprout_path)
+		result = TM(sprout_test) # Raspberry PI 버전
+		print("Camera tflite result : ", result)
+		img_path = sprout_path
+	if cmd == 3:
+		flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
+		flower_test = cv2.imread(flower_path)
+		result = TM(flower_test) # Raspberry PI 버전
+		print("Camera tflite result : ", result)
+		img_path = flower_path		
 	image_string = ""
 	with open(img_path, "rb") as img_file:
 		image_string = img_file.read()
