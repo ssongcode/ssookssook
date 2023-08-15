@@ -87,9 +87,8 @@ async def connect():
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
-					if image_cnt == 10: # 사진 30분 간격으로 전송
+					if image_cnt >= 1: # 사진 30분 간격으로 전송
 						send_image_to_server(image_cnt)
-						image_cnt = 5
 					# elif 1 <= image_cnt <= 3: # Test용
 					# 	send_image_to_server(image_cnt)
 			except Exception as e:
@@ -223,13 +222,13 @@ def send_image_to_server(cmd):
 		result = TM(sprout_test) # Raspberry PI 버전
 		print("Camera tflite result : ", result)
 		img_path = sprout_path
-	if cmd == 3:
-		flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
-		flower_test = cv2.imread(flower_path)
-		result = TM(flower_test) # Raspberry PI 버전
-		print("Camera tflite result : ", result)
-		img_path = flower_path
-	if cmd > 3: # TM check
+	# if cmd == 3:
+	# 	flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
+	# 	flower_test = cv2.imread(flower_path)
+	# 	result = TM(flower_test) # Raspberry PI 버전
+	# 	print("Camera tflite result : ", result)
+	# 	img_path = flower_path
+	if cmd >= 3: # TM check
 		result = TM(frame)
 		print("Camera tflite result : ", result)
 	if result == 4:
