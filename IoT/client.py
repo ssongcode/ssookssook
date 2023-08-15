@@ -10,7 +10,6 @@ import cv2
 from time import sleep
 import base64
 from datetime import datetime
-import tflite_runtime.interpreter as tflite
 import numpy as np
 import tensorflow as tf
 
@@ -19,7 +18,7 @@ BAUD_RATE = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
 # ARD = serial.Serial(PORT, BAUD_RATE) # 아두이노 통신 설정 - PC
 ARD = serial.Serial("/dev/ttyACM0",BAUD_RATE) # 아두이노 통신 설정 - 라즈베리파이4
 # the TFLite converted to be used with edgetpu
-model_path = os.path.join(os.path.dirname(__file__),'model_edgetpu.tflite')
+model_path = os.path.join(os.path.dirname(__file__),'keras_model.h5')
 serial_number_path = os.path.join(os.path.dirname(__file__), "serial_number.txt")
 # The path to labels.txt that was downloaded with your model
 label_path = os.path.join(os.path.dirname(__file__),'labels.txt')
@@ -113,8 +112,11 @@ def TM(frame):
 	# Load your model onto the TF Lite Interpreter
 	# interpreter = tf.lite.Interpreter(model_path=model_path)
 	# interpreter.allocate_tensors()
-	interpreter = tflite.Interpreter(model_path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
-	interpreter.allocate_tensors()
+	# interpreter = tflite.Interpreter(model_path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
+	loaded_model = tf.keras.moedls.load_model(model_path)
+	converter = tf.lite.TFLiteConverter.from_keras_model(loaded_model)
+	tflite_model = converter.convert()
+	interpreter = tf.lite.Interpreter(model_content=tflite_model)
 	# 정보 얻기
 	input_details = interpreter.get_input_details()
 	# 사진 resize
