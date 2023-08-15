@@ -12,6 +12,7 @@ import base64
 from datetime import datetime
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.models import load_model
 
 # PORT = 'COM5' # 라즈베리 파이 PORT의 경우 확인 필요
 BAUD_RATE = 9600 # 통신 속도 - 라즈베리파이4는 9600이 적정
@@ -114,36 +115,15 @@ def TM(frame):
 	# interpreter.allocate_tensors()
 	# interpreter = tflite.Interpreter(model_path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
 	loaded_model = tf.keras.models.load_model(model_path)
-	loaded_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-	converter = tf.lite.TFLiteConverter.from_keras_model(loaded_model)
-	tflite_model = converter.convert()
-	interpreter = tf.lite.Interpreter(model_content=tflite_model)
-	interpreter.allocate_tensors()
-	# 정보 얻기
-	input_details = interpreter.get_input_details()
+	loaded_model.summary()
 	# 사진 resize
 	image_resized = cv2.resize(frame, (224, 224))
-	img_path = os.path.join(os.path.dirname(__file__),"img/test.jpg")
 	cv2.imwrite(img_path,image_resized)
-	image = tf.expand_dims(image_resized, axis=0)
-	image = tf.cast(image,tf.float32)
-	# 모델의 입력 텐서에 이미지 데이터 넣기
-	interpreter.set_tensor(input_details[0]['index'], image)
 	# 판정
-	interpreter.invoke()
+	predictions = loaded_model.predict(image_resized)
 	# 출력 정보
-	output_details = interpreter.get_output_details()
-	output_data = interpreter.get_tensor(output_details[0]['index'])
-	print(output_data)
-	with open(label_path,"r") as label:
-		max_data = 0
-		for per in output_data[0]:
-			print(per)
-			line = label.readline()
-			if per > max_data:
-				result = line
-				max_data = per
-	return int(result[0])+1
+	print(predictions)
+	return 4
 
 # Teachable Machine 작동 로직 = PC
 # def TM():
