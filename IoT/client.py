@@ -114,6 +114,7 @@ def TM(frame):
 	# interpreter.allocate_tensors()
 	# interpreter = tflite.Interpreter(model_path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
 	loaded_model = tf.keras.models.load_model(model_path)
+	loaded_model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 	converter = tf.lite.TFLiteConverter.from_keras_model(loaded_model)
 	tflite_model = converter.convert()
 	interpreter = tf.lite.Interpreter(model_content=tflite_model)
