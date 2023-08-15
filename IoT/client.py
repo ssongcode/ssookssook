@@ -118,8 +118,11 @@ def TM(frame):
 	# 판정
 	predictions = loaded_model.predict(tf.expand_dims(input_data, axis=0))
 	# 출력 정보
-	print(predictions)
-	return 4
+	result = [0,predictions[0][0]]
+	for prediction,idx in zip(predictions[0],range(len(predictions[0]))):
+		if prediction > result[1]:
+			result = [idx, prediction]
+	return result[0]
 
 def preprocess_image(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -199,7 +202,7 @@ def send_image_to_server():
 		return
 	# 이미지 저장
 	img_path = os.path.join(os.path.dirname(__file__),"img/"+filename)
-	# cv2.imwrite(img_path,frame)
+	cv2.imwrite(img_path,frame)
 	# 카메라 종료
 	cam.release()
 	# TM 체크
