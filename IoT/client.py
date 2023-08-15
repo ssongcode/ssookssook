@@ -118,11 +118,12 @@ def TM(frame):
 	# 판정
 	predictions = loaded_model.predict(tf.expand_dims(input_data, axis=0))
 	# 출력 정보
+	print("score :",predictions)
 	result = [0,predictions[0][0]]
 	for prediction,idx in zip(predictions[0],range(len(predictions[0]))):
 		if prediction > result[1]:
 			result = [idx, prediction]
-	return result[0]
+	return result[0]+1
 
 def preprocess_image(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -209,17 +210,17 @@ def send_image_to_server():
 	# TM() # PC 버전
 	result = TM(frame) # Raspberry PI 버전
 	print("Camera tflite result : ", result)
-	# seed test
-	seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
-	sprout_path = os.path.join(os.path.dirname(__file__),"img/"+"sprout_test.jpg")
-	flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
+	# test code
+	# seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
+	# sprout_path = os.path.join(os.path.dirname(__file__),"img/"+"sprout_test.jpg")
+	# flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
 
-	seed_test = cv2.imread(seed_path)
-	print("seed_test : ",TM(seed_test))
-	sprout_test = cv2.imread(sprout_path)
-	print("sprout_test : ",TM(sprout_test))
-	flower_test = cv2.imread(flower_path)
-	print("flower_test : ",TM(flower_test))
+	# seed_test = cv2.imread(seed_path)
+	# print("seed_test : ",TM(seed_test))
+	# sprout_test = cv2.imread(sprout_path)
+	# print("sprout_test : ",TM(sprout_test))
+	# flower_test = cv2.imread(flower_path)
+	# print("flower_test : ",TM(flower_test))
 	if result == 4:
 		return
 	# 이미지 전송 할 uri
