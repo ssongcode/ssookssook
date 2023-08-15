@@ -87,10 +87,8 @@ async def connect():
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
-					if image_cnt >= 1: # 사진 30분 간격으로 전송
-						send_image_to_server(image_cnt)
-					# elif 1 <= image_cnt <= 3: # Test용
-					# 	send_image_to_server(image_cnt)
+					if image_cnt == 100: # 사진 30분 간격으로 전송
+						send_image_to_server()
 			except Exception as e:
 				print(e)
 				break
@@ -179,7 +177,7 @@ def preprocess_image(image):
 # 	print("Confidence Score:", confidence_score)
 #	result = int(class_name[0])
 
-def send_image_to_server(cmd):
+def send_image_to_server():
 	# 서버로 전송_image_to_server():
 	# 카메라 세팅
 	cam = cv2.VideoCapture(0)
@@ -210,27 +208,26 @@ def send_image_to_server(cmd):
 	# 이미지 전송 할 uri
 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
 	# test code
-	if cmd == 1:
-		seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
-		seed_test = cv2.imread(seed_path)
-		result = TM(seed_test) # Raspberry PI 버전
-		print("Camera tflite result : ", result)
-		img_path = seed_path
-	if cmd == 2:
-		sprout_path = os.path.join(os.path.dirname(__file__),"img/"+"sprout_test.jpg")
-		sprout_test = cv2.imread(sprout_path)
-		result = TM(sprout_test) # Raspberry PI 버전
-		print("Camera tflite result : ", result)
-		img_path = sprout_path
+	# if cmd == 1:
+	# 	seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
+	# 	seed_test = cv2.imread(seed_path)
+	# 	result = TM(seed_test) # Raspberry PI 버전
+	# 	print("Camera tflite result : ", result)
+	# 	img_path = seed_path
+	# if cmd == 2:
+	# 	sprout_path = os.path.join(os.path.dirname(__file__),"img/"+"sprout_test.jpg")
+	# 	sprout_test = cv2.imread(sprout_path)
+	# 	result = TM(sprout_test) # Raspberry PI 버전
+	# 	print("Camera tflite result : ", result)
+	# 	img_path = sprout_path
 	# if cmd == 3:
 	# 	flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
 	# 	flower_test = cv2.imread(flower_path)
 	# 	result = TM(flower_test) # Raspberry PI 버전
 	# 	print("Camera tflite result : ", result)
 	# 	img_path = flower_path
-	if cmd >= 3: # TM check
-		result = TM(frame)
-		print("Camera tflite result : ", result)
+	result = TM(frame)
+	print("Camera tflite result : ", result)
 	if result == 4:
 		return		
 	image_string = ""
@@ -264,4 +261,8 @@ if __name__ == "__main__":
 	sleep(1)
 	ARD.close()
 	ARD.open()
-	asyncio.get_event_loop().run_until_complete(connect())
+	while True:
+		try:
+			asyncio.get_event_loop().run_until_complete(connect())
+		except Exception as e:
+			print(e)
