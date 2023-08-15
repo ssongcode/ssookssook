@@ -110,10 +110,6 @@ async def read():
 		return [ 0, 0, 0, 0, 0]
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
-	# Load your model onto the TF Lite Interpreter
-	# interpreter = tf.lite.Interpreter(model_path=model_path)
-	# interpreter.allocate_tensors()
-	# interpreter = tflite.Interpreter(model_path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
 	loaded_model = tf.keras.models.load_model(model_path)
 	loaded_model.summary()
 	# 사진 resize
@@ -203,7 +199,7 @@ def send_image_to_server():
 		return
 	# 이미지 저장
 	img_path = os.path.join(os.path.dirname(__file__),"img/"+filename)
-	cv2.imwrite(img_path,frame)
+	# cv2.imwrite(img_path,frame)
 	# 카메라 종료
 	cam.release()
 	# TM 체크
