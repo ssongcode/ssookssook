@@ -118,13 +118,18 @@ def TM(frame):
 	loaded_model.summary()
 	# 사진 resize
 	image_resized = cv2.resize(frame, (224, 224))
-	cv2.imwrite(img_path,image_resized)
+	input_data = preprocess_image(image_resized)
 	# 판정
-	predictions = loaded_model.predict(image_resized)
+	predictions = loaded_model.predict(tf.expand_dims(input_data, axis=0))
 	# 출력 정보
 	print(predictions)
 	return 4
 
+def preprocess_image(image):
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = image.astype('float32')
+    image = image / 255.0  # 이미지를 [0, 1] 범위로 정규화
+    return image
 # Teachable Machine 작동 로직 = PC
 # def TM():
 # 	# Disable scientific notation for clarity
