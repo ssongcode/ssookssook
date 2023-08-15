@@ -113,10 +113,11 @@ def TM(frame):
 	# interpreter = tf.lite.Interpreter(model_path=model_path)
 	# interpreter.allocate_tensors()
 	# interpreter = tflite.Interpreter(model_path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
-	loaded_model = tf.keras.moedls.load_model(model_path)
+	loaded_model = tf.keras.models.load_model(model_path)
 	converter = tf.lite.TFLiteConverter.from_keras_model(loaded_model)
 	tflite_model = converter.convert()
 	interpreter = tf.lite.Interpreter(model_content=tflite_model)
+	interpreter.allocate_tensors()
 	# 정보 얻기
 	input_details = interpreter.get_input_details()
 	# 사진 resize
