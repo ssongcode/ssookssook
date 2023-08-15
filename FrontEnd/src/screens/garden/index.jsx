@@ -87,8 +87,8 @@ const GardenScreen = () => {
       .put(`plant/delete/${isDeleteGardenId}`)
       .then(() => {
         console.log("삭제성공");
-        navigation.navigate("Pot");
         setDeleteAction(!deleteAction);
+        getGardenData();
       })
       .catch(() => {
         console.log("정원 식물 삭제 관련 오류");
@@ -290,7 +290,10 @@ const GardenScreen = () => {
         <TouchableOpacity style={styles.trashCanMargin} onPress={visibleIcon}>
           <Image
             source={require("../../assets/img/trashCan.png")}
-            style={styles.trashCan}
+            style={[
+              styles.trashCan,
+              !isDeleteIconVisible ? styles.trashCanClicked : null,
+            ]}
           />
         </TouchableOpacity>
       </ImageBackground>

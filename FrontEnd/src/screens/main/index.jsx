@@ -158,7 +158,7 @@ const MainScreen = (props) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log("정원ID : " + props.gardenID);
+      console.log("정원ID: " + props.gardenID);
       getNotificationData();
       getUserData();
       getPlantData(999);
@@ -391,19 +391,32 @@ const MainScreen = (props) => {
           </View>
         </View>
         {isCharacterData.plantNickname != null ? (
-          <TouchableOpacity
-            style={styles.nameTagSection}
-            onPress={toggleEditModal}
-          >
+          <View style={styles.nameTagSection}>
             <Image
-              source={require("../../assets/img/nameTag.png")}
+              source={require("../../assets/img/LeftArrow.png")}
               resizeMode="contain"
+              style={styles.rightArrowSize}
+            ></Image>
+            <TouchableOpacity
+              onPress={toggleEditModal}
               style={styles.nameTagSize}
+            >
+              <Image
+                source={require("../../assets/img/nameTag.png")}
+                resizeMode="contain"
+                style={{ width: "100%", height: "100%" }}
+              ></Image>
+            </TouchableOpacity>
+
+            <Image
+              source={require("../../assets/img/RightArrow.png")}
+              resizeMode="contain"
+              style={styles.leftArrowSize}
             ></Image>
             <CookieRunBold style={styles.characterName}>
               {isCharacterData.plantNickname}
             </CookieRunBold>
-          </TouchableOpacity>
+          </View>
         ) : (
           <View style={styles.nameTagSection}></View>
         )}
@@ -479,6 +492,7 @@ const MainScreen = (props) => {
         onRegist={handleEdit}
         title="애칭 수정"
         placeholder="변경하시려는 애칭을 말씀해주세요"
+        maxInputLength={5}
       />
     </View>
   );
