@@ -88,10 +88,10 @@ async def connect():
 						# print("Send data")
 					image_cnt+=1
 					if image_cnt == 10: # 사진 30분 간격으로 전송
-						send_image_to_server()
+						send_image_to_server(image_cnt)
 						image_cnt = 5
-					elif image_cnt == 1:
-						send_image_to_server(1)
+					elif 1 <= image_cnt <= 3:
+						send_image_to_server(image_cnt)
 			except Exception as e:
 				print(e)
 				break
@@ -241,7 +241,10 @@ def send_image_to_server(cmd):
 		flower_test = cv2.imread(flower_path)
 		result = TM(flower_test) # Raspberry PI 버전
 		print("Camera tflite result : ", result)
-		img_path = flower_path		
+		img_path = flower_path
+	if cmd > 3:
+		result = TM(frame)
+		print("Camera tflite result : ", result)		
 	image_string = ""
 	with open(img_path, "rb") as img_file:
 		image_string = img_file.read()
