@@ -24,7 +24,7 @@ serial_number_path = os.path.join(os.path.dirname(__file__), "serial_number.txt"
 # The path to labels.txt that was downloaded with your model
 label_path = os.path.join(os.path.dirname(__file__),'labels.txt')
 img_path = os.path.join(os.path.dirname(__file__),"img/")
-
+loaded_model = tf.keras.models.load_model(model_path)
 async def connect():
 	# uri = "ws://localhost:8080/stomp/chat"  # Spring Boot WebSocket Endpoint URL
 	uri = "ws://i9b102.p.ssafy.io:8080/stomp"
@@ -90,8 +90,8 @@ async def connect():
 					if image_cnt == 10: # 사진 30분 간격으로 전송
 						send_image_to_server(image_cnt)
 						image_cnt = 5
-					elif 1 <= image_cnt <= 3:
-						send_image_to_server(image_cnt)
+					# elif 1 <= image_cnt <= 3: # Test용
+					# 	send_image_to_server(image_cnt)
 			except Exception as e:
 				print(e)
 				break
@@ -112,7 +112,6 @@ async def read():
 		return [ 0, 0, 0, 0, 0]
 # Teachable Machine 작동 로직 = Raspberry PI
 def TM(frame):
-	loaded_model = tf.keras.models.load_model(model_path)
 	loaded_model.summary()
 	# 사진 resize
 	image_resized = cv2.resize(frame, (224, 224))
