@@ -98,8 +98,10 @@ const PotScreen = (props) => {
     customAxios
       .get("/pot")
       .then((res) => {
-        props.storePotID(res.data[0].potId);
-        props.setGardenID(res.data[0].gardenId);
+        if (res.data.length !== 0) {
+          props.storePotID(res.data[0].potId);
+          props.setGardenID(res.data[0].gardenId);
+        }
 
         setPotData(res.data);
         setTimeout(() => {
@@ -454,6 +456,7 @@ const PotScreen = (props) => {
         title="화분 등록"
         placeholder="화분 고유 ID를 입력해주세요"
         errormessage={isRegistMessage}
+        maxInputLength={8}
       />
       {isQRcodeVisible && (
         <QRCodeScanner
