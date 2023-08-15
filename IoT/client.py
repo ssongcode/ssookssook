@@ -207,22 +207,10 @@ def send_image_to_server(cmd):
 	cv2.imwrite(img_path,frame)
 	# 카메라 종료
 	cam.release()
-	# TM 체크
-	# TM() # PC 버전
 
-	# test code
-	# flower_path = os.path.join(os.path.dirname(__file__),"img/"+"flower_test.jpg")
-
-	
-	# print("seed_test : ",TM(seed_test))
-	# sprout_test = cv2.imread(sprout_path)
-	# print("sprout_test : ",TM(sprout_test))
-	# flower_test = cv2.imread(flower_path)
-	# print("flower_test : ",TM(flower_test))
-	if result == 4:
-		return
 	# 이미지 전송 할 uri
 	url = "http://i9b102.p.ssafy.io:8080/sensor/upload"
+	# test code
 	if cmd == 1:
 		seed_path = os.path.join(os.path.dirname(__file__),"img/"+"seed_test.jpg")
 		seed_test = cv2.imread(seed_path)
@@ -241,9 +229,11 @@ def send_image_to_server(cmd):
 		result = TM(flower_test) # Raspberry PI 버전
 		print("Camera tflite result : ", result)
 		img_path = flower_path
-	if cmd > 3:
+	if cmd > 3: # TM check
 		result = TM(frame)
-		print("Camera tflite result : ", result)		
+		print("Camera tflite result : ", result)
+	if result == 4:
+		return		
 	image_string = ""
 	with open(img_path, "rb") as img_file:
 		image_string = img_file.read()
