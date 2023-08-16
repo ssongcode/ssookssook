@@ -6,6 +6,7 @@ import com.ssafy.ssuk.exception.dto.ErrorCode;
 import com.ssafy.ssuk.measurement.domain.Measurement;
 import com.ssafy.ssuk.measurement.domain.SensorType;
 import com.ssafy.ssuk.measurement.dto.request.UploadRequestDto;
+import com.ssafy.ssuk.measurement.dto.response.GroundResponseDto;
 import com.ssafy.ssuk.measurement.dto.response.MeasurementResponseDto;
 import com.ssafy.ssuk.measurement.dto.socket.SensorMessageDto;
 import com.ssafy.ssuk.measurement.repository.MeasurementRepository;
@@ -203,6 +204,13 @@ public class MeasurementServiceImpl implements MeasurementService {
     @Override
     public List<MeasurementResponseDto> selectValueByPot_id(Integer potId, SensorType sensorType) {
         List<MeasurementResponseDto> result = measurementRepository.selectValueByPot_id(potId, sensorType);
+        return result;
+    }
+
+    @Override
+    public List<GroundResponseDto> selectGroundByPot_Id(Integer potId, SensorType sensorType) {
+        List<GroundResponseDto> result = measurementRepository.selectGroundByPot_id(potId, sensorType);
+
         return result;
     }
 }
