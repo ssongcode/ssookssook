@@ -87,7 +87,7 @@ async def connect():
 						await websocket.send(send_frame.encode())
 						# print("Send data")
 					image_cnt+=1
-					if image_cnt == 100: # 사진 30분 간격으로 전송
+					if image_cnt >= 1: # 사진 30분 간격으로 전송
 						send_image_to_server()
 			except Exception as e:
 				print(e)
@@ -261,8 +261,8 @@ if __name__ == "__main__":
 	sleep(1)
 	ARD.close()
 	ARD.open()
-	while True:
-		try:
-			asyncio.get_event_loop().run_until_complete(connect())
-		except Exception as e:
-			print(e)
+	# while True:
+	try:
+		asyncio.get_event_loop().run_until_complete(connect())
+	except Exception as e:
+		print(e)
