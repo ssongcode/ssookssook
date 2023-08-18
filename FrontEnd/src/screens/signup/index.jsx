@@ -111,7 +111,7 @@ const SignUpScreen = ({ navigation }) => {
         email: email,
         code: verifyNumber,
       };
-      console.log(requestData.verificationCode);
+      // console.log(requestData.verificationCode);
       console.log("222");
       const response = await axios.post(
         "http://i9b102.p.ssafy.io:8080/auth/join/emailcheck",
@@ -183,7 +183,10 @@ const SignUpScreen = ({ navigation }) => {
       </View>
       {/* 쑥쑥 로고 */}
       <View style={styles.logoPadding}>
-        <Image source={require("../../assets/img/LogoWhite.png")} />
+        <Image
+          source={require("../../assets/img/LogoWhite.png")}
+          style={styles.logoWhiteSize}
+        />
       </View>
       <View style={styles.logincontainer}>
         <View style={styles.loginInlineBlock}>
