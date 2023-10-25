@@ -1,4 +1,5 @@
-# README
+# SSAFY 9th 공통프로젝트 우수상
+![image](https://github.com/Team-B102-ssukssuk/ssukssuk/assets/48237348/8cf0b3e1-32bf-4852-95b8-afd5614669fc)
 
 # 🍃 Web IOT 프로젝트 - 쑥쑥
 ![Untitled](images/last.jpg)
