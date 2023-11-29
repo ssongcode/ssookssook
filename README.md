@@ -1,24 +1,18 @@
-# SSAFY 9th 공통프로젝트 우수상
+## SSAFY 9th 공통프로젝트 우수상
 ![image](https://github.com/Team-B102-ssukssuk/ssukssuk/assets/48237348/8cf0b3e1-32bf-4852-95b8-afd5614669fc)
 
-# 🍃 Web IOT 프로젝트 - 쑥쑥
+## 🍃 Web IOT 프로젝트 - 쑥쑥
 ![Untitled](images/last.jpg)
 
 ## 🌱 프로젝트 진행 기간 🌱
-
----
 
 2023.07.10 ~ 2023.08.18
 
 ## 🌱 쑥쑥 - 배경 및 개요 🌱
 
----
-
 ![Untitled](images/Untitled.png)
 
 ## ✅ 기능 소개
-
----
 
 ![Untitled](images/Untitled%201.png)
 
@@ -53,14 +47,9 @@
 ![Untitled](images/Untitled%2011.png)
 
 ## ✅ 기술 스택
-
----
-
 ![Untitled](images/Untitled%2012.png)
 
 ## ✅ 프로젝트 파일 구조
-
----
 
 ### Back
 
